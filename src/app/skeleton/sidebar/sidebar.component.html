@@ -1,0 +1,35 @@
+<!--facciamo il contenuto del sidebar.component.html-->
+
+<mat-nav-list>
+    <div *ngFor="let item of items" (click)="navigateTo(item.url)" class="item">
+        <mat-icon mat-list-icon>{{item.icon}}</mat-icon>
+        <!--immagine se ci fosse
+            
+        -->
+        <img *ngIf="item.image" src="{{item.image}}" alt="icon" style="width: 24px; height: 24px; margin-right: 10px;">
+
+        <h3 mat-line>{{item.label}}</h3>
+    </div>
+</mat-nav-list>
+
+<style>
+    mat-nav-list {
+        width: 100%;
+        font-size: large;
+    }
+
+    .item {
+        cursor: pointer;
+        display: flex;
+        padding: 10px;
+        flex-direction: row;
+    }
+
+    .item:hover {
+        background-color: #f0f0f0;
+    }
+
+    .item mat-icon {
+        margin-right: 10px;
+    }
+</style>

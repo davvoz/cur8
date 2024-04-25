@@ -1,0 +1,311 @@
+<div class="accordion">
+    <mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+
+                    Blocks Explorer
+                </mat-panel-title>
+                <mat-panel-description>
+                    {{panelOpenState ? 'closed' : 'Show details'}}
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <p>La blockchain è una tecnologia che permette di creare un registro digitale condiviso e distribuito, in
+                cui le
+                transazioni sono registrate in modo permanente e immutabile. Questo registro è condiviso tra tutti i
+                partecipanti
+                alla rete, che possono accedere ai dati in tempo reale e verificarne l'autenticità. La blockchain è alla
+                base delle
+                criptovalute come il Bitcoin, ma può essere utilizzata per molti altri scopi, come la tracciabilità
+                delle merci, la
+                gestione dei diritti d'autore e la certificazione di documenti. Grazie alla sua struttura
+                decentralizzata e sicura,
+                la blockchain è considerata una tecnologia rivoluzionaria che potrebbe cambiare molti settori
+                dell'economia e della
+                società.</p>
+            <div class="filters">
+                <div class="buttonContainer" *ngFor="let button of buttons">
+                    <button mat-raised-button color="primary" (click)="button.action">
+                        {{button.label}}
+                    </button>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>
+<div class="blockchain">
+
+    <div class="blocks">
+        <div class="block" *ngFor="let block of blockchain;let index=index">
+            <mat-card>
+                <mat-card-content>
+                    <mat-card-title class="cTitle">Block {{block.x.size}} - {{block.x.tx_index}}<span class="spacer"></span>
+                        <span class="tondoIndex">{{index+1}}</span>
+                    </mat-card-title>
+                    <mat-card-subtitle class="aCapo"> {{block.x.hash}}</mat-card-subtitle>
+                    <mat-divider></mat-divider>
+                    <br>
+                    <p>Tempo: {{block.x.lock_time | tempoInMinuti}}</p>
+                    <p>vout_sz: {{block.x.vout_sz}}</p>
+                    <p>relayed_by: {{block.x.relayed_by}}</p>
+                    <p>ver: {{block.x.ver}}</p>
+                    <div class="inputContainer">
+
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <p class="inputTitle">In-tot:
+                                            {{block.valoreTotaleIn}} </p>
+                                    </mat-panel-title>
+                                    <mat-panel-description>
+                                        <div class="detailsContainer" *ngIf="!isMobile">
+                                            <div *ngFor="let input of block.x.inputs;let index = index"
+                                                class="miniatureIO">
+                                                <p *ngIf="index<5">Value {{input.prev_out.value}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="detailsContainer" *ngIf="isMobile">
+                                            X{{block.x.inputs.length}}
+                                        </div>
+
+                                    </mat-panel-description>
+                                </mat-expansion-panel-header>
+
+                                <div *ngFor="let input of block.x.inputs" class="inputItem">
+                                    <p>Address: {{input.prev_out.addr}}</p>
+                                    <p>Value: {{input.prev_out.value}}</p>
+                                    <p>Sequence: {{input.sequence}}</p>
+                                    <p>Script: {{input.script}}</p>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+
+
+                    </div>
+                    <div class="outputContainer">
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <p class="outTitle">Out-tot: {{block.valoreTotaleOut}}</p>
+                                    </mat-panel-title>
+                                    <mat-panel-description>
+                                        <!--solo su mobile-->
+                                        <div class="detailsContainer" *ngIf="!isMobile">
+                                            <div *ngFor="let output of block.x.out;let index = index"
+                                                class="miniatureIO">
+                                                <p *ngIf="index<5">Value {{output.value}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="detailsContainer" *ngIf="isMobile">
+                                            X{{block.x.out.length}}
+                                        </div>
+                                    </mat-panel-description>
+                                </mat-expansion-panel-header>
+
+                                <div *ngFor="let output of block.x.out" class="outItem">
+                                    <p>Address: {{output.addr}}</p>
+                                    <p>Value: {{output.value}}</p>
+                                    <p>Script: {{output.script}}</p>
+                                    <p>Spent: {{output.spent}}</p>
+                                    <p>TX_index: {{output.tx_index}}</p>
+                                    <p>type: {{output.type}}</p>
+
+
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cTitle {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin:   0;
+        padding:      0;
+    }
+    .blocks {
+        display: flex;
+        flex-direction: column;
+    
+    }
+    .spacer {
+        flex-grow: 1;
+        min-width: 100px;
+    }
+
+    .tondoIndex {
+        /* deve essere un cerchio con il numero al centro */
+        display: flex;
+        border-radius: 50%;
+        background-color: #3d5042;
+        width: 20px;
+        height: 20px;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        margin: auto;
+    }
+
+    mat-expansion-panel-body {
+        /* padding: 0 24px 16px; */
+        padding: 0%;
+    }
+
+    .aCapo {
+        /*deve andare a capo se la stringa è troppo lunga*/
+
+        overflow: hidden;
+        overflow-wrap: break-word;
+        background-color:     #f7ff88;
+        color: #000;
+    }
+
+    .filters {
+        display: flex;
+        /*row wrap*/
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 10px;
+    }
+
+    .detailsContainer {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .miniatureIO {
+        border: 1px solid #ccc;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        font-size: small;
+        margin: 5px;
+    }
+
+    p {
+        padding: 0 10px;
+        overflow-wrap: break-word;
+    }
+
+
+    .outContainer {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .outItem {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin: 5px;
+    }
+
+    .outputContainer {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .inputContainer {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .inputItem {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin: 5px;
+    }
+
+
+
+    .accordion {
+        width: 70%;
+        margin: 0 auto;
+    }
+
+    mat-card {
+        margin: 10px;
+        padding: 10px;
+    }
+
+
+    .blockchain {
+        width: 70%;
+        margin: 0 auto;
+        margin-bottom: 200px;
+    }
+
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .card {
+        margin: 10px;
+        padding: 10px;
+        width: 300px;
+    }
+
+    mat-card-content {
+        padding: 0;
+    }
+
+    mat-card-title {
+        font-size: 24px;
+    }
+
+    mat-card-subtitle {
+        font-size: 16px;
+    }
+
+    @media screen and (max-width: 850px) {
+        .accordion {
+            width: 100%;
+            font-size: small;
+        }
+
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            /*align-items: center;*/
+            align-items: center;
+        }
+
+        .card {
+            width: webkit-fill-available;
+        }
+
+        .blockchain {
+            width: 100%;
+        }
+
+        p {
+            padding: 0 10px;
+
+        }
+
+        mat-card-title {
+            font-size: 20px;
+        }
+
+        .accordion {
+            width: 100%;
+        }
+    }
+</style>

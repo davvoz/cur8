@@ -1,0 +1,14 @@
+/*fai il css material design<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button mat-raised-button (click)="drawer.toggle()" class="burgerMenu">Toggle drawer</button>
+
+    <span>Angular Material Skeleton</span>
+    <span class="example-spacer"></span>
+    <span>Header</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+*/
+.example-button-container {
+    display: flex;
+    justify-content: center;
+}

@@ -1,0 +1,234 @@
+<!-- <app-modal *ngIf="modalVisible" [callback]="modalCallback" [title]="modalTitle" [message]="modalMessage"
+    [path]="modalPath" [type]="modalType" [conferma]="modalConferma"></app-modal> -->
+
+<mat-grid-list cols="6" class="grid_list" rowHeight="150px">
+
+    <!--USER CUR8 (LOGIN)-->
+    <mat-grid-tile [colspan]="2" [rowspan]="2" class="tile">
+        <mat-card class="card_speciale">
+            <mat-card-header class="card_header_speciale">
+                <mat-card-title class="card_tittle">Your cur8 stats</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="speciale">
+                <mat-spinner *ngIf="isLoading"></mat-spinner>
+                <!--inserisci nome come input-->
+                <div class="in_speciale" *ngIf="!isLoading">
+                    <span>User</span>
+                    <span>
+                        <input matInput placeholder="Username" type="text" [(ngModel)]="user.username">
+                        <button mat-raised-button class="action" color="primary" (click)="refresh()">
+                            <mat-icon>search</mat-icon>
+                        </button>
+                    </span>
+                </div><br>
+                <div>Delegated {{ user.rapportoConCUR8.delega.toString() | truncate:5:'' }}
+                </div>
+                <div>
+                    Last payment {{ user.rapportoConCUR8.ultimoPagamento.importo}}<br>
+                    <p mat-line>{{user.rapportoConCUR8.ultimoPagamento.data | dateFormat}}</p>
+                </div>
+                <div>
+                    Your share {{user.rapportoConCUR8.share}}
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
+
+    <!--DELEGA-->
+    <mat-grid-tile [colspan]="2" [rowspan]="2" class="tile">
+        <mat-card class="card">
+            <mat-card-header class="card_header">
+                <mat-card-title class="card_tittle">Delegated to cur8</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="card_content">
+                <br>
+                <div class="form_container">
+                    <div class="form_content">
+                        <mat-label>Amount</mat-label>
+                        <input matInput placeholder="Amount" type="number" [(ngModel)]="valoreDelega">
+                    </div>
+                    <mat-spinner *ngIf="isLoading"></mat-spinner>
+                    <div *ngIf="!isLoading">
+                        Estimated daily profit
+                        {{!user.rapportoConCUR8.estimatedDailyProfit?'0':user.rapportoConCUR8.estimatedDailyProfit}}
+                        HIVE
+                    </div>
+                    <div *ngIf="!isLoading">
+                        Power disponibile
+                        {{!user.rapportoConCUR8.powerDisponibili?'0':user.rapportoConCUR8.powerDisponibili |
+                        vest2HP:user.rapportoConCUR8.powerDisponibili:user.global_properties.totalVestingFundHive:user.global_properties.totalVestingShares}}
+                        HP
+                    </div>
+                    <br>
+                </div>
+            </mat-card-content>
+            <mat-card-actions class="c_actions" *ngIf="!isLoading">
+                <button mat-raised-button class="action" color="primary" (click)="delega()">Delegate</button>
+            </mat-card-actions>
+        </mat-card>
+    </mat-grid-tile>
+
+    <!--SOCIAL-->
+    <mat-grid-tile [colspan]="2" [rowspan]="4" class="tile">
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
+        <mat-card class="card special"  *ngIf="!isLoading">
+            <mat-card-header class="card_header_special">
+                <mat-card-title class="card_tittle" *ngIf="loaded">{{user.username}}</mat-card-title>
+                <mat-card-subtitle class="card_subtitle"*ngIf="loaded" >Level {{user.social.level}}</mat-card-subtitle>
+                <img mat-card-avatar [src]="user.image" alt="User" *ngIf="loaded">
+            </mat-card-header>
+            <mat-card-content class="card_content">
+                <br>
+                <div class="profile_image"  *ngIf="loaded">
+                    <img [src]="user.image" alt="User">
+                </div>    
+                <br>
+                <div class="social">
+                    {{!user.social.followers?'0':user.social.followers}} followers
+                    {{!user.social.following?'0':user.social.following}} following
+                    {{!user.social.postsNumber?'0':user.social.postsNumber}} posts
+                </div><br>
+                
+                <table class="tb">
+                    <tr>
+                        <td>HIVE</td>
+                        <td>{{user.valutes.HIVE}}</td>
+                    </tr>
+                    <tr>
+                        <td>HBD</td>
+                        <td> {{user.valutes.HBD}}</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>{{user.valutes.HP}}</td>
+                    </tr>
+                </table>
+
+                <br>
+                <div class="valore_account">
+                    Valore Account
+                    {{!user.account_value?'0':user.account_value}} $
+                </div>
+
+            </mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
+
+    <!--POWER UP/DOWN-->
+    <mat-grid-tile [colspan]="2" [rowspan]="2" class="tile">
+        <mat-card class="card">
+            <mat-card-header class="card_header">
+                <mat-card-title class="card_tittle">Power Up/Down</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="card_content">
+                <br>
+                <div class="form_container">
+                    <div class="form_content">
+                        <mat-label>Amount</mat-label>
+                        <input matInput placeholder="Amount" type="number">
+                    </div>
+                    <br>
+                </div>
+            </mat-card-content>
+            <mat-card-actions class="c_actions">
+                <button mat-raised-button class="action" color="primary">Confirm</button>
+            </mat-card-actions>
+        </mat-card>
+    </mat-grid-tile>
+
+    <!--Send STEEM/SBD-->
+    <mat-grid-tile [colspan]="2" [rowspan]="2" class="tile">
+        <mat-card class="card">
+            <mat-card-header class="card_header">
+                <mat-card-title class="card_tittle">Send HIVE/HBD</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="card_content">
+                <br>
+                <div class="form_container">
+                    <div class="form_content">
+                        <mat-label>To</mat-label>
+                        <input matInput placeholder="To" type="text">
+                    </div>
+                    <div class="form_content">
+                        <mat-label>Amount</mat-label>
+                        <input matInput placeholder="Recipient" type="text">
+                    </div>
+                    <br>
+                </div>
+            </mat-card-content>
+            <mat-card-actions class="c_actions">
+                <button mat-raised-button class="action" color="primary">Send</button>
+            </mat-card-actions>
+        </mat-card>
+    </mat-grid-tile>
+
+    <!--LISTA TRANSAZIONI-->
+    <mat-grid-tile [colspan]="3" [rowspan]="4" class="tile">
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
+        <mat-card class="card" *ngIf="!isLoading">
+            <mat-card-header class="c_lista_header">
+                <mat-card-title class="card_tittle"><span>Transactions</span>
+                </mat-card-title>
+                <div>
+                    <button mat-icon-button (click)="searchTrans()" class="refresh">
+                        <mat-icon>search</mat-icon>
+                    </button>&nbsp;&nbsp;
+                    <button mat-icon-button (click)="refresh()" class="refresh">
+                        <mat-icon>refresh</mat-icon>
+                    </button>
+                </div>
+            </mat-card-header>
+            <mat-card-content class="card_content c_lista">
+                <br>
+                @for (item of user.transactions; track $index) {
+                <div class="we">
+                    <h1 appColoreRank [colorByValue]="item.amount" [maxValue]="11">{{item.amount}}</h1>
+                    <div class="we_content">
+                        <div mat-line>{{item.timestamp | dateFormat}}</div>
+                    </div>
+                </div>
+                <div mat-line>{{item.memo}}</div>
+                <mat-divider> </mat-divider>
+                }
+            </mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
+
+    <!--Expairing Delegation-->
+    <mat-grid-tile [colspan]="3" [rowspan]="4" class="tile">
+        <mat-card class="card tabloCard">
+            <mat-card-header class="card_header">
+                <mat-card-title class="card_tittle">Expiring Delegation</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="card_content tablo">
+                <!--mat table , account , ammount ,exp date--><br>
+                <table class="mat-elevation-z8a">
+                    <tr>
+                        <th>Account</th>
+                        <th>Amount</th>
+                        <th>Exp Date</th>
+                    </tr>
+                    <tr *ngFor="let item of delegations">
+                        <td>{{item.account}}</td>
+                        <td>{{item.ammount}}</td>
+                        <td>{{item.expDate | dateFormat}}</td>
+                    </tr>
+                </table>
+            </mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
+
+</mat-grid-list>
+<br><br><br>
+
+<style>
+    button {
+        cursor: pointer;
+    }
+    .tb {
+        width: 100%;
+        padding-left: 30%;
+        padding-right: 30%;
+    }
+   
+</style>

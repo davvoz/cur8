@@ -1,0 +1,118 @@
+<!--
+    facciamo un header con un titolo e un sottotito
+usando angular material
+-->
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <div class="ex_tool">
+            <div class="example-button-container">
+                <button mat-icon-button (click)="toggle()">
+                    <mat-icon>menu</mat-icon>
+                </button>
+            </div>
+            <div class="title_container">
+                <h1 class="title">CUR8</h1>
+                <h2 class="subtitle">&nbsp;&nbsp; Curate High Quality Contents</h2>
+            </div>
+            <div class="spacer">
+
+            </div>
+            <div class="dashboard_btn">
+                <h1>Investor dashboard</h1>
+            </div>
+            <div class="spacer">
+
+            </div>
+            <div class="example-button-container">
+                <button mat-icon-button>
+                    <mat-icon>notifications</mat-icon>
+                </button>
+                <button mat-icon-button>
+                    <mat-icon>account_circle</mat-icon>
+                </button>
+            </div>
+        </div>
+    </mat-toolbar-row>
+</mat-toolbar>
+<style>
+    
+    .dashboard_btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        width: 25%;
+        border-radius: 3px;
+        /*background del tema*/
+        background-color: #666;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .dashboard_btn:hover {
+        transition: background-color 0.3s ease;
+        background-color: #fff;
+        color: #666;
+    }
+
+    .dashboard_btn:hover h1 {
+        transition: font-size 0.3s ease;
+        color: #666;
+    }
+
+    .dashboard_btn h1 {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 400;
+        margin: 0;
+        padding: 5px;
+        font-size: xx-large;
+    }
+
+    .dashboard_btn:hover {
+        transition:     background-color 0.3s ease;
+        background-color: #fff;
+        color:666;
+        cursor: pointer;
+    }
+    .dashboard_btn:hover h1 {
+        transition: font-size 0.3s ease;
+        color:   #666;
+    }
+    .spacer {
+        flex: 1 1 auto;
+    }
+
+    .title_container {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        flex-direction: row;
+    }
+
+    .ex_tool {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+    }
+
+    .example-button-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+
+    .title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+    .subtitle {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 400;
+    }
+</style>
