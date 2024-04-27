@@ -6,7 +6,7 @@ usando angular material
     <mat-toolbar-row>
         <div class="ex_tool">
             <div class="example-button-container">
-                <button mat-icon-button (click)="toggle()">
+                <button mat-icon-button (click)="toggleSidebar()">
                     <mat-icon>menu</mat-icon>
                 </button>
             </div>
@@ -17,25 +17,65 @@ usando angular material
             <div class="spacer">
 
             </div>
-            <div class="dashboard_btn">
-                <h1>Investor dashboard</h1>
-            </div>
+
+            <!-- <button mat-flat-button color="primary">Investor Dashboard</button> -->
+
+
             <div class="spacer">
 
             </div>
             <div class="example-button-container">
-                <button mat-icon-button>
-                    <mat-icon>notifications</mat-icon>
-                </button>
-                <button mat-icon-button>
-                    <mat-icon>account_circle</mat-icon>
-                </button>
+
+                <span class="optionContainer" [style.background-color]="lightTheme ? '#666' : '#fff'"
+                    [style.color]="lightTheme ? '#fff' : '#666'" [style.font-size]="lightTheme ? '10px' : '16px'">
+                    <img [src]="'../../assets/hive_.png'" style="width: 30px; height: 30px; margin-right: 10px;" />
+                    <span>
+                        HIVE {{lightTheme ? 'disabled' : 'enabled'}}
+                    </span>
+                </span>
+                <mat-slide-toggle color="primary" [checked]="lightTheme" (change)="toggle()"></mat-slide-toggle>
+                <span class="optionContainer" [style.background-color]="lightTheme ? '#fff' : '#666'"
+                    [style.color]="lightTheme ? '#666' : '#fff'" [style.font-size]="lightTheme ? '16px' : '10px'">
+                    <img [src]="'../../assets/steem_traspa_piccola.png'"
+                        style="width: 30px; height: 30px; margin-right: 10px;" />
+                    <span>
+                        STEEM {{lightTheme ? 'enabled' : 'disabled'}}
+                    </span>
+                </span>
             </div>
         </div>
     </mat-toolbar-row>
 </mat-toolbar>
 <style>
-    
+    /*modifichiamo mat-slide-toggle , l'interno del bottone e il colore del bottone*/
+    .mat-slide-toggle {
+        background-color: #666;
+        color: #fff;
+    }
+
+    .mat-slide-toggle-bar {
+        background-color: red;
+    }
+
+    .mat-slide-toggle-thumb {
+        background-color: red;
+    }
+
+    .optionContainer {
+        margin-right: 10px;
+        margin-left: 10px;
+        border: rgba(0, 0, 0, 0.3);
+        border-radius: 3px;
+        background-color: #fff;
+        color: #666;
+        padding: 5px;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+
     .dashboard_btn {
         display: flex;
         justify-content: center;
@@ -70,15 +110,17 @@ usando angular material
     }
 
     .dashboard_btn:hover {
-        transition:     background-color 0.3s ease;
+        transition: background-color 0.3s ease;
         background-color: #fff;
-        color:666;
+        color: 666;
         cursor: pointer;
     }
+
     .dashboard_btn:hover h1 {
         transition: font-size 0.3s ease;
-        color:   #666;
+        color: #666;
     }
+
     .spacer {
         flex: 1 1 auto;
     }

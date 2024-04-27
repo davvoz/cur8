@@ -1,8 +1,7 @@
 export class Utils {
 
     static vestingShares2HP(variabile: number,total_vesting_fund_hive:number,total_vesting_shares:number): number {
-        //Math.round((parseFloat(this.total_vesting_fund_hive) * sommatoria) / parseFloat(this.total_vesting_shares) * 1000) / 1000;
-        return Math.round((total_vesting_fund_hive * variabile) / total_vesting_shares * 1000) / 1000;
+        return total_vesting_fund_hive * variabile / total_vesting_shares  ;
     }
 
     static formatDate(date: Date): string {

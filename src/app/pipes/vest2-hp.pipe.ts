@@ -8,7 +8,10 @@ import { Utils } from '../classes/my_utils';
 export class Vest2HPPipe implements PipeTransform {
 
   transform(value: number, ...args: number[]): unknown {
-    return Utils.vestingShares2HP(value, args[0], args[1]);
+    const vest =parseFloat( args[0].toString());
+    const shares = parseFloat(args[1].toString())
+    console.log('vest2HP', value, vest, shares);
+    return Utils.vestingShares2HP(value, vest, shares);
   }
 
 }

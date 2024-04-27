@@ -34,9 +34,8 @@ export class ColoreRankDirective {
     //crea un gradiente di colori tra verde e rosso in base al valore e al massimo
     const color = this.getColor(this.value, this.maxValue);
     this.setColor(color);
-
-
   }
+  
   getColor(value: any, maxValue: number) {
     if (value === 0) {
       return 'blue';

@@ -7,16 +7,30 @@ import { MatCardSubtitle } from '@angular/material/card';
 import { MatCardActions } from '@angular/material/card';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatCardImage } from '@angular/material/card';
-//ngFor
+import { MatCardImage,MatCardHeader } from '@angular/material/card';
+import { MatGridTile, MatGridList, MatGridAvatarCssMatStyler, MatGridTileFooterCssMatStyler, MatGridTileHeaderCssMatStyler } from '@angular/material/grid-list';
+
 import { NgFor } from '@angular/common';
 import { Client } from '@hiveio/dhive';
-
-
+//mat-divider
+import { MatDivider } from '@angular/material/divider';
+//mat-toolbar , row
+import { MatToolbar , MatToolbarRow} from '@angular/material/toolbar';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MatCard, MatCardContent, MatCardTitle, MatCardSubtitle, MatCardActions, MatButton, MatIcon, MatCardImage, NgFor],
+  imports: [
+    MatToolbar,
+    MatToolbarRow,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatGridTile,
+    MatGridList,
+    MatGridAvatarCssMatStyler,
+    MatGridTileFooterCssMatStyler,
+    MatDivider,
+    MatCard, MatCardContent, MatCardTitle, MatCardSubtitle, MatCardActions, MatButton, MatIcon, MatCardImage, NgFor],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -84,11 +98,16 @@ drawGauge(element: ElementRef, manaPercentage: number): void {
     ctx.strokeStyle = this.regoleRiempimentoColore(manaPercentage);
     ctx.stroke();
     //dimesione del testo dinamico
-    ctx.font = `${canvas.width / 6}px Arial`;
-    ctx.fillStyle = 'black';
+    ctx.font = `${canvas.width / 3}px Impact`;
+    ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(`${manaPercentage}%`, centerX, centerY);
+    //stroke text
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'black';
+    ctx.strokeText(`${manaPercentage}%`, centerX, centerY);
+
 
 }
 

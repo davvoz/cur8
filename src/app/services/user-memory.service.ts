@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
-import { Emitter } from 'tone';
+import { EventEmitter, Injectable } from '@angular/core';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserMemoryService {
   userName: string = '';
-  userEmitter : Emitter = new Emitter<string>();
+  userEmitter = new EventEmitter<string>();
   constructor() { }
 
-  setUser(userName: string){
+  setUser(userName: string) {
     this.userName = userName;
     this.userEmitter.emit(userName);
   }

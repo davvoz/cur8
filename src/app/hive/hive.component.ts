@@ -6,7 +6,7 @@ import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import { NgFor } from '@angular/common';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
-import { User, UserFactory } from '../interfaces/interfaces';
+import { User, UserFactory } from '../classes/biz/hive-user';
 import { MatCard, MatCardContent, MatCardSubtitle, MatCardTitle, MatCardActions, MatCardHeader, MatCardAvatar, MatCardFooter, MatCardImage, MatCardSmImage, MatCardModule } from '@angular/material/card';
 import { MatGridTile, MatGridList, MatGridAvatarCssMatStyler, MatGridTileFooterCssMatStyler, MatGridTileHeaderCssMatStyler } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
@@ -21,6 +21,15 @@ import { FormsModule } from '@angular/forms';
 //spinner 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UserMemoryService } from '../services/user-memory.service';
+import { ReversePadZeroPipe } from "../pipes/reverse-pad-zero.pipe";
+import { Client } from '@hiveio/dhive';
+import { Utils } from '../classes/my_utils';
+
+interface IMRiddData {
+  delegaCur8: number;
+  ultimoPagamento: number;
+}
+
 @Component({
   selector: 'app-hive',
   standalone: true,
@@ -58,13 +67,32 @@ import { UserMemoryService } from '../services/user-memory.service';
     NgFor,
     DateFormatPipe,
     TruncatePipe,
-    Vest2HPPipe]
+    Vest2HPPipe,
+    ReversePadZeroPipe
+  ]
 })
 
 export class HiveComponent {
+  estimatedDailyProfit: number = 0;
+  imridData: IMRiddData = {
+    delegaCur8: 0,
+    ultimoPagamento: 0
+  }
+  global_properties = {
+    totalVestingFundHive: 0,
+    totalVestingShares: 0
+  }
+
+  changeDailyProfit() {
+    console.log(this.imridData.delegaCur8);
+    const apr = this.imridData.ultimoPagamento * 365 * 100 / this.imridData.delegaCur8;
+    console.log(apr);
+    this.estimatedDailyProfit = this.valoreDelega * apr / 365 /100  ;
+  }
 
   valoreDelega = 0;
   user: User = {
+    expiringDelegations: [],
     image: '',
     transactions: [],
     global_properties: {
@@ -86,10 +114,7 @@ export class HiveComponent {
     valutes: {
       HIVE: 0,
       HBD: 0,
-      HP: 0,
-      STEEM: 0,
-      SBD: 0,
-      SP: 0
+      HP: 0
     },
     social: {
       followers: 0,
@@ -103,37 +128,63 @@ export class HiveComponent {
   displayedColumns = ['account', 'ammount', 'exp date'];
 
   delegations = [
-    { account: 'im-ridd', ammount: 100, expDate: '2021-01-01' },
-    { account: 'im-ridd', ammount: 200, expDate: '2021-01-01' }
+    { ammount: 100, expDate: '2021-01-01' },
+    { ammount: 200, expDate: '2021-01-01' }
   ];
   search: any;
   isLoading = true;
   loaded = false;
-
+  imridAccoount: any;
   constructor(private userMemoryService: UserMemoryService) {
-    if (!this.userMemoryService.userName) {
-      const userFactory: UserFactory = new UserFactory();
-      userFactory.creaUser('', 'HIVE').then((user: User) => {
-        this.user = user;
-      }).finally(() => {
-        this.isLoading = false;
+
+    const client = new Client('https://api.hive.blog');
+
+    client.database.getDynamicGlobalProperties().then((result) => {
+      this.global_properties.totalVestingFundHive = parseFloat(result.total_vesting_fund_hive.toString());
+      this.global_properties.totalVestingShares = parseFloat(result.total_vesting_shares.toString());
+    });
+
+    client.database.getVestingDelegations('jacopo.eth', 'cur8', 1000).then((result) => {
+      this.imridData.delegaCur8 = Utils.vestingShares2HP(parseFloat(result[0].vesting_shares.toString()), this.global_properties.totalVestingFundHive, this.global_properties.totalVestingShares);
+    });
+
+    let listaDiTransazioni: any[] = [];
+
+    client.database.getAccountHistory('jacopo.eth', -1, 1000).then((result) => {
+      listaDiTransazioni = result;
+      let op: any[] = [];
+      const transferTransaction = listaDiTransazioni.reverse().find(transazione => {
+        op = transazione[1].op;
+        return op[0] === 'transfer' && op[1]['from'] === 'cur8';
       });
-    } else {
+      console.log(transferTransaction);
+      let importo = 0;
+      console.log(op);
+      if (transferTransaction) {
+        importo = op[1]['amount'];
+      }
+      console.log(importo);
+      this.imridData.ultimoPagamento = parseFloat(importo.toString());
+      console.log(this.imridData);
+    });
+
+    if (this.userMemoryService.userName) {
       this.user.username = this.userMemoryService.userName;
       this.refresh();
+    } else {
+      this.isLoading = false;
     }
   }
 
   refresh() {
 
     this.isLoading = true;
-    const userFactory: UserFactory = new UserFactory();
-    userFactory.creaUser(this.user.username, 'HIVE').then((user: User) => {
+    UserFactory.getUser(this.user.username).then((user: User) => {
+      console.log(user);
       this.user = user;
-    }).then(() => {
       this.isLoading = false;
       this.loaded = true;
-      this.userMemoryService.setUser(this.user.username);
+      this.userMemoryService.setUser(this.user.username)
     });
   }
 
