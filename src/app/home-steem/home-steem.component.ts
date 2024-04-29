@@ -8,24 +8,21 @@ import { MatCardActions } from '@angular/material/card';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatCardImage, MatCardHeader } from '@angular/material/card';
-import { MatGridTile, MatGridList, MatGridAvatarCssMatStyler, MatGridTileFooterCssMatStyler, MatGridTileHeaderCssMatStyler } from '@angular/material/grid-list';
-
+import { MatGridTile, MatGridList, MatGridAvatarCssMatStyler, MatGridTileFooterCssMatStyler } from '@angular/material/grid-list';
 import { NgFor } from '@angular/common';
-import { Client } from '@hiveio/dhive';
 //mat-divider
 import { MatDivider } from '@angular/material/divider';
 //mat-toolbar , row
 import { MatToolbar, MatToolbarRow } from '@angular/material/toolbar';
-import { ExtendedAccount } from 'dsteem';
 import { Utils } from '../classes/my_utils';
-import { GlobalPropertiesService } from '../services/global-properties.service';
 import { ReversePadZeroPipe } from "../pipes/reverse-pad-zero.pipe";
-import { ApiService } from '../services/api.service';
+import { Client } from 'dsteem';
+import { GlobalPropertiesSteemService } from '../services/global-properties-steem.service';
 @Component({
     selector: 'app-home',
     standalone: true,
-    templateUrl: './home.component.html',
-    styleUrl: './home.component.scss',
+    templateUrl: './home-steem.component.html',
+    styleUrl: './home-steem.component.scss',
     imports: [
         MatToolbar,
         MatToolbarRow,
@@ -41,14 +38,14 @@ import { ApiService } from '../services/api.service';
         ReversePadZeroPipe
     ]
 })
-export class HomeComponent {
+export class HomeSteemComponent {
 
-    client = new Client('https://api.hive.blog');
-
+    //steem
+    client = new Client('https://api.moecki.online');
     manaPercentageHive: number = 0;
 
-    @ViewChild('gaugeCanvasHive')
-    gaugeCanvasHive!: ElementRef;
+    @ViewChild('gaugeCanvasSTEEM')
+    gaugeCanvasSteem!: ElementRef;
 
     regoleRiempimentoColore = (percentuale: number) => {
         if (percentuale < 50) {
@@ -61,48 +58,39 @@ export class HomeComponent {
     }
 
     totalDelegators: any;
-    totalHivePower: any;
-    totalHiveRecieved = 0;
+    totalSteemPower: any;
+    totalSteemRecieved = 0;
+    totalSteem: number = 0
     account: any;
     allTimePayOut: any;
-    totalHive: number = 0;
-    listaDelegatori = [];
 
-    constructor(private gs: GlobalPropertiesService,private apiService: ApiService) {
+    constructor(private gs: GlobalPropertiesSteemService) {
         //account
-  
         if (!this.gs.accountCUR8) {
             this.client.database.getAccounts(['cur8']).then((data) => {
                 this.account = data[0];
-                console.log('account', this.account);   
                 this.init();
-                apiService.get('https://ecency.com/private-api/received-vesting/cur8').then((result) => {;
-                this.listaDelegatori = result;
-                
-              });
             });
         } else {
-            console.log('account', this.gs.accountCUR8);
             this.account = this.gs.accountCUR8;
             this.init();
         }
     }
 
     private init() {
-        this.totalDelegators = this.gs.listaDelegatori.length;
-        console.log('totalDelegators', this.totalDelegators);
+        this.totalDelegators = this.account.delegated_vesting_shares.length;
         this.allTimePayOut = Utils.toStringParseFloat(this.account.to_withdraw);
-        this.totalHivePower = Utils.vestingShares2HP(
+        this.totalSteemPower = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.vesting_shares),
-            this.gs.global_properties.totalVestingFundHive,
+            this.gs.global_properties.totalVestingFundSteem,
             this.gs.global_properties.totalVestingShares);
-        this.totalHiveRecieved = Utils.vestingShares2HP(
+        this.totalSteemRecieved = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.received_vesting_shares),
-            this.gs.global_properties.totalVestingFundHive,
+            this.gs.global_properties.totalVestingFundSteem,
             this.gs.global_properties.totalVestingShares);
-        this.totalHive = this.totalHivePower + this.totalHiveRecieved;
-        
+        this.totalSteem = this.totalSteemPower + this.totalSteemRecieved;
     }
+
     ngAfterViewInit(): void {
         if (!this.gs.accountCUR8) {
             this.client.database.getAccounts(['cur8']).then((data) => {
@@ -117,7 +105,7 @@ export class HomeComponent {
                 const votingPower = (data[0].voting_power + regeneratedVp) / 100;
                 this.manaPercentageHive = votingPower;
                 this.manaPercentageHive = Math.round(this.manaPercentageHive * 100) / 100;
-                this.drawGauge(this.gaugeCanvasHive, this.manaPercentageHive);
+                this.drawGauge(this.gaugeCanvasSteem, this.manaPercentageHive);
             });
         } else {
             const timestampLastVote = this.account.last_vote_time;
@@ -131,11 +119,10 @@ export class HomeComponent {
             const votingPower = (this.account.voting_power + regeneratedVp) / 100;
             this.manaPercentageHive = votingPower;
             this.manaPercentageHive = Math.round(this.manaPercentageHive * 100) / 100;
-            this.drawGauge(this.gaugeCanvasHive, this.manaPercentageHive);
-
+            this.drawGauge(this.gaugeCanvasSteem, this.manaPercentageHive);
         }
-
     }
+
     drawGauge(element: ElementRef, manaPercentage: number): void {
         const canvas = element.nativeElement;
         const ctx = canvas.getContext('2d');
@@ -163,7 +150,4 @@ export class HomeComponent {
         ctx.strokeStyle = 'black';
         ctx.strokeText(`${manaPercentage}%`, centerX, centerY);
     }
-
-
-
 }

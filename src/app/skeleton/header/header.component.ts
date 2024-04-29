@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 //mat-slide
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { SwitchService } from '../../services/switch.service';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -17,12 +18,15 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 })
 export class HeaderComponent {
 
-  constructor(private sidebarservice: SidebarService) { }
+  constructor(private sidebarservice: SidebarService, private switchService: SwitchService) {
+    
+   }
   get lightTheme(): boolean {
     return document.documentElement.getAttribute('theme') === 'light';
   }
 
   toggle() {
+    this.switchService.switchPlatform();
     if (this.lightTheme) {
       document.documentElement.setAttribute('theme', '');
     } else {

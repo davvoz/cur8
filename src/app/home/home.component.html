@@ -1,11 +1,19 @@
 <mat-grid-list cols="6" class="grid_list" rowHeight="200px">
   <mat-grid-tile [colspan]="6" [rowspan]="1">
     <mat-card class="card">
-      <mat-card-header class="card_header">
-        <mat-card-title class="card_title">Welecome to cur8.ern!</mat-card-title>
+      <mat-card-header class="card_header_special">
+        <mat-card-title class="card_title_special">
+          <img src="assets/logo_tra.png" alt="cur8 logo" style="width: 100px; height: 100px; margin-right: 10px;">
+          <img src="assets/hive_.png" alt="cur8 logo" style="width: 100px; height: 100px; margin-right: 10px;">
+          <span>
+            Welecome to cur8.ern!
+          </span>
+
+        </mat-card-title>
       </mat-card-header><br>
       <mat-card-content class="card_content">
-        <span style="font-size: xx-large;"> To start early daily incomes just delegate some Hive Power in profile section</span>  
+        <span style="font-size: xx-large;"> To start early daily incomes just delegate some Hive Power in profile
+          section</span>
       </mat-card-content>
     </mat-card>
   </mat-grid-tile>
@@ -15,7 +23,7 @@
         <mat-card-title class="card_title">Total cur8 Hive Power</mat-card-title>
       </mat-card-header><br>
       <mat-card-content class="card_content">
-        <span style="font-size: xx-large;"> 120645 HP</span>
+        <span style="font-size: xx-large;"> {{totalHive | reversePadZero}} HP</span>
       </mat-card-content>
     </mat-card>
   </mat-grid-tile>
@@ -25,18 +33,18 @@
         <mat-card-title class="card_title">Total delegators</mat-card-title>
       </mat-card-header><br>
       <mat-card-content class="card_content">
-        <span style="font-size: xx-large;"> 54</span>  
+        <span style="font-size: xx-large;"> {{listaDelegatori.length}}</span>
       </mat-card-content>
     </mat-card>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="2" [rowspan]="1">
     <mat-card class="card">
       <mat-card-header class="card_header">
-        <mat-card-title class="card_title">ALL TIME PAYOUT</mat-card-title>
+        <mat-card-title class="card_title">All time payout</mat-card-title>
       </mat-card-header>
       <br>
       <mat-card-content class="card_content">
-        <span style="font-size: xx-large;"> 157 $</span>
+        <span style="font-size: xx-large;"> {{allTimePayOut}} $</span>
       </mat-card-content>
     </mat-card>
   </mat-grid-tile>
@@ -71,7 +79,7 @@
         <mat-card-title class="card_title">cur8 curation rewards (7 days)</mat-card-title>
       </mat-card-header>
       <mat-card-content class="card_content">
-      
+
       </mat-card-content>
     </mat-card>
   </mat-grid-tile>
@@ -100,15 +108,34 @@
       </mat-card-header><br>
       <mat-card-content class="card_content">
         <!--telegram discord you tube-->
-        <button mat-raised-button >Telegram</button>
-        <button mat-raised-button >Discord</button>
-        <button mat-raised-button >You Tube</button>
+        <button mat-raised-button>Telegram</button>
+        <button mat-raised-button>Discord</button>
+        <button mat-raised-button>You Tube</button>
       </mat-card-content>
     </mat-card>
   </mat-grid-tile>
 </mat-grid-list>
 
 <style>
+  img {
+    border-radius: 50%;
+    background-color: white;
+    padding: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .card_header_special {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .card_title_special {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+  }
+
   .card_content {
     display: flex;
     align-items: center;
@@ -118,12 +145,8 @@
 
   .card_header {
     display: flex;
-    /* background-color: #f5f5f5; */
-    /* color: #666; */
-    /* font-size: 14px; */
-    /* font-weight: 400; */
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: flex-start;
   }
 
   .card_title {

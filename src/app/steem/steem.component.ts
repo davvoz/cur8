@@ -6,7 +6,7 @@ import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import { NgFor } from '@angular/common';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
-import { User, UserFactory } from '../classes/biz/hive-user';
+
 import { MatCard, MatCardContent, MatCardSubtitle, MatCardTitle, MatCardActions, MatCardHeader, MatCardAvatar, MatCardFooter, MatCardImage, MatCardSmImage, MatCardModule } from '@angular/material/card';
 import { MatGridTile, MatGridList, MatGridAvatarCssMatStyler, MatGridTileFooterCssMatStyler, MatGridTileHeaderCssMatStyler } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
@@ -22,14 +22,16 @@ import { UserMemoryService } from '../services/user-memory.service';
 import { ReversePadZeroPipe } from "../pipes/reverse-pad-zero.pipe";
 import { GlobalPropertiesService } from '../services/global-properties.service';
 import { IMRiddData } from '../interfaces/interfaces';
-
+import { User, UserFactory } from '../classes/biz/steem-user';
+import { GlobalPropertiesSteemService } from '../services/global-properties-steem.service';
+import { UserMemorySteemService } from '../services/user-memory-steem.service';
 
 
 @Component({
-  selector: 'app-hive',
+  selector: 'app-steem',
   standalone: true,
-  templateUrl: './hive.component.html',
-  styleUrl: './hive.component.scss',
+  templateUrl: './steem.component.html',
+  styleUrl: './steem.component.scss',
   imports: [
     MatProgressSpinnerModule,
     FormsModule,
@@ -66,15 +68,14 @@ import { IMRiddData } from '../interfaces/interfaces';
     ReversePadZeroPipe
   ]
 })
-
-export class HiveComponent {
+export class SteemComponent {
   estimatedDailyProfit: number = 0;
 
   imridData: IMRiddData = {
     delegaCur8: 0,
     ultimoPagamento: 0
   }
-  global_properties: { totalVestingFundHive: number; totalVestingShares: number; };
+  global_properties: { totalVestingFundSteem: number; totalVestingShares: number; };
 
   changeDailyProfit() {
     const apr = this.imridData.ultimoPagamento * 365 * 100 / this.imridData.delegaCur8;
@@ -87,11 +88,11 @@ export class HiveComponent {
     image: '',
     transactions: [],
     global_properties: {
-      totalVestingFundHive: 0,
+      totalVestingFundSteem: 0,
       totalVestingShares: 0,
     },
     username: '',
-    platform: 'HIVE',
+    platform: 'STEEM',
     rapportoConCUR8: {
       delega: 0,
       share: 0,
@@ -103,9 +104,9 @@ export class HiveComponent {
       powerDisponibili: 0
     },
     valutes: {
-      HIVE: 0,
-      HBD: 0,
-      HP: 0
+      STEEM: 0,
+      SBD: 0,
+      SP: 0
     },
     social: {
       followers: 0,
@@ -126,16 +127,17 @@ export class HiveComponent {
   isLoading = true;
   loaded = false;
   imridAccoount: any;
-  constructor(private userMemoryService: UserMemoryService, private gs: GlobalPropertiesService) {
+  constructor(private gs:GlobalPropertiesSteemService,private userMemoryService: UserMemorySteemService) {
 
     this.global_properties = this.gs.global_properties;
     this.user.global_properties = this.global_properties;
     this.imridData = this.gs.imridData;
 
-    if (this.userMemoryService.user) {
-      this.user = this.userMemoryService.user;
-      this.loaded = true;
-    }
+
+     if (this.userMemoryService.user) {
+       this.user = this.userMemoryService.user;
+       this.loaded = true;
+     }
     this.isLoading = false;
   }
 
@@ -150,7 +152,7 @@ export class HiveComponent {
   }
 
   delega() {
-    StaticDelegator.delegateWithHive(this.user.username, 'cur8', this.valoreDelega.toString(), () => { console.log('fatto') }).then((result) => {
+    StaticDelegator.delegateWithSteem(this.user.username, 'cur8', this.valoreDelega.toString(), () => { console.log('fatto') }).then((result) => {
       console.log('delega effettuata');
     }).catch((error) => {
       console.log('errore nella delega');
@@ -165,5 +167,4 @@ export class HiveComponent {
   searchTransaction() {
     throw new Error('Method not implemented.');
   }
-
 }

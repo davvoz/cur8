@@ -1,8 +1,9 @@
-import { Client, ExtendedAccount, VestingDelegation } from "@hiveio/dhive";
+
+import { Client, VestingDelegation } from "dsteem";
 import { Utils } from "../my_utils";
 
 interface DynamicGlobalProperties {
-    totalVestingFundHive: number;
+    totalVestingFundSteem: number;
     totalVestingShares: number;
 }
 
@@ -27,12 +28,12 @@ interface Social {
 }
 
 interface Valutes {
-    HIVE: number;
-    HBD: number;
-    HP: number;
+    STEEM: number;
+    SBD: number;
+    SP: number;
 }
 
-type Platform = 'HIVE';
+type Platform = 'STEEM';
 
 export interface MYTransaction {
     timestamp: string;
@@ -63,13 +64,13 @@ export interface ExpiringDelegation {
 
 
 class UserManager {
-    private client: Client = new Client('https://api.hive.blog')
+    client = new Client('https://api.moecki.online');
     private dynamicGlobalProperties!: DynamicGlobalProperties;
-    private account!: ExtendedAccount;
+    private account!: any;
     private valutes: Valutes = {
-        HIVE: 0,
-        HBD: 0,
-        HP: 0
+        STEEM: 0,
+        SBD: 0,
+        SP: 0
     };
     private social: Social = {
         followers: 0,
@@ -101,8 +102,8 @@ class UserManager {
         await this.setSocial().then(() => {
             this.user.social = this.social;
         });
-        await this.setTransactions().then(() => {
-            this.user.transactions = this.transactions;
+         await this.setTransactions().then(() => {
+             this.user.transactions = this.transactions;
         });
         await this.setExpringDelegations().then(() => {
             this.user.expiringDelegations = this.expringDelegations;
@@ -131,7 +132,7 @@ class UserManager {
             for (let i = 0; i < res.length; i++) {
                 const number = Utils.toStringParseFloat(res[i]['vesting_shares']);
                 const vesting_shares = Utils.vestingShares2HP(number,
-                    this.dynamicGlobalProperties.totalVestingFundHive,
+                    this.dynamicGlobalProperties.totalVestingFundSteem,
                     this.dynamicGlobalProperties.totalVestingShares);
                 const expiration = new Date(res[i]['expiration']);
                 this.expringDelegations.push({ vesting_shares, expiration });
@@ -142,14 +143,21 @@ class UserManager {
     private async fetchDynamicGlobalProperties(): Promise<void> {
         const properties = await this.client.database.getDynamicGlobalProperties();
         this.dynamicGlobalProperties = {
-            totalVestingFundHive: Utils.toStringParseFloat(properties.total_vesting_fund_hive),
+            totalVestingFundSteem: Utils.toStringParseFloat(properties.total_vesting_fund_steem),
             totalVestingShares: Utils.toStringParseFloat(properties.total_vesting_shares)
         };
     }
 
     private async fetchAccount(username: string): Promise<void> {
         const account = await this.client.database.getAccounts([username]);
+        console.log(account);
         this.account = account[0];
+        this.client.database.getDynamicGlobalProperties().then((res) => {
+            this.dynamicGlobalProperties = {
+                totalVestingFundSteem: Utils.toStringParseFloat(res.total_vesting_fund_steem),
+                totalVestingShares: Utils.toStringParseFloat(res.total_vesting_shares)
+            };
+        });
     }
 
     private async fetchVestingDelegations(username: string): Promise<VestingDelegation[]> {
@@ -158,12 +166,15 @@ class UserManager {
     private async fetchVestingDelegationsNoFilter(username: string): Promise<VestingDelegation[]> {
         return await this.client.database.getVestingDelegations(username, undefined, 1000);
     }
-    private async fetchAccountHistory(username: string): Promise<any[]> {
-        return await this.client.database.getAccountHistory(username, -1, 1000, [4, 0]);
-    }
+    // private async fetchAccountHistory(username: string): Promise<any[]> {
+    //     return await this.client.database.getAccountHistory(username, -1, 1000, [4, 0]);
+    // }
 
     private async fetchAccountTransactions(username: string): Promise<void> {
-        let listaDiTransazioni = await this.client.database.getAccountHistory(username, -1, 1000, [4, 0]);
+        //getAccountHistory(username, -1, 1000, [4, 0]);
+        let listaDiTransazioni = await this.client.database.call('get_account_history', [username, -1, 1000]);
+        console.log(listaDiTransazioni);
+
         listaDiTransazioni.reverse();
         let transactions: MYTransaction[] = [];
         for (let i = 0; i < listaDiTransazioni.length; i++) {
@@ -188,7 +199,7 @@ class UserManager {
 
         const totCur8 = Utils.toStringParseFloat(res[0].vesting_shares);
         const recivedVestingShares = Utils.toStringParseFloat(res[0].received_vesting_shares);
-        const sommatoria = Utils.vestingShares2HP(totCur8 + recivedVestingShares, this.dynamicGlobalProperties.totalVestingFundHive, this.dynamicGlobalProperties.totalVestingShares);
+        const sommatoria = Utils.vestingShares2HP(totCur8 + recivedVestingShares, this.dynamicGlobalProperties.totalVestingFundSteem, this.dynamicGlobalProperties.totalVestingShares);
         return this.calculateShareValue(sommatoria);
     }
 
@@ -200,16 +211,16 @@ class UserManager {
             sommatoria += Utils.toStringParseFloat(delegation.vesting_shares);
         }
 
-        const hiveUser = this.user.valutes.HP;
-        const { totalVestingShares, totalVestingFundHive } = this.dynamicGlobalProperties;
-        const diff = hiveUser - Utils.vestingShares2HP(sommatoria, totalVestingFundHive, totalVestingShares);
+        const hiveUser = this.user.valutes.SP;
+        const { totalVestingShares, totalVestingFundSteem } = this.dynamicGlobalProperties;
+        const diff = hiveUser - Utils.vestingShares2HP(sommatoria, totalVestingFundSteem, totalVestingShares);
         let sum = 0;
 
         this.expringDelegations.forEach((delegation) => {
             sum += delegation.vesting_shares;
         });
 
-        const out = diff - Utils.vestingShares2HP(sum, totalVestingFundHive, totalVestingShares);
+        const out = diff - Utils.vestingShares2HP(sum, totalVestingFundSteem, totalVestingShares);
         return out;
     }
 
@@ -218,15 +229,15 @@ class UserManager {
             return 0;
         }
         const converted = Utils.toStringParseFloat(this.delegations[0].vesting_shares);
-        const out = Utils.vestingShares2HP(converted, this.dynamicGlobalProperties.totalVestingFundHive, this.dynamicGlobalProperties.totalVestingShares) * 100 / totCur8;
+        const out = Utils.vestingShares2HP(converted, this.dynamicGlobalProperties.totalVestingFundSteem, this.dynamicGlobalProperties.totalVestingShares) * 100 / totCur8;
         this.user.rapportoConCUR8.share = out;
         return out;
     }
 
     private async setUltimoPagamento(username: string): Promise<UltimoPagamento | null> {
 
-        const listaDiTransazioni = await this.fetchAccountHistory(username);
-        const transferTransaction = listaDiTransazioni.reverse().find(transazione => {
+        const listaDiTransazioni = await this.client.database.call('get_account_history', [username, -1, 1000]);
+        const transferTransaction = listaDiTransazioni.reverse().find((transazione: { op: any; }[]) => {
             const op = transazione[1].op;
             return op[0] === 'transfer' && op[1]['from'] === 'cur8';
         });
@@ -250,16 +261,16 @@ class UserManager {
                 return 0;
             }
 
-            const { totalVestingFundHive, totalVestingShares } = this.dynamicGlobalProperties;
+            const { totalVestingFundSteem, totalVestingShares } = this.dynamicGlobalProperties;
             const vestingShares = Utils.toStringParseFloat(vesting_shares);
-            return Utils.vestingShares2HP(vestingShares, totalVestingFundHive, totalVestingShares);
+            return Utils.vestingShares2HP(vestingShares, totalVestingFundSteem, totalVestingShares);
         }
         return 0;
     }
 
-    public async setTransactions(): Promise<void> {
-        await this.fetchAccountTransactions(this.account.name);
-    }
+     public async setTransactions(): Promise<void> {
+         await this.fetchAccountTransactions(this.account.name);
+     }
 
     private async creaUser(): Promise<User> {
         let delega = 0;
@@ -267,10 +278,10 @@ class UserManager {
         let ultimoPagamento: UltimoPagamento | null = null;
         let global_properties = this.dynamicGlobalProperties;
 
-        //posting_json_metadata:"{\"profile\":{\"profile_image\":\"https://files.peakd.com/file/peakd-hive/jacopo.eth/OTD8nr7N-jkjjiuj.jpg\",\"cover_image\":\"https://images.hive.blog/DQmNS5rcacMvFDUrgCaC34nHRZ8diSqK2mcAz8k3V2D5wQM/mmm.jpeg\",\"name\":\"jacopo.eth\",\"location\":\"italy\",\"version\":2,\"tokens\":[]}}"
+        //posting_json_metadata:"{\"profile\":{\"profile_image\":\"https://files.peakd.com/file/peakd-STEEM/jacopo.eth/OTD8nr7N-jkjjiuj.jpg\",\"cover_image\":\"https://images.STEEM.blog/DQmNS5rcacMvFDUrgCaC34nHRZ8diSqK2mcAz8k3V2D5wQM/mmm.jpeg\",\"name\":\"jacopo.eth\",\"location\":\"italy\",\"version\":2,\"tokens\":[]}}"
         let image = JSON.parse(this.account.posting_json_metadata).profile.profile_image;
-        console.log(this.user);
-        //const delegations = await this.fetchVestingDelegations(this.account.name);
+
+        const delegations = await this.fetchVestingDelegations(this.account.name);
         let shareValue = 0;
         await this.setDelega(this.delegations).then((res) => {
             delega = res;
@@ -280,7 +291,7 @@ class UserManager {
             shareValue = res;
         });
         powerDisponibili = await this.calculatePowerDifference();
-        ultimoPagamento = await this.setUltimoPagamento(this.account.name);
+       ultimoPagamento = await this.setUltimoPagamento(this.account.name);
 
         const rapportoConCUR8: RapportoConCUR8 = {
             delega,
@@ -291,11 +302,11 @@ class UserManager {
         };
 
         return {
-            image,
+            image: image,
             global_properties: global_properties!,
             account_value: 0,
             username: this.account.name,
-            platform: 'HIVE',
+            platform: 'STEEM',
             valutes: this.valutes,
             social: this.social,
             rapportoConCUR8,
@@ -315,16 +326,17 @@ class UserManager {
 
     private async setValutes(): Promise<void> {
         const balances: Valutes = {
-            HIVE: 0,
-            HBD: 0,
-            HP: 0
+            STEEM: 0,
+            SBD: 0,
+            SP: 0
         };
 
-        balances.HIVE = Utils.toStringParseFloat(this.account.balance);
-        balances.HBD = Utils.toStringParseFloat(this.account.hbd_balance);
-        balances.HP = Utils.vestingShares2HP(
+        balances.STEEM = Utils.toStringParseFloat(this.account.balance);
+
+        balances.SBD = Utils.toStringParseFloat(this.account.sbd_balance);
+        balances.SP = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.vesting_shares),
-            this.dynamicGlobalProperties!.totalVestingFundHive,
+            this.dynamicGlobalProperties!.totalVestingFundSteem,
             this.dynamicGlobalProperties!.totalVestingShares);
 
         this.valutes = balances;
@@ -339,11 +351,11 @@ class UserManager {
             expiringDelegations: [],
             image: '',
             username: '',
-            platform: 'HIVE',
+            platform: 'STEEM',
             valutes: {
-                HIVE: 0,
-                HBD: 0,
-                HP: 0
+                STEEM: 0,
+                SBD: 0,
+                SP: 0
             },
             social: {
                 followers: 0,
@@ -363,7 +375,7 @@ class UserManager {
             },
             account_value: 0,
             global_properties: {
-                totalVestingFundHive: 0,
+                totalVestingFundSteem: 0,
                 totalVestingShares: 0,
             },
             transactions: []

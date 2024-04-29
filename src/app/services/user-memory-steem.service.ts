@@ -1,11 +1,11 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { User } from '../classes/biz/hive-user';
-
+import { User } from '../classes/biz/steem-user';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserMemoryService {
+export class UserMemorySteemService {
+
   user!: User;
   userEmitter = new EventEmitter<User>();
   constructor() { }
@@ -16,7 +16,3 @@ export class UserMemoryService {
     this.userEmitter.emit(user);
   }
 }
-
-
-
-

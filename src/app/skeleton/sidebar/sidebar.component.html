@@ -2,9 +2,9 @@
 
 <mat-nav-list>
     <div *ngFor="let item of items" (click)="navigateTo(item.url)" class="item">
-        <mat-icon mat-list-icon>{{item.icon}}</mat-icon>
+        
         <!--immagine se ci fosse
-            
+            <mat-icon mat-list-icon>{{item.icon}}</mat-icon>
         -->
         <img *ngIf="item.image" src="{{item.image}}" alt="icon" style="width: 24px; height: 24px; margin-right: 10px;">
 

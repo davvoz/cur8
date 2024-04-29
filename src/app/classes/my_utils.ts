@@ -1,7 +1,7 @@
 export class Utils {
 
-    static vestingShares2HP(variabile: number,total_vesting_fund_hive:number,total_vesting_shares:number): number {
-        return total_vesting_fund_hive * variabile / total_vesting_shares  ;
+    static vestingShares2HP(variabile: number, total_vesting_fund_hive: number, total_vesting_shares: number): number {
+        return total_vesting_fund_hive * variabile / total_vesting_shares;
     }
 
     static formatDate(date: Date): string {
@@ -40,5 +40,9 @@ export class Utils {
         // Create a secure random number
         let randomNumber = randomValues.reduce((acc, val) => acc + val, 0);
         return randomNumber;
+    }
+
+    public static toStringParseFloat(value: any): number {
+        return parseFloat(value.toString());
     }
 }
