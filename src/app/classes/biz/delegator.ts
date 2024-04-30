@@ -5,11 +5,11 @@ interface Keychain {
     requestDelegation(username: string, delegatee: string, amount: string, type: string, callback: Function): Promise<{ success: boolean }>;
 }
 
-interface Delegatrategy {
+interface DelegaStrategy {
     login(username: string, delegatee: string, amount: string, callback: Function): Promise<{ success: boolean }>;
 }
 
-class BaseDelegateStrategy implements Delegatrategy {
+class BaseDelegateStrategy implements DelegaStrategy {
     constructor(private keychainName: string) { }
 
     async login(username: string, delegatee: string, amount: string, callback: Function): Promise<{ success: boolean }> {
@@ -21,16 +21,17 @@ class BaseDelegateStrategy implements Delegatrategy {
 
         await keychain.requestHandshake();
         const type = this.keychainName === 'hive_keychain' ? 'HP' : 'SP';
-        keychain.requestDelegation(username, delegatee, amount, type, function (response: { success: any; }) {
-            if (response.success) {
-                console.log('Delegation success' + response);
-                callback?.apply(null, [response]);
-            } else {
-                console.log('Delegation failed' + response);
-                throw new Error('Delegation failed');
-            }
+        keychain.requestDelegation(username, delegatee, amount, type,
+            function (response: { success: any; }) {
+                if (response.success) {
+                    console.log('Delegation success' + response);
+                    callback?.apply(null, [response]);
+                } else {
+                    console.log('Delegation failed' + response);
+                    throw new Error('Delegation failed');
+                }
 
-        });
+            });
         return { success: true };
     }
 
@@ -54,9 +55,9 @@ class SteemDelegateStrategy extends BaseDelegateStrategy {
 }
 
 class Delegator {
-    private strategy: Delegatrategy;
+    private strategy: DelegaStrategy;
 
-    constructor(strategy: Delegatrategy) {
+    constructor(strategy: DelegaStrategy) {
         this.strategy = strategy;
     }
     async delegate(username: string, delegatee: string, amount: string, callback: Function): Promise<{ success: boolean }> {

@@ -17,9 +17,9 @@ export class GlobalPropertiesService {
     delegaCur8: 0,
     ultimoPagamento: 0
   }
-  listaDelegatori: any[] = [];
+  delegatori =0;
 
-  constructor() {
+  constructor(apiService: ApiService) {
     const client = new Client('https://api.hive.blog');
     client.database.getDynamicGlobalProperties().then((result) => {
       this.global_properties.totalVestingFundHive = Utils.toStringParseFloat(result.total_vesting_fund_hive);
@@ -51,7 +51,9 @@ export class GlobalPropertiesService {
       this.imridData.ultimoPagamento = parseFloat(importo.toString());
     });
 
-    
+    apiService.get('https://ecency.com/private-api/received-vesting/cur8').then((result) => {
+      this.delegatori = result['list'].length;
+    } );
   }
 
 

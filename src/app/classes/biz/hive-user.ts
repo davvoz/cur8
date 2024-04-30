@@ -267,9 +267,15 @@ class UserManager {
         let ultimoPagamento: UltimoPagamento | null = null;
         let global_properties = this.dynamicGlobalProperties;
 
-        //posting_json_metadata:"{\"profile\":{\"profile_image\":\"https://files.peakd.com/file/peakd-hive/jacopo.eth/OTD8nr7N-jkjjiuj.jpg\",\"cover_image\":\"https://images.hive.blog/DQmNS5rcacMvFDUrgCaC34nHRZ8diSqK2mcAz8k3V2D5wQM/mmm.jpeg\",\"name\":\"jacopo.eth\",\"location\":\"italy\",\"version\":2,\"tokens\":[]}}"
         let image = JSON.parse(this.account.posting_json_metadata).profile.profile_image;
-        console.log(this.user);
+        if (!this.account.posting_json_metadata) {
+            image = '/assets/default_user.jpg';
+        }
+        if (JSON.parse(this.account.posting_json_metadata).profile.profile_image === undefined ||
+            JSON.parse(this.account.posting_json_metadata).profile.profile_image === '' ||
+            JSON.parse(this.account.posting_json_metadata).profile.profile_image === null) {
+            image = '/assets/default_user.jpg';
+        }
         //const delegations = await this.fetchVestingDelegations(this.account.name);
         let shareValue = 0;
         await this.setDelega(this.delegations).then((res) => {

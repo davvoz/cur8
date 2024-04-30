@@ -68,20 +68,23 @@ import { IMRiddData } from '../interfaces/interfaces';
 })
 
 export class HiveComponent {
-  estimatedDailyProfit: number = 0;
 
+
+  powerUpHPValue: any;
+  sendTo: any;
+  sendAmount: any;
+  estimatedDailyProfit: number = 0;
+  search: any;
+  isLoading = true;
+  loaded = false;
+  imridAccoount: any;
+  valoreDelega = 0;
+  displayedColumns = ['account', 'ammount', 'exp date'];
   imridData: IMRiddData = {
     delegaCur8: 0,
     ultimoPagamento: 0
   }
   global_properties: { totalVestingFundHive: number; totalVestingShares: number; };
-
-  changeDailyProfit() {
-    const apr = this.imridData.ultimoPagamento * 365 * 100 / this.imridData.delegaCur8;
-    this.estimatedDailyProfit = this.valoreDelega * apr / 365 / 100;
-  }
-
-  valoreDelega = 0;
   user: User = {
     expiringDelegations: [],
     image: '',
@@ -115,17 +118,11 @@ export class HiveComponent {
     },
     account_value: 0,
   };
-
-  displayedColumns = ['account', 'ammount', 'exp date'];
-
   delegations = [
     { ammount: 100, expDate: '2021-01-01' },
     { ammount: 200, expDate: '2021-01-01' }
   ];
-  search: any;
-  isLoading = true;
-  loaded = false;
-  imridAccoount: any;
+
   constructor(private userMemoryService: UserMemoryService, private gs: GlobalPropertiesService) {
 
     this.global_properties = this.gs.global_properties;
@@ -137,6 +134,66 @@ export class HiveComponent {
       this.loaded = true;
     }
     this.isLoading = false;
+  }
+
+  sendHbd() {
+    if ((window as any).hive_keychain) {
+      const keychain = (window as any).hive_keychain;
+      if (typeof this.sendAmount == 'string') {
+        this.sendAmount = parseFloat(this.sendAmount);
+      }
+      this.sendAmount = this.sendAmount.toFixed(3);
+      keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'HBD', (response: any) => {
+        console.log(response);
+      });
+    }
+  }
+
+  sendHive() {
+    if ((window as any).hive_keychain) {
+      const keychain = (window as any).hive_keychain;
+      if (typeof this.sendAmount == 'string') {
+        this.sendAmount = parseFloat(this.sendAmount);
+      }
+      this.sendAmount = this.sendAmount.toFixed(3);
+      keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'HIVE', (response: any) => {
+        console.log(response);
+      });
+    }
+  }
+
+  changeDailyProfit() {
+    const apr = this.imridData.ultimoPagamento * 365 * 100 / this.imridData.delegaCur8;
+    this.estimatedDailyProfit = this.valoreDelega * apr / 365 / 100;
+  }
+
+  powerUpHP() {
+    if ((window as any).hive_keychain) {
+      const keychain = (window as any).hive_keychain;
+      if (typeof this.powerUpHPValue == 'string') {
+        this.powerUpHPValue = parseFloat(this.powerUpHPValue);
+      }
+      this.powerUpHPValue = this.powerUpHPValue.toFixed(3);
+      keychain.requestPowerUp(this.user.username, this.user.username, this.powerUpHPValue, (response: any) => {
+        console.log(response);
+      });
+    }
+  }
+
+
+  powerDownHP() {
+    if ((window as any).hive_keychain) {
+      const keychain = (window as any).hive_keychain;
+      if (typeof this.powerUpHPValue == 'string') {
+        this.powerUpHPValue = parseFloat(this.powerUpHPValue);
+      }
+
+      this.powerUpHPValue = this.powerUpHPValue.toFixed(3);
+      keychain.requestPowerDown(this.user.username, this.powerUpHPValue, (response: any) => {
+        console.log(response);
+
+      });
+    }
   }
 
   refresh() {
@@ -158,12 +215,6 @@ export class HiveComponent {
 
   }
 
-  searchTrans() {
-    throw new Error('Method not implemented.');
-  }
 
-  searchTransaction() {
-    throw new Error('Method not implemented.');
-  }
 
 }

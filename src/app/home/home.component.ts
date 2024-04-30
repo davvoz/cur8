@@ -66,20 +66,15 @@ export class HomeComponent {
     account: any;
     allTimePayOut: any;
     totalHive: number = 0;
-    listaDelegatori = [];
 
-    constructor(private gs: GlobalPropertiesService,private apiService: ApiService) {
+    constructor(private gs: GlobalPropertiesService, private apiService: ApiService) {
         //account
-  
+
         if (!this.gs.accountCUR8) {
             this.client.database.getAccounts(['cur8']).then((data) => {
                 this.account = data[0];
-                console.log('account', this.account);   
+                console.log('account', this.account);
                 this.init();
-                apiService.get('https://ecency.com/private-api/received-vesting/cur8').then((result) => {;
-                this.listaDelegatori = result;
-                
-              });
             });
         } else {
             console.log('account', this.gs.accountCUR8);
@@ -89,8 +84,7 @@ export class HomeComponent {
     }
 
     private init() {
-        this.totalDelegators = this.gs.listaDelegatori.length;
-        console.log('totalDelegators', this.totalDelegators);
+        this.totalDelegators = this.gs.delegatori;
         this.allTimePayOut = Utils.toStringParseFloat(this.account.to_withdraw);
         this.totalHivePower = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.vesting_shares),
@@ -101,7 +95,7 @@ export class HomeComponent {
             this.gs.global_properties.totalVestingFundHive,
             this.gs.global_properties.totalVestingShares);
         this.totalHive = this.totalHivePower + this.totalHiveRecieved;
-        
+
     }
     ngAfterViewInit(): void {
         if (!this.gs.accountCUR8) {

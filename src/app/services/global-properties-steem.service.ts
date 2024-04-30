@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { IMRiddData } from '../interfaces/interfaces';
 import { Client } from 'dsteem';
 import { Utils } from '../classes/my_utils';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,9 @@ export class GlobalPropertiesSteemService {
     ultimoPagamento: 0
   }
   totalSteemRecieved = 0;
+  delegatori: any;
 
-  constructor() {
+  constructor(apiService: ApiService) {
     const client = new Client('https://api.moecki.online');
     client.database.getDynamicGlobalProperties().then((result) => {
       this.global_properties.totalVestingFundSteem = Utils.toStringParseFloat(result.total_vesting_fund_steem);
@@ -32,7 +34,7 @@ export class GlobalPropertiesSteemService {
 
     client.database.getVestingDelegations('jacopo.eth', 'cur8', 1000).then((result) => {
       this.imridData.delegaCur8 = Utils.vestingShares2HP(
-        Utils.toStringParseFloat( result[0].vesting_shares),
+        Utils.toStringParseFloat(result[0].vesting_shares),
         this.global_properties.totalVestingFundSteem,
         this.global_properties.totalVestingShares);
     });
@@ -50,5 +52,11 @@ export class GlobalPropertiesSteemService {
       }
       this.imridData.ultimoPagamento = parseFloat(importo.toString());
     });
+
+    apiService.get('https://sds0.steemworld.org/delegations_api/getIncomingDelegations/cur8').then((result) => {
+      console.log(result);
+      this.delegatori = result.result.rows.length;
+    });
+
   }
 }

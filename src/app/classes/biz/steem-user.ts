@@ -102,8 +102,8 @@ class UserManager {
         await this.setSocial().then(() => {
             this.user.social = this.social;
         });
-         await this.setTransactions().then(() => {
-             this.user.transactions = this.transactions;
+        await this.setTransactions().then(() => {
+            this.user.transactions = this.transactions;
         });
         await this.setExpringDelegations().then(() => {
             this.user.expiringDelegations = this.expringDelegations;
@@ -268,9 +268,9 @@ class UserManager {
         return 0;
     }
 
-     public async setTransactions(): Promise<void> {
-         await this.fetchAccountTransactions(this.account.name);
-     }
+    public async setTransactions(): Promise<void> {
+        await this.fetchAccountTransactions(this.account.name);
+    }
 
     private async creaUser(): Promise<User> {
         let delega = 0;
@@ -278,10 +278,17 @@ class UserManager {
         let ultimoPagamento: UltimoPagamento | null = null;
         let global_properties = this.dynamicGlobalProperties;
 
-        //posting_json_metadata:"{\"profile\":{\"profile_image\":\"https://files.peakd.com/file/peakd-STEEM/jacopo.eth/OTD8nr7N-jkjjiuj.jpg\",\"cover_image\":\"https://images.STEEM.blog/DQmNS5rcacMvFDUrgCaC34nHRZ8diSqK2mcAz8k3V2D5wQM/mmm.jpeg\",\"name\":\"jacopo.eth\",\"location\":\"italy\",\"version\":2,\"tokens\":[]}}"
         let image = JSON.parse(this.account.posting_json_metadata).profile.profile_image;
+        if (!this.account.posting_json_metadata) {
+            image = '/assets/default_user.jpg';
+        }
+        if (JSON.parse(this.account.posting_json_metadata).profile.profile_image === undefined ||
+            JSON.parse(this.account.posting_json_metadata).profile.profile_image === '' ||
+            JSON.parse(this.account.posting_json_metadata).profile.profile_image === null) {
+            image = '/assets/default_user.jpg';
+        }
 
-        const delegations = await this.fetchVestingDelegations(this.account.name);
+        //const delegations = await this.fetchVestingDelegations(this.account.name);
         let shareValue = 0;
         await this.setDelega(this.delegations).then((res) => {
             delega = res;
@@ -291,7 +298,7 @@ class UserManager {
             shareValue = res;
         });
         powerDisponibili = await this.calculatePowerDifference();
-       ultimoPagamento = await this.setUltimoPagamento(this.account.name);
+        ultimoPagamento = await this.setUltimoPagamento(this.account.name);
 
         const rapportoConCUR8: RapportoConCUR8 = {
             delega,

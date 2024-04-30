@@ -78,7 +78,7 @@ export class HomeSteemComponent {
     }
 
     private init() {
-        this.totalDelegators = this.account.delegated_vesting_shares.length;
+        this.totalDelegators = this.gs.delegatori;
         this.allTimePayOut = Utils.toStringParseFloat(this.account.to_withdraw);
         this.totalSteemPower = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.vesting_shares),

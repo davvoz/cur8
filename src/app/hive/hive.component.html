@@ -27,7 +27,7 @@
                     Your share {{user.rapportoConCUR8.share | reversePadZero}}%
                 </div>
             </mat-card-content>
-            <mat-card-actions class="c_actions" >
+            <mat-card-actions class="c_actions">
                 <button mat-raised-button class="action" color="primary" (click)="refresh()">
                     Search
                 </button>
@@ -48,11 +48,12 @@
                 <div class="form_container">
                     <div class="form_content">
                         <mat-label>Amount</mat-label>
-                        <input matInput placeholder="Amount" type="number" [(ngModel)]="valoreDelega" (ngModelChange)="changeDailyProfit()">
+                        <input matInput placeholder="Amount" type="number" [(ngModel)]="valoreDelega"
+                            (ngModelChange)="changeDailyProfit()">
                     </div>
                     <div *ngIf="!isLoading">
                         Estimated daily profit
-                        {{estimatedDailyProfit  | reversePadZero}}
+                        {{estimatedDailyProfit | reversePadZero}}
                         HIVE
                     </div>
                     <div *ngIf="!isLoading">
@@ -120,20 +121,34 @@
     <mat-grid-tile [colspan]="2" [rowspan]="2" class="tile">
         <mat-card class="card">
             <mat-card-header class="card_header">
-                <mat-card-title class="card_tittle">Power Up/Down</mat-card-title>
+                <mat-card-title class="card_tittle">Power Up/Down
+
+                </mat-card-title>
             </mat-card-header>
             <mat-card-content class="card_content">
+
                 <br>
                 <div class="form_container">
                     <div class="form_content">
                         <mat-label>Amount</mat-label>
-                        <input matInput placeholder="Amount" type="number">
+                        <input matInput placeholder="Amount" type="number" [(ngModel)]="powerUpHPValue">
                     </div>
                     <br>
                 </div>
             </mat-card-content>
             <mat-card-actions class="c_actions">
-                <button mat-raised-button class="action" color="primary">Confirm</button>
+                <div class="buttons_container">
+
+                    <button mat-raised-button class="action" color="primary" (click)="powerUpHP()">Power Up
+                        <mat-icon>arrow_upward</mat-icon>
+
+                    </button>
+                    <button mat-raised-button class="action" color="warn" (click)="powerDownHP()">Power Down
+                        <mat-icon>arrow_downward</mat-icon>
+
+                    </button>
+
+                </div>
             </mat-card-actions>
         </mat-card>
     </mat-grid-tile>
@@ -149,17 +164,20 @@
                 <div class="form_container">
                     <div class="form_content">
                         <mat-label>To</mat-label>
-                        <input matInput placeholder="To" type="text">
+                        <input matInput placeholder="To" type="text" [(ngModel)]="sendTo">
                     </div>
                     <div class="form_content">
                         <mat-label>Amount</mat-label>
-                        <input matInput placeholder="Recipient" type="text">
+                        <input matInput placeholder="Recipient" type="text" [(ngModel)]="sendAmount">
                     </div>
                     <br>
                 </div>
             </mat-card-content>
             <mat-card-actions class="c_actions">
-                <button mat-raised-button class="action" color="primary">Send</button>
+                <div class="buttons_container">
+                    <button mat-raised-button class="action" color="primary" (click)="sendHive()">Send HIVE</button>
+                    <button mat-raised-button class="action" color="primary" (click)="sendHbd()">Send HBD</button>
+                </div>
             </mat-card-actions>
         </mat-card>
     </mat-grid-tile>
@@ -172,9 +190,7 @@
                 <mat-card-title class="card_tittle"><span>Transactions</span>
                 </mat-card-title>
                 <div>
-                    <button mat-icon-button (click)="searchTrans()" class="refresh" color="primary">
-                        <mat-icon>search</mat-icon>
-                    </button>&nbsp;&nbsp;
+
                     <button mat-icon-button (click)="refresh()" class="refresh" color="accent">
                         <mat-icon>refresh</mat-icon>
                     </button>
@@ -184,12 +200,21 @@
                 <br>
                 @for (item of user.transactions; track $index) {
                 <div class="we">
-                    <h1 appColoreRank [colorByValue]="item.amount" [maxValue]="20">{{item.amount}}</h1>
+                    <div class="we_title">
+                        <h1>
+                            from {{item.from}}
+                            <span appColoreRank [colorByValue]="item.amount" [maxValue]="20"> {{item.amount}}</span>
+                            to {{item.to}}
+                        </h1>
+                        <mat-icon *ngIf="item.from==user.username" class="freccia_rossa">arrow_downward</mat-icon>
+                        <mat-icon *ngIf="item.to==user.username" class="freccia_verde">arrow_upward</mat-icon>
+                    </div>
                     <div class="we_content">
                         <div mat-line>{{item.timestamp | dateFormat}}</div>
                     </div>
                 </div>
                 <div mat-line>{{item.memo}}</div>
+
                 <mat-divider> </mat-divider>
                 }
             </mat-card-content>
@@ -222,6 +247,28 @@
 <br><br><br>
 
 <style>
+    .we_title {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        align-items: center;
+        width: 100%;
+    }
+
+    .freccia_rossa {
+        color: red;
+    }
+
+    .freccia_verde {
+        color: green;
+    }
+
+    .buttons_container {
+        display: flex;
+        justify-content: space-around;
+    }
+
     button {
         cursor: pointer;
     }

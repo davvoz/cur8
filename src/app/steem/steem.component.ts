@@ -25,6 +25,7 @@ import { IMRiddData } from '../interfaces/interfaces';
 import { User, UserFactory } from '../classes/biz/steem-user';
 import { GlobalPropertiesSteemService } from '../services/global-properties-steem.service';
 import { UserMemorySteemService } from '../services/user-memory-steem.service';
+import { Utils } from '../classes/my_utils';
 
 
 @Component({
@@ -69,18 +70,20 @@ import { UserMemorySteemService } from '../services/user-memory-steem.service';
   ]
 })
 export class SteemComponent {
+
+  sendTo: any;
+  sendAmount: any;
   estimatedDailyProfit: number = 0;
 
   imridData: IMRiddData = {
     delegaCur8: 0,
     ultimoPagamento: 0
   }
-  global_properties: { totalVestingFundSteem: number; totalVestingShares: number; };
 
-  changeDailyProfit() {
-    const apr = this.imridData.ultimoPagamento * 365 * 100 / this.imridData.delegaCur8;
-    this.estimatedDailyProfit = this.valoreDelega * apr / 365 / 100;
-  }
+  global_properties: { totalVestingFundSteem: number; totalVestingShares: number; };
+  powerUpSPValue: any;
+
+  
 
   valoreDelega = 0;
   user: User = {
@@ -127,18 +130,76 @@ export class SteemComponent {
   isLoading = true;
   loaded = false;
   imridAccoount: any;
-  constructor(private gs:GlobalPropertiesSteemService,private userMemoryService: UserMemorySteemService) {
+  constructor(private gs: GlobalPropertiesSteemService, private userMemoryService: UserMemorySteemService) {
 
     this.global_properties = this.gs.global_properties;
     this.user.global_properties = this.global_properties;
     this.imridData = this.gs.imridData;
 
 
-     if (this.userMemoryService.user) {
-       this.user = this.userMemoryService.user;
-       this.loaded = true;
-     }
+    if (this.userMemoryService.user) {
+      this.user = this.userMemoryService.user;
+      this.loaded = true;
+    }
     this.isLoading = false;
+  }
+
+  changeDailyProfit() {
+    const apr = this.imridData.ultimoPagamento * 365 * 100 / this.imridData.delegaCur8;
+    this.estimatedDailyProfit = this.valoreDelega * apr / 365 / 100;
+  }
+
+  sendSbd() {
+    if ((window as any).steem_keychain) {
+      const keychain = (window as any).steem_keychain;
+      keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'SBD', (response: any) => {
+        console.log(response);
+      });
+    } else {
+      alert('You do not have steem keychain installed');
+    }
+  }
+
+  sendSteem() {
+    if ((window as any).steem_keychain) {
+      const keychain = (window as any).steem_keychain;
+      keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'STEEM', (response: any) => {
+        console.log(response);
+      });
+    } else {
+      alert('You do not have steem keychain installed');
+
+    }
+  }
+
+  powerDownSP() {
+    if ((window as any).steem_keychain) {
+      const keychain = (window as any).steem_keychain;
+      if (typeof this.powerUpSPValue !== undefined && typeof this.powerUpSPValue == 'string') {
+        this.powerUpSPValue = parseFloat(this.powerUpSPValue);
+      }
+      this.powerUpSPValue = Utils.toStringParseFloat(this.powerUpSPValue);
+      this.powerUpSPValue = this.powerUpSPValue.toFixed(3);
+      keychain.requestPowerDown(this.user.username, this.powerUpSPValue, (response: any) => {
+        console.log(response);
+      });
+    } else {
+      alert('You do not have steem keychain installed');
+    }
+
+  }
+
+  powerUpSP() {
+    if ((window as any).steem_keychain) {
+      const keychain = (window as any).steem_keychain;
+      this.powerUpSPValue = Utils.toStringParseFloat(this.powerUpSPValue);
+      this.powerUpSPValue = this.powerUpSPValue.toFixed(3);
+      keychain.requestPowerUp(this.user.username, this.user.username, this.powerUpSPValue, (response: any) => {
+        console.log(response);
+      });
+    } else {
+      alert('You do not have steem keychain installed');
+    }
   }
 
   refresh() {
