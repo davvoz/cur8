@@ -8,10 +8,12 @@ import { Utils } from '../classes/my_utils';
 export class DateFormatPipe implements PipeTransform {
 
   transform(value: Date|string, ...args: unknown[]): unknown {
+    console.log('value', value);
     const out = new Date(value);
+    console.log('out', out);
     if (isNaN(out.getTime())) {
-      return value;
-    }
+      return value+'SCARTATA';
+    };
     return Utils.formatDate(out);
   }
 

@@ -10,6 +10,7 @@ import { MatDivider } from '@angular/material/divider';
 //ngIf
 import { NgIf } from '@angular/common';
 import { SwitchService } from '../../services/switch.service';
+import { SidebarService } from '../../services/sidebar.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -32,7 +33,7 @@ export class SidebarComponent {
 
   items = this.itemsHive;
 
-  constructor(private router: Router,private switchService: SwitchService) {
+  constructor(private router: Router,private switchService: SwitchService,private sidebarService: SidebarService) {
     this.switchService.switchEmitter.subscribe((platform: string) => {
       this.items = platform === 'HIVE' ? this.itemsHive : this.itemsSteem;
       this.navigateTo(this.items[0].url);
@@ -40,6 +41,9 @@ export class SidebarComponent {
   }
 
   navigateTo(url: string) {
+    if (window.innerWidth < 768) {
+      this.sidebarService.toggle();
+    }
     this.router.navigate([url]);
   }
 

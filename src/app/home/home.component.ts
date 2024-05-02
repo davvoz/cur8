@@ -21,12 +21,15 @@ import { Utils } from '../classes/my_utils';
 import { GlobalPropertiesService } from '../services/global-properties.service';
 import { ReversePadZeroPipe } from "../pipes/reverse-pad-zero.pipe";
 import { ApiService } from '../services/api.service';
+//ngIf
+import { NgIf } from '@angular/common';
 @Component({
     selector: 'app-home',
     standalone: true,
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss',
     imports: [
+        NgIf,
         MatToolbar,
         MatToolbarRow,
         MatCard,
@@ -66,9 +69,10 @@ export class HomeComponent {
     account: any;
     allTimePayOut: any;
     totalHive: number = 0;
+    isMobile = false;
 
-    constructor(private gs: GlobalPropertiesService, private apiService: ApiService) {
-        //account
+    constructor(private gs: GlobalPropertiesService) {
+        this.isMobile = window.innerWidth < 768;
 
         if (!this.gs.accountCUR8) {
             this.client.database.getAccounts(['cur8']).then((data) => {

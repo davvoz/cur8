@@ -122,9 +122,10 @@ export class HiveComponent {
     { ammount: 100, expDate: '2021-01-01' },
     { ammount: 200, expDate: '2021-01-01' }
   ];
+  isMobile = false;
 
   constructor(private userMemoryService: UserMemoryService, private gs: GlobalPropertiesService) {
-
+    this.isMobile = window.innerWidth < 768;
     this.global_properties = this.gs.global_properties;
     this.user.global_properties = this.global_properties;
     this.imridData = this.gs.imridData;

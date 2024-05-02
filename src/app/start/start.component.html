@@ -1,0 +1,84 @@
+<div class="example-button-container">
+    <button mat-raised-button color="primary" (click)="toggle()">
+
+        <span class="optionContainer">
+            <img [src]="'../../assets/hive_.png'" style="width: 30px; height: 30px; margin-right: 10px;" />
+            <span>
+                HIVE
+            </span>
+        </span>
+    </button>
+    <button mat-raised-button color="primary" (click)="toggle()">
+        <span class="optionContainer">
+            <img [src]="'../../assets/steem_traspa_piccola.png'"
+                style="width: 30px; height: 30px; margin-right: 10px;" />
+            <span>
+                STEEM
+            </span>
+        </span>
+    </button>
+</div>
+
+<style>
+    button {
+        width: 100%;
+        height: 50px;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #666;
+        border: 1px solid #666;
+        margin-right: 10px;
+    }
+
+    button:hover {
+        background-color: #666;
+        color: #fff;
+
+        cursor: pointer;
+    }
+
+    .example-button-container {
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        height: 20%;
+        flex-direction: row;
+        align-content: flex-start;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
+
+    .optionContainer {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .spacer {
+        flex: 1 1 auto;
+    }
+
+    .ex_tool {
+        display: flex;
+        align-items: center;
+    }
+
+    .title_container {
+        display: flex;
+        align-items: center;
+    }
+
+    .title {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .subtitle {
+        font-size: 16px;
+        font-weight: 400;
+        margin: 0;
+    }
+</style>

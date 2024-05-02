@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "cur8-alfa",
+    "public": "dist/mat-skeleton/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

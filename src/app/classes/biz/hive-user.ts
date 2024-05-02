@@ -171,13 +171,13 @@ class UserManager {
             const op = transazione[1].op;
             if (op[0] === 'transfer') {
                 const data = new Date(transazione[1].timestamp);
-                const timestamp = Utils.formatDate(data);
+                const timestamp = data + '';
                 const amount = op[1]['amount'];
                 const from = op[1]['from'];
                 const to = op[1]['to'];
                 const memo = op[1]['memo'];
                 const id = transazione[0];
-                transactions.push({ timestamp, amount, from, to, memo, id });
+                transactions.push({ timestamp   , amount, from, to, memo, id });
             }
         }
         this.transactions = transactions;

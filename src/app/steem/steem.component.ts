@@ -18,9 +18,7 @@ import { MatTableModule } from '@angular/material/table';
 import { StaticDelegator } from '../classes/biz/delegator';
 import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { UserMemoryService } from '../services/user-memory.service';
 import { ReversePadZeroPipe } from "../pipes/reverse-pad-zero.pipe";
-import { GlobalPropertiesService } from '../services/global-properties.service';
 import { IMRiddData } from '../interfaces/interfaces';
 import { User, UserFactory } from '../classes/biz/steem-user';
 import { GlobalPropertiesSteemService } from '../services/global-properties-steem.service';
@@ -83,7 +81,7 @@ export class SteemComponent {
   global_properties: { totalVestingFundSteem: number; totalVestingShares: number; };
   powerUpSPValue: any;
 
-  
+
 
   valoreDelega = 0;
   user: User = {
@@ -130,12 +128,12 @@ export class SteemComponent {
   isLoading = true;
   loaded = false;
   imridAccoount: any;
+  isMobile = false;
   constructor(private gs: GlobalPropertiesSteemService, private userMemoryService: UserMemorySteemService) {
-
+    this.isMobile = window.innerWidth < 768;
     this.global_properties = this.gs.global_properties;
     this.user.global_properties = this.global_properties;
     this.imridData = this.gs.imridData;
-
 
     if (this.userMemoryService.user) {
       this.user = this.userMemoryService.user;

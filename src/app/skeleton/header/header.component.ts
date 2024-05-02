@@ -9,18 +9,21 @@ import { MatButtonModule } from '@angular/material/button';
 //mat-slide
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SwitchService } from '../../services/switch.service';
+//ngIf
+import { NgIf } from '@angular/common';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MatSlideToggleModule, MatToolbar, MatToolbarRow, MatIconModule, MatButtonModule],
+  imports: [MatSlideToggleModule, MatToolbar, MatToolbarRow, MatIconModule, MatButtonModule, NgIf],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+  isMobile: any;
 
   constructor(private sidebarservice: SidebarService, private switchService: SwitchService) {
-    
-   }
+    this.isMobile = window.innerWidth <= 768;
+  }
   get lightTheme(): boolean {
     return document.documentElement.getAttribute('theme') === 'light';
   }

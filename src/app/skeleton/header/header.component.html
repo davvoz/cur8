@@ -2,6 +2,7 @@
     facciamo un header con un titolo e un sottotito
 usando angular material
 -->
+
 <mat-toolbar color="primary">
     <mat-toolbar-row>
         <div class="ex_tool">
@@ -19,12 +20,10 @@ usando angular material
             </div>
 
             <!-- <button mat-flat-button color="primary">Investor Dashboard</button> -->
-
-
             <div class="spacer">
 
             </div>
-            <div class="example-button-container">
+            <div class="example-button-container" *ngIf="!isMobile">
 
                 <span class="optionContainer" [style.background-color]="lightTheme ? '#666' : '#fff'"
                     [style.color]="lightTheme ? '#fff' : '#666'" [style.font-size]="lightTheme ? '10px' : '16px'">
@@ -44,6 +43,24 @@ usando angular material
                 </span>
             </div>
         </div>
+    </mat-toolbar-row>
+    <mat-toolbar-row *ngIf="isMobile">
+        <span class="optionContainer" [style.background-color]="lightTheme ? '#666' : '#fff'"
+            [style.color]="lightTheme ? '#fff' : '#666'" [style.font-size]="lightTheme ? '10px' : '16px'">
+            <img [src]="'../../assets/hive_.png'" style="width: 30px; height: 30px; margin-right: 10px;" />
+            <span>
+                HIVE {{lightTheme ? 'disabled' : 'enabled'}}
+            </span>
+        </span>
+        <mat-slide-toggle color="primary" [checked]="lightTheme" (change)="toggle()"></mat-slide-toggle>
+        <span class="optionContainer" [style.background-color]="lightTheme ? '#fff' : '#666'"
+            [style.color]="lightTheme ? '#666' : '#fff'" [style.font-size]="lightTheme ? '16px' : '10px'">
+            <img [src]="'../../assets/steem_traspa_piccola.png'"
+                style="width: 30px; height: 30px; margin-right: 10px;" />
+            <span>
+                STEEM {{lightTheme ? 'enabled' : 'disabled'}}
+            </span>
+        </span>
     </mat-toolbar-row>
 </mat-toolbar>
 <style>

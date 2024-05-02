@@ -10,20 +10,21 @@ import { MatIcon } from '@angular/material/icon';
 import { MatCardImage, MatCardHeader } from '@angular/material/card';
 import { MatGridTile, MatGridList, MatGridAvatarCssMatStyler, MatGridTileFooterCssMatStyler } from '@angular/material/grid-list';
 import { NgFor } from '@angular/common';
-//mat-divider
 import { MatDivider } from '@angular/material/divider';
-//mat-toolbar , row
 import { MatToolbar, MatToolbarRow } from '@angular/material/toolbar';
 import { Utils } from '../classes/my_utils';
 import { ReversePadZeroPipe } from "../pipes/reverse-pad-zero.pipe";
 import { Client } from 'dsteem';
 import { GlobalPropertiesSteemService } from '../services/global-properties-steem.service';
+//ngIf
+import { NgIf } from '@angular/common';
 @Component({
     selector: 'app-home',
     standalone: true,
     templateUrl: './home-steem.component.html',
     styleUrl: './home-steem.component.scss',
     imports: [
+        NgIf,
         MatToolbar,
         MatToolbarRow,
         MatCard,
@@ -43,7 +44,7 @@ export class HomeSteemComponent {
     //steem
     client = new Client('https://api.moecki.online');
     manaPercentageHive: number = 0;
-
+    isMobile = window.innerWidth < 768;
     @ViewChild('gaugeCanvasSTEEM')
     gaugeCanvasSteem!: ElementRef;
 

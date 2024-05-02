@@ -5,12 +5,20 @@ export class Utils {
     }
 
     static formatDate(date: Date): string {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
+        //ritorna tipo : 1/12/2020 13:30
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear();
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        console.log(`${day}/${month}/${year} ${hours}:${minutes}`);
+        console.log(date);
+        console.log(day);
+        console.log(month);
+        console.log(year);
+        console.log(hours);
+        console.log(minutes);
+        
         return `${day}/${month}/${year} ${hours}:${minutes}`;
     }
     static scrollToElement(targetElement: HTMLElement | null, behavior: ScrollBehavior = 'smooth') {
