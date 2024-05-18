@@ -8,16 +8,8 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class GlobalPropertiesSteemService {
-  globalPropertiesEmitter:EventEmitter<GlobalPrezzi> = new EventEmitter();
+  globalPropertiesEmitter: EventEmitter<GlobalPrezzi> = new EventEmitter();
 
-  async setPrices() {
-    await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices').then((result) => {
-      this.global_prezzi.price = result['STEEM'];
-      this.global_prezzi.price_dollar = result['SBD'];
-    }).finally(() => {
-      console.log('Steem prices set');
-    });
-  }
 
   global_properties = {
     totalVestingFundSteem: 0,
@@ -30,13 +22,14 @@ export class GlobalPropertiesSteemService {
   }
   totalSteemRecieved = 0;
   delegatori: any;
-  
-  //TODO:transazioni
-  global_prezzi:GlobalPrezzi = {
-    price:0,
-    price_dollar:0
-  }
 
+  //TODO:transazioni
+  global_prezzi: GlobalPrezzi = {
+    price: 0,
+    price_dollar: 0
+  }
+  allTimePayOut_DA_MOLTIPLICARE = 0;
+  days_payout_DA_MOLTIPLICARE = 0;
   constructor(private apiService: ApiService) {
     const client = new Client('https://api.moecki.online');
     client.database.getDynamicGlobalProperties().then((result) => {
@@ -73,6 +66,19 @@ export class GlobalPropertiesSteemService {
       this.delegatori = result.result.rows.length;
     });
 
+    this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem').then((data) => {
+      //follow_count
+      this.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'] ;
+      this.days_payout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'] ;
+  });
+  }
 
+  async setPrices() {
+    await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices').then((result) => {
+      this.global_prezzi.price = result['STEEM'];
+      this.global_prezzi.price_dollar = result['SBD'];
+    }).finally(() => {
+      console.log('Steem prices set');
+    });
   }
 }

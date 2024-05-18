@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 import { MatCardContent } from '@angular/material/card';
 import { MatCardTitle } from '@angular/material/card';
@@ -19,7 +19,7 @@ import { GlobalPropertiesSteemService } from '../../services/global-properties-s
 @Component({
     selector: 'app-home',
     standalone: true,
-    templateUrl: './home-steem.component.html',
+    templateUrl: './home-steem.component2.html',
     styleUrl: './home-steem.component.scss',
     imports: [
         NgIf,
@@ -45,24 +45,45 @@ import { GlobalPropertiesSteemService } from '../../services/global-properties-s
         ReversePadZeroPipe
     ]
 })
-export class HomeSteemComponent {
+export class HomeSteemComponent implements AfterViewInit{
+    gridCols: number = 6;
+    rowHeight: string = '200px';
+  
+    colspanWelcome: number = 6;
+    rowspanWelcome: number = 1;
+  
+    colspanTotalSteemPower: number = 3;
+    rowspanTotalSteemPower: number = 1;
+  
+    colspanTotalDelegators: number = 3;
+    rowspanTotalDelegators: number = 1;
+  
+    colspanAllTimePayOut: number = 2;
+    rowspanAllTimePayOut: number = 1;
+  
+    colspanVotingPower: number = 2;
+    rowspanVotingPower: number = 1;
 
+    colspanLast7DaysPayout: number = 2;
+    rowspanLast7DaysPayout: number = 1;
+
+    colspanCurationRewards: number = 3; 
+    rowspanCurationRewards: number = 2;
+
+    colspanRecentOperations: number = 3;
+    rowspanRecentOperations: number = 2;
+
+    colspanCur8News: number = 3;
+    rowspanCur8News: number = 2;
+
+    colspanSocial: number = 3;
+    rowspanSocial: number = 2;
     //steem
     client = new Client('https://api.moecki.online');
-    manaPercentageHive: number = 0;
+    manaPercentageSteem: number = 0;
     isMobile = window.innerWidth < 768;
-    @ViewChild('gaugeCanvasSTEEM')
+    @ViewChild('gaugeCanvasSteem')
     gaugeCanvasSteem!: ElementRef;
-
-    regoleRiempimentoColore = (percentuale: number) => {
-        if (percentuale < 50) {
-            return 'red';
-        } else if (percentuale < 90) {
-            return 'rgb(255, 220, 0)'
-        } else {
-            return 'green';
-        }
-    }
 
     totalDelegators: any;
     totalSteemPower: any;
@@ -73,21 +94,57 @@ export class HomeSteemComponent {
     days_payout: any;
 
     constructor(private gs: GlobalPropertiesSteemService, private apiService: ApiService) {
-        //https://imridd.eu.pythonanywhere.com/api/data
-        this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem').then((data) => {
-            //follow_count
-            this.allTimePayOut = data[0]['total_rewards'] * this.gs.global_prezzi.price;
-            this.days_payout = data[0]['curation_rewards_7d'] * this.gs.global_prezzi.price;
-        });
+        if (this.isMobile) {
+            this.gridCols = 1;
+            this.colspanWelcome = 1;
+            this.rowspanWelcome = 1;
+            this.colspanTotalSteemPower = 1;
+            this.colspanTotalDelegators = 1;
+            this.colspanAllTimePayOut = 1;
+            this.colspanVotingPower = 1;
+            this.colspanLast7DaysPayout = 1;
+            this.colspanCurationRewards = 1;
+            this.colspanRecentOperations = 1;
+            this.colspanCur8News = 1;
+            this.colspanSocial = 1;
+        }
+        
+        if(gs.allTimePayOut_DA_MOLTIPLICARE === 0 || gs.days_payout_DA_MOLTIPLICARE === 0){
+            this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem').then((data) => {
+                //follow_count
+                this.allTimePayOut = data[0]['total_rewards'] * this.gs.global_prezzi.price;
+                this.days_payout = data[0]['curation_rewards_7d'] * this.gs.global_prezzi.price;
+                this.gs.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'] ;
+                this.gs.days_payout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
+            });
+        }else{
+            this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.global_prezzi.price;
+            this.days_payout = this.gs.days_payout_DA_MOLTIPLICARE * this.gs.global_prezzi.price;
+        }
+       
         //account
         if (!this.gs.accountCUR8) {
             this.client.database.getAccounts(['cur8']).then((data) => {
                 this.account = data[0];
                 this.init();
+                this.gs.accountCUR8 = this.account;
             });
         } else {
             this.account = this.gs.accountCUR8;
             this.init();
+        }
+    }
+
+    ngAfterViewInit(): void {
+        if (!this.gs.accountCUR8) {
+            this.client.database.getAccounts(['cur8']).then((data) => {
+                const timestampLastVote = data[0].last_vote_time;
+                this.calculateManaPercentage(data[0], timestampLastVote);   
+            });
+        } else {
+            const timestampLastVote = this.account.last_vote_time;
+            this.calculateManaPercentage(this.account, timestampLastVote);
+            
         }
     }
 
@@ -104,36 +161,17 @@ export class HomeSteemComponent {
         this.totalSteem = this.totalSteemPower + this.totalSteemRecieved;
     }
 
-    ngAfterViewInit(): void {
-        if (!this.gs.accountCUR8) {
-            this.client.database.getAccounts(['cur8']).then((data) => {
-                const timestampLastVote = data[0].last_vote_time;
-                const lastVoteTime = new Date(timestampLastVote);
-                lastVoteTime.setHours(lastVoteTime.getHours() + 2);
-                const numericLastVoteTime = lastVoteTime.getTime();
-                const now = new Date().getTime();
-                const diff = now - numericLastVoteTime;
-                const diffSeconds = diff / 1000;
-                const regeneratedVp = diffSeconds * 0.02314814814;
-                const votingPower = (data[0].voting_power + regeneratedVp) / 100;
-                this.manaPercentageHive = votingPower;
-                this.manaPercentageHive = Math.round(this.manaPercentageHive * 100) / 100;
-                this.drawGauge(this.gaugeCanvasSteem, this.manaPercentageHive);
-            });
-        } else {
-            const timestampLastVote = this.account.last_vote_time;
-            const lastVoteTime = new Date(timestampLastVote);
-            lastVoteTime.setHours(lastVoteTime.getHours() + 2);
-            const numericLastVoteTime = lastVoteTime.getTime();
-            const now = new Date().getTime();
-            const diff = now - numericLastVoteTime;
-            const diffSeconds = diff / 1000;
-            const regeneratedVp = diffSeconds * 0.02314814814;
-            const votingPower = (this.account.voting_power + regeneratedVp) / 100;
-            this.manaPercentageHive = votingPower;
-            this.manaPercentageHive = Math.round(this.manaPercentageHive * 100) / 100;
-            this.drawGauge(this.gaugeCanvasSteem, this.manaPercentageHive);
-        }
+    private calculateManaPercentage(account: any, timestampLastVote: string) {
+        const lastVoteTime = new Date(timestampLastVote);
+        lastVoteTime.setHours(lastVoteTime.getHours() + 2);
+        const numericLastVoteTime = lastVoteTime.getTime();
+        const now = new Date().getTime();
+        const diff = now - numericLastVoteTime;
+        const diffSeconds = diff / 1000;
+        const regeneratedVp = diffSeconds * 0.02314814814;
+        const votingPower = (account.voting_power + regeneratedVp) / 100;
+        this.manaPercentageSteem = Math.round(votingPower * 100) / 100;
+        this.drawGauge(this.gaugeCanvasSteem, this.manaPercentageSteem);
     }
 
     drawGauge(element: ElementRef, manaPercentage: number): void {
@@ -162,5 +200,15 @@ export class HomeSteemComponent {
         ctx.lineWidth = 1;
         ctx.strokeStyle = 'black';
         ctx.strokeText(`${manaPercentage}%`, centerX, centerY);
+    }
+
+    regoleRiempimentoColore = (percentuale: number) => {
+        if (percentuale < 50) {
+            return 'red';
+        } else if (percentuale < 90) {
+            return 'rgb(255, 220, 0)'
+        } else {
+            return 'green';
+        }
     }
 }

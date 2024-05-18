@@ -1,13 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 //ngFor
 import { NgFor } from '@angular/common';
-interface HiveData {
-  account_name: string;
-  curation_rewards_hp: number;
-  date: string;
-  id: number;
-}
+import { GlobalPropertiesHiveService } from '../../services/global-properties-hive.service';
+import { HiveData } from '../../interfaces/interfaces';
+
 
 
 @Component({
@@ -17,25 +14,29 @@ interface HiveData {
   templateUrl: './bar-chart.component.html',
   styleUrl: './bar-chart.component.scss'
 })
-export class BarChartComponent implements OnInit {
+export class BarChartComponent implements AfterViewInit {
 
   @ViewChild('canvas')
   canvas!: ElementRef;
   data: HiveData[] | undefined;
 
-  constructor(private apiService: ApiService) { }
-
-  ngOnInit(): void {
-
+  constructor(private apiService: ApiService, private globalProperties: GlobalPropertiesHiveService) { }
+  ngAfterViewInit(): void {
     this.fetchDataAndDrawChart();
   }
 
   fetchDataAndDrawChart(): void {
-    const apiUrl = 'https://imridd.eu.pythonanywhere.com/api/hive_cur';
+    if (this.globalProperties.dataChart.length === 0) {
+      const apiUrl = 'https://imridd.eu.pythonanywhere.com/api/hive_cur';
 
-    this.apiService.get(apiUrl).then((data: HiveData[]) => {
-      this.drawChart(data);
-    });
+      this.apiService.get(apiUrl).then((data: HiveData[]) => {
+        this.drawChart(data);
+        this.globalProperties.dataChart = data;
+      });
+    } else {
+      this.drawChart(this.globalProperties.dataChart);
+    }
+
   }
 
   calculateHeight(value: number): number {
@@ -67,7 +68,7 @@ export class BarChartComponent implements OnInit {
       ctx.font = '10px Arial';
       ctx.fillText(item.date, index * barWidth + 5, height - 5);
 
-//scriviamo il giorno della settimana 
+      //scriviamo il giorno della settimana 
       ctx.fillStyle = 'black';
       ctx.font = '10px Arial';
       ctx.fillText(item.date, index * barWidth + 5, height - 5);

@@ -11,4 +11,8 @@ export class SwitchService {
     this.platform = this.platform === 'HIVE' ? 'STEEM' : 'HIVE';
     this.switchEmitter.emit(this.platform);
   }
+  switch(platform: string) {
+    this.platform = platform;
+    this.switchEmitter.emit(platform);
+  }
 }

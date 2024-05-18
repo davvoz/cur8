@@ -1,0 +1,121 @@
+<div class="desktop" >
+
+    <mat-grid-list [cols]="gridCols" class="grid_list" [rowHeight]="rowHeight">
+      <mat-grid-tile [colspan]="colspanWelcome" [rowspan]="rowspanWelcome">
+        <mat-card class="card">
+          <mat-card-header class="card_header_special">
+            <mat-card-title class="card_title_special">
+              <img src="assets/logo_tra.png" alt="cur8 logo" style="width: 100px; height: 100px; margin-right: 10px;">
+              <img src="assets/steem_traspa_piccola.png" alt="steem logo" style="width: 100px; height: 100px; margin-right: 10px;">
+              <span>
+                Welecome to cur8.ern!
+              </span>
+            </mat-card-title>
+          </mat-card-header><br>
+          <mat-card-content class="card_content">
+            <span> To start early daily incomes just delegate some steem Power in profile
+              section</span>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="colspanTotalSteemPower" [rowspan]="rowspanTotalSteemPower">
+        <mat-card class="card">
+          <mat-card-header class="card_header">
+            <mat-card-title class="card_title">Total cur8 steem Power</mat-card-title>
+          </mat-card-header><br>
+          <mat-card-content class="card_content">
+            <span> {{totalSteem | reversePadZero}} HP</span>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="colspanTotalDelegators" [rowspan]="rowspanTotalDelegators">
+        <mat-card class="card">
+          <mat-card-header class="card_header">
+            <mat-card-title class="card_title">Total delegators</mat-card-title>
+          </mat-card-header><br>
+          <mat-card-content class="card_content">
+            <span> {{totalDelegators}}</span>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="colspanAllTimePayOut" [rowspan]="rowspanAllTimePayOut">
+        <mat-card class="card">
+          <mat-card-header class="card_header">
+            <mat-card-title class="card_title">All time payout</mat-card-title>
+          </mat-card-header>
+          <br>
+          <mat-card-content class="card_content">
+            <span> {{allTimePayOut | reversePadZero}} $</span>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="colspanVotingPower" [rowspan]="rowspanVotingPower">
+        <mat-card class="card">
+          <mat-card-header class="card_header">
+            <mat-card-title class="card_title">Voting Power</mat-card-title>
+            <mat-card-subtitle></mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content style="display: flex;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-around;">
+            <canvas #gaugeCanvasSteem width="120" height="120"></canvas>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="colspanLast7DaysPayout" [rowspan]="rowspanLast7DaysPayout">
+        <mat-card class="card">
+          <mat-card-header class="card_header">
+            <mat-card-title class="card_title">Last 7 days Payout</mat-card-title>
+          </mat-card-header>
+          <br>
+          <mat-card-content class="card_content">
+            <span> {{days_payout | reversePadZero}} $</span>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="colspanCurationRewards" [rowspan]="rowspanCurationRewards">
+        <mat-card class="card">
+          <mat-card-header class="card_header">
+            <mat-card-title class="card_title">cur8 curation rewards (7 days)</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="card_content">
+            <!--BARCHART-->
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="colspanRecentOperations" [rowspan]="rowspanRecentOperations">
+        <mat-card class="card">
+          <mat-card-header class="card_header">
+            <mat-card-title class="card_title">cur8 recent operations</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="card_content_special">
+            <!--TRANSAZIONI-->
+             </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="colspanCur8News" [rowspan]="rowspanCur8News">
+        <mat-card class="card">
+          <mat-card-header class="card_header">
+            <mat-card-title class="card_title">cur8 news</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="card_content">
+             </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="colspanSocial" [rowspan]="rowspanSocial">
+        <mat-card class="card">
+          <mat-card-header class="card_header">
+            <mat-card-title class="card_title">Stay updated on cur8 project , follow our social</mat-card-title>
+          </mat-card-header><br>
+          <mat-card-content class="card_content">
+            <!--telegram discord you tube-->
+            <button mat-raised-button>Telegram</button>
+            <button mat-raised-button>Discord</button>
+            <button mat-raised-button>You Tube</button>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+  

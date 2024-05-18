@@ -1,8 +1,3 @@
-<!--
-    facciamo un header con un titolo e un sottotito
-usando angular material
--->
-
 <mat-toolbar color="primary">
     <mat-toolbar-row>
         <div class="ex_tool">
@@ -18,23 +13,21 @@ usando angular material
             <div class="spacer">
 
             </div>
-
-            <!-- <button mat-flat-button color="primary">Investor Dashboard</button> -->
             <div class="spacer">
 
             </div>
             <div class="example-button-container" *ngIf="!isMobile">
 
                 <span class="optionContainer" [style.background-color]="lightTheme ? '#666' : '#fff'"
-                    [style.color]="lightTheme ? '#fff' : '#666'" [style.font-size]="lightTheme ? '10px' : '16px'">
+                    [style.color]="lightTheme ? '#fff' : '#666'" [style.font-size]="lightTheme ? '10px' : '16px'" (click)="toggle('HIVE')">
                     <img [src]="'../../assets/hive_.png'" style="width: 30px; height: 30px; margin-right: 10px;" />
                     <span>
                         HIVE {{lightTheme ? 'disabled' : 'enabled'}}
                     </span>
                 </span>
-                <mat-slide-toggle color="primary" [checked]="lightTheme" (change)="toggle()"></mat-slide-toggle>
+                
                 <span class="optionContainer" [style.background-color]="lightTheme ? '#fff' : '#666'"
-                    [style.color]="lightTheme ? '#666' : '#fff'" [style.font-size]="lightTheme ? '16px' : '10px'">
+                    [style.color]="lightTheme ? '#666' : '#fff'" [style.font-size]="lightTheme ? '16px' : '10px'" (click)="toggle('STEEM')">
                     <img [src]="'../../assets/steem_traspa_piccola.png'"
                         style="width: 30px; height: 30px; margin-right: 10px;" />
                     <span>
@@ -52,7 +45,7 @@ usando angular material
                 HIVE {{lightTheme ? 'disabled' : 'enabled'}}
             </span>
         </span>
-        <mat-slide-toggle color="primary" [checked]="lightTheme" (change)="toggle()"></mat-slide-toggle>
+        <mat-slide-toggle color="primary" [checked]="lightTheme" (change)="toggle('nothing')"></mat-slide-toggle>
         <span class="optionContainer" [style.background-color]="lightTheme ? '#fff' : '#666'"
             [style.color]="lightTheme ? '#666' : '#fff'" [style.font-size]="lightTheme ? '16px' : '10px'">
             <img [src]="'../../assets/steem_traspa_piccola.png'"
@@ -64,7 +57,6 @@ usando angular material
     </mat-toolbar-row>
 </mat-toolbar>
 <style>
-    /*modifichiamo mat-slide-toggle , l'interno del bottone e il colore del bottone*/
     .mat-slide-toggle {
         background-color: #666;
         color: #fff;
@@ -90,7 +82,7 @@ usando angular material
         display: flex;
         justify-content: center;
         align-items: center;
-
+        cursor: pointer;
     }
 
     .dashboard_btn {

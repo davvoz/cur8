@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Client } from '@hiveio/dhive';
 import { GlobalPrezzi, Utils } from '../classes/my_utils';
-import { IMRiddData } from '../interfaces/interfaces';
+import { HiveData, IMRiddData } from '../interfaces/interfaces';
 import { ApiService } from './api.service';
 import { VoteTransaction } from '../classes/biz/hive-user';
 
@@ -11,27 +11,17 @@ import { VoteTransaction } from '../classes/biz/hive-user';
   providedIn: 'root'
 })
 export class GlobalPropertiesHiveService {
-
-  async setPrices(): Promise<void> {
-    if (this.global_prezzi.price == 0) {
-      await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices').then((result) => {
-        this.global_prezzi.price = result['HIVE'];
-        this.global_prezzi.price_dollar = result['HBD'];
-      }).finally(() => {
-        console.log('Hive prices set');
-      });
-    }
-  }
-
   global_properties = {
     totalVestingFundHive: 0,
     totalVestingShares: 0
   }
+
   accountCUR8: any;
   imridData: IMRiddData = {
     delegaCur8: 0,
     ultimoPagamento: 0
   }
+
   delegatori = 0;
   transazioniCUR8: VoteTransaction[] = [];
 
@@ -39,6 +29,8 @@ export class GlobalPropertiesHiveService {
     price: 0,
     price_dollar: 0
   }
+
+  dataChart: HiveData[] = []; 
 
   constructor(private apiService: ApiService) {
 
@@ -79,8 +71,23 @@ export class GlobalPropertiesHiveService {
       this.delegatori = result['list'].length;
     });
 
+    apiService.get('https://imridd.eu.pythonanywhere.com/api/hive_cur').then((data: HiveData[]) => {
+      this.dataChart = data;
+    });
 
   }
+
+  async setPrices(): Promise<void> {
+    if (this.global_prezzi.price == 0) {
+      await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices').then((result) => {
+        this.global_prezzi.price = result['HIVE'];
+        this.global_prezzi.price_dollar = result['HBD'];
+      }).finally(() => {
+        console.log('Hive prices set');
+      });
+    }
+  }
+
 
   async setTransazioniCur8(): Promise<void> {
     const client = new Client('https://api.hive.blog');

@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 import { MatCardContent } from '@angular/material/card';
 import { MatCardTitle } from '@angular/material/card';
@@ -50,7 +50,7 @@ import { TransazioniCur8Component } from '../transazioni-cur8/transazioni-cur8.c
     ]
 })
 
-export class HomeComponent {
+export class HomeComponent implements AfterViewInit{
     gridCols: number = 6;
     rowHeight: string = '200px';
   
@@ -120,6 +120,7 @@ export class HomeComponent {
           this.client.database.getAccounts(['cur8']).then((data) => {
             this.account = data[0];
             this.init();
+            this.gs.accountCUR8 = this.account;
           });
         } else {
           this.account = this.gs.accountCUR8;
@@ -131,11 +132,11 @@ export class HomeComponent {
         if (!this.gs.accountCUR8) {
           this.client.database.getAccounts(['cur8']).then((data) => {
             const timestampLastVote = data[0].last_vote_time;
-            this.calculateManaPercentageHive(data[0], timestampLastVote);
+            this.calculateManaPercentage(data[0], timestampLastVote);
           });
         } else {
           const timestampLastVote = this.account.last_vote_time;
-          this.calculateManaPercentageHive(this.account, timestampLastVote);
+          this.calculateManaPercentage(this.account, timestampLastVote);
         }
       }
     
@@ -153,7 +154,7 @@ export class HomeComponent {
         this.totalHive = this.totalHivePower + this.totalHiveRecieved;
       }
     
-      private calculateManaPercentageHive(accountData: any, timestampLastVote: string) {
+      private calculateManaPercentage(accountData: any, timestampLastVote: string) {
         const lastVoteTime = new Date(timestampLastVote);
         lastVoteTime.setHours(lastVoteTime.getHours() + 2);
         const numericLastVoteTime = lastVoteTime.getTime();
