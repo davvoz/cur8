@@ -148,7 +148,6 @@ class UserManager {
 
     private async fetchAccount(username: string): Promise<void> {
         const account = await this.client.database.getAccounts([username]);
-        console.log(account);
         this.account = account[0];
         this.client.database.getDynamicGlobalProperties().then((res) => {
             this.dynamicGlobalProperties = {
@@ -164,15 +163,10 @@ class UserManager {
     private async fetchVestingDelegationsNoFilter(username: string): Promise<VestingDelegation[]> {
         return await this.client.database.getVestingDelegations(username, undefined, 1000);
     }
-    // private async fetchAccountHistory(username: string): Promise<any[]> {
-    //     return await this.client.database.getAccountHistory(username, -1, 1000, [4, 0]);
-    // }
 
     private async fetchAccountTransactions(username: string): Promise<void> {
         //getAccountHistory(username, -1, 1000, [4, 0]);
         let listaDiTransazioni = await this.client.database.call('get_account_history', [username, -1, 1000]);
-        console.log(listaDiTransazioni);
-
         listaDiTransazioni.reverse();
         let transactions: MYTransaction[] = [];
         for (let i = 0; i < listaDiTransazioni.length; i++) {

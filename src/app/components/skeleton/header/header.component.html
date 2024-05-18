@@ -19,15 +19,17 @@
             <div class="example-button-container" *ngIf="!isMobile">
 
                 <span class="optionContainer" [style.background-color]="lightTheme ? '#666' : '#fff'"
-                    [style.color]="lightTheme ? '#fff' : '#666'" [style.font-size]="lightTheme ? '10px' : '16px'" (click)="toggle('HIVE')">
+                    [style.color]="lightTheme ? '#fff' : '#666'" [style.font-size]="lightTheme ? '10px' : '16px'"
+                    (click)="toggle('HIVE')">
                     <img [src]="'../../assets/hive_.png'" style="width: 30px; height: 30px; margin-right: 10px;" />
                     <span>
                         HIVE {{lightTheme ? 'disabled' : 'enabled'}}
                     </span>
                 </span>
-                
+
                 <span class="optionContainer" [style.background-color]="lightTheme ? '#fff' : '#666'"
-                    [style.color]="lightTheme ? '#666' : '#fff'" [style.font-size]="lightTheme ? '16px' : '10px'" (click)="toggle('STEEM')">
+                    [style.color]="lightTheme ? '#666' : '#fff'" [style.font-size]="lightTheme ? '16px' : '10px'"
+                    (click)="toggle('STEEM')">
                     <img [src]="'../../assets/steem_traspa_piccola.png'"
                         style="width: 30px; height: 30px; margin-right: 10px;" />
                     <span>
@@ -39,15 +41,16 @@
     </mat-toolbar-row>
     <mat-toolbar-row *ngIf="isMobile">
         <span class="optionContainer" [style.background-color]="lightTheme ? '#666' : '#fff'"
-            [style.color]="lightTheme ? '#fff' : '#666'" [style.font-size]="lightTheme ? '10px' : '16px'">
+            [style.color]="lightTheme ? '#fff' : '#666'" [style.font-size]="lightTheme ? '10px' : '16px'"
+            [style.border]="lightTheme ? '' : '1px solid #666'" (click)="toggle('HIVE')">
             <img [src]="'../../assets/hive_.png'" style="width: 30px; height: 30px; margin-right: 10px;" />
             <span>
                 HIVE {{lightTheme ? 'disabled' : 'enabled'}}
             </span>
         </span>
-        <mat-slide-toggle color="primary" [checked]="lightTheme" (change)="toggle('nothing')"></mat-slide-toggle>
         <span class="optionContainer" [style.background-color]="lightTheme ? '#fff' : '#666'"
-            [style.color]="lightTheme ? '#666' : '#fff'" [style.font-size]="lightTheme ? '16px' : '10px'">
+            [style.color]="lightTheme ? '#666' : '#fff'" [style.font-size]="lightTheme ? '16px' : '10px'"
+            [style.border]="lightTheme ? '1px solid #666' : ''" (click)="toggle('STEEM')">
             <img [src]="'../../assets/steem_traspa_piccola.png'"
                 style="width: 30px; height: 30px; margin-right: 10px;" />
             <span>

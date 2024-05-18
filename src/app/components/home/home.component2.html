@@ -45,7 +45,7 @@
         </mat-card-header>
         <br>
         <mat-card-content class="card_content">
-          <span> {{allTimePayOut}} $</span>
+          <span> {{allTimePayOut | reversePadZero}} $</span>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -70,7 +70,7 @@
         </mat-card-header>
         <br>
         <mat-card-content class="card_content">
-          <span> 67 $</span>
+          <span>  {{days_payout | reversePadZero}} $</span>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -80,7 +80,7 @@
           <mat-card-title class="card_title">cur8 curation rewards (7 days)</mat-card-title>
         </mat-card-header>
         <mat-card-content class="card_content">
-          <app-bar-chart style="    width: 100%;
+          <app-bar-chart style="width: 100%;
           display: flex;
           flex-direction: column;
           align-content: stretch;
@@ -94,6 +94,8 @@
       <mat-card class="card">
         <mat-card-header class="card_header">
           <mat-card-title class="card_title">cur8 recent operations</mat-card-title>
+          <!--bottone refresh-->
+          
         </mat-card-header>
         <mat-card-content class="card_content_special">
           <app-transazioni-cur8></app-transazioni-cur8>

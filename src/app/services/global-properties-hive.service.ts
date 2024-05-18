@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Client } from '@hiveio/dhive';
 import { GlobalPrezzi, Utils } from '../classes/my_utils';
 import { HiveData, IMRiddData } from '../interfaces/interfaces';
@@ -30,7 +30,9 @@ export class GlobalPropertiesHiveService {
     price_dollar: 0
   }
 
-  dataChart: HiveData[] = []; 
+  dataChart: HiveData[] = [];
+  allTimePayOut_DA_MOLTIPLICARE = 0;
+  days_payout_DA_MOLTIPLICARE = 0;
 
   constructor(private apiService: ApiService) {
 
@@ -65,7 +67,7 @@ export class GlobalPropertiesHiveService {
       }
       this.imridData.ultimoPagamento = parseFloat(importo.toString());
     });
-    
+
 
     apiService.get('https://ecency.com/private-api/received-vesting/cur8').then((result) => {
       this.delegatori = result['list'].length;
@@ -74,6 +76,13 @@ export class GlobalPropertiesHiveService {
     apiService.get('https://imridd.eu.pythonanywhere.com/api/hive_cur').then((data: HiveData[]) => {
       this.dataChart = data;
     });
+
+    this.apiService.get('https://imridd.eu.pythonanywhere.com/api/hive').then((data) => {
+      //follow_count
+      this.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'];
+      this.days_payout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
+    });
+
 
   }
 
@@ -94,9 +103,18 @@ export class GlobalPropertiesHiveService {
 
     await client.database.getAccountHistory('cur8', -1, 1000, [1, 40]).then((result) => {
       result.forEach((transazione: any) => {
-        this.transazioniCUR8.push(transazione[1]);
+        console.log(transazione);
+        const voteTransaction: VoteTransaction = {
+          voter: transazione[1].op[1].voter,
+          author: transazione[1].op[1].author,
+          weight: transazione[1].op[1].weight,
+          timestamp: transazione[1].timestamp
+        }
+        this.transazioniCUR8.push(voteTransaction);
       });
-    })
-    return Promise.resolve().then(() => {console.log('Transazioni set')});
+    }).finally(() => {
+      console.log('Transazioni set');
+    });
   }
+
 }

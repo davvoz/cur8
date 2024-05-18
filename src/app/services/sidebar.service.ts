@@ -9,7 +9,6 @@ export class SidebarService {
   constructor() { }
 
   toggle() {
-    console.log('Toggling sidebar state to', !this.isOpen);
     this.isOpen = !this.isOpen;
     this.emitter.emit(this.isOpen);
   }

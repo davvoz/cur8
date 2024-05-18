@@ -1,5 +1,5 @@
 <app-header></app-header>
-<mat-drawer-container class="example-container"  >
+<mat-drawer-container class="example-container">
   <mat-drawer #drawer [mode]="'side'" opened="false" closed="true">
     <app-sidebar></app-sidebar>
   </mat-drawer>
@@ -7,13 +7,17 @@
     <router-outlet></router-outlet>
     <br><br><br>
     <app-footer></app-footer>
-    
+
   </mat-drawer-content>
 </mat-drawer-container>
 <style>
-
   mat-drawer {
-    width: 200px;
+    width: 300px;
   }
- 
+  @media (max-width: 600px) {
+    mat-drawer {
+      width: 100%;
+    }
+  }
+
 </style>

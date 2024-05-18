@@ -1,36 +1,69 @@
-<div class="title_container">
-    <h1 class="title">Welcome to cur8</h1>
-    <p class="subtitle">The best way to get the most out of your Steem or Hive account</p>
-    <!--spiega come usare il sito
-        come switchare da un ambiente all'altro
-        come usare le funzionalità
-        -->
-    <p class="subtitle">To get started, select an environment with the switch on the top right</p>
-
-    <p class="subtitle">Then, you can start earning by delegating your Steem or Hive Power</p>
-    <p class="subtitle">You can also check your earnings and the total amount of Steem or Hive Power delegated</p>
-    <p class="subtitle">You can also check the total amount of delegators and the total amount of payouts</p>
-    <p class="subtitle">You can also check your voting power</p>
-    <p class="subtitle">You can also check the total amount of payouts</p>
-
+<div class="container">
+    <h1 class="title">🎉 Welcome to cur8 </h1>
+    <p class="subtitle">
+        🚀 The best way to get the most out of your Steem or Hive account
+        <span>Select an environment with the switch on the top to get started</span>
+    </p>
+    <p class="subtitle">
+        🍔 Click on the burger menu to see the functionalities
+    </p>
+    <p class="subtitle">
+        💰 Start earning by delegating your Steem or Hive Power
+        <span>Check your earnings and the total amount of Steem or Hive Power delegated</span>
+    </p>
+    <p class="subtitle">
+        👥 Check the total amount of delegators and the total amount of payouts
+    </p>
+    <p class="subtitle">
+        ⚡ Check your voting power
+    </p>
+    <p class="subtitle">
+        💸 Check the total amount of payouts
+    </p>
 </div>
-
 <style>
-    .title_container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        padding: 40px;
         margin-top: 50px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .container:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
     }
 
     .title {
         font-size: 2.5em;
-        font-weight: bold;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .subtitle {
-        font-size: 1.5em;
+        font-size: 1.3em;
+        margin-bottom: 20px;
+        color: #34495e;
+        line-height: 1.6;
+    }
+
+    .subtitle span {
+        display: block;
         margin-top: 10px;
+        font-size: 1em;
+        color: #16a085;
+        font-style: italic;
+    }
+
+    /*su mobile no margin top*/
+    @media (max-width: 600px) {
+        .container {
+            margin-top: 0;
+        }
     }
 </style>

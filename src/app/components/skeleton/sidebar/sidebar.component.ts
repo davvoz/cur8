@@ -9,39 +9,48 @@ import { MatDivider } from '@angular/material/divider';
 import { NgIf } from '@angular/common';
 import { SwitchService } from '../../../services/switch.service';
 import { PrezziComponent } from "../../prezzi/prezzi.component";
+import { SidebarService } from '../../../services/sidebar.service';
 
 @Component({
-    selector: 'app-sidebar',
-    standalone: true,
-    templateUrl: './sidebar.component.html',
-    styleUrl: './sidebar.component.scss',
-    imports: [MatSidenav, MatNavList, MatListItem, MatIcon, NgFor, MatDivider, NgIf, PrezziComponent]
+  selector: 'app-sidebar',
+  standalone: true,
+  templateUrl: './sidebar.component.html',
+  styleUrl: './sidebar.component.scss',
+  imports: [MatSidenav, MatNavList, MatListItem, MatIcon, NgFor, MatDivider, NgIf, PrezziComponent]
 })
 export class SidebarComponent {
 
+
   itemsHive = [
     { name: 'start', url: '/start', icon: 'home', label: 'welcome' },
-    { name: 'Dashboard', url: '/home-hive', icon: '', label: 'HIVE', image: '../assets/logoTra.png' },
-    { name: 'Profile', url: '/hive', icon: '', label: 'Profile', image: '../assets/hive_.png' },
+    { name: 'Dashboard', url: '/home-hive', icon: 'dashboard', label: 'HIVE', image: '../assets/logoTra.png' },
+    { name: 'Profile', url: '/hive', icon: 'account_circle', label: 'Profile', image: '../assets/hive_.png' },
   ];
 
   itemsSteem = [
-    { name: 'start', url: '/start', icon: '', label: 'welcome' },
-    { name: 'Dashboard', url: '/home-steem', icon: '', label: 'STEEM', image: '../assets/logoTra.png' },
-    { name: 'Profile', url: '/steem', icon: '', label: 'Profile', image: '../assets/steem_traspa_piccola.png' },
+    { name: 'start', url: '/start', icon: 'home', label: 'welcome' },
+    { name: 'Dashboard', url: '/home-steem', icon: 'dashboard', label: 'STEEM', image: '../assets/logoTra.png' },
+    { name: 'Profile', url: '/steem', icon: 'account_circle', label: 'Profile', image: '../assets/steem_traspa_piccola.png' },
   ];
 
   items = this.itemsHive;
   platform = 'HIVE';
-
-  constructor(private router: Router,public switchService: SwitchService) {    
+  textPre = 'You are in the ';
+  textPost = ' section.';
+  text = () => this.textPre + this.platform + this.textPost;
+  constructor(private router: Router, public switchService: SwitchService, private sidebarService: SidebarService) {
     this.switchService.switchEmitter.subscribe((platform: string) => {
       this.platform = platform;
       this.items = platform === 'HIVE' ? this.itemsHive : this.itemsSteem;
+
     });
   }
 
   navigateTo(url: string) {
+    //se sei su mobile chiudi la sidebar
+    if (window.innerWidth <= 768) {
+      this.sidebarService.toggle();
+    }
     this.router.navigate([url]);
   }
 

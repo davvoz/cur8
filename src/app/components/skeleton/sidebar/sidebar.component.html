@@ -1,17 +1,21 @@
 <!--facciamo il contenuto del sidebar.component.html-->
-
+<h1>{{text()}}</h1>
 <mat-nav-list>
     <div *ngFor="let item of items" (click)="navigateTo(item.url)" class="item">
         
-        <!--immagine se ci fosse
-            <mat-icon mat-list-icon>{{item.icon}}</mat-icon>
+        <mat-icon *ngIf="item.icon">{{item.icon}}</mat-icon>
+        <!--usage: 
+            examle: icon = 'home' or icon = 'settings' or icon = 'account_balance_wallet' 
+            for the user icon use 'account_circle'
+            for the dashboard icon use 'dashboard'
+            here is the list of all the icons: https://material.io/resources/icons/?style=baseline
         -->
         <img *ngIf="item.image" src="{{item.image}}" alt="icon" style="width: 24px; height: 24px; margin-right: 10px;">
 
         <h3 mat-line>{{item.label}}</h3>
     </div>
 </mat-nav-list>
----{{switchService.platform}}---
+
 <app-prezzi [platform]="platform"></app-prezzi>
 <style>
     mat-nav-list {

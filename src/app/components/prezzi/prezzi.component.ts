@@ -1,13 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { GlobalPropertiesHiveService } from '../../services/global-properties-hive.service';
 import { GlobalPropertiesSteemService } from '../../services/global-properties-steem.service';
+import { ReversePadZeroPipe } from "../../pipes/reverse-pad-zero.pipe";
 
 @Component({
-  selector: 'app-prezzi',
-  standalone: true,
-  imports: [],
-  templateUrl: './prezzi.component.html',
-  styleUrl: './prezzi.component.scss'
+    selector: 'app-prezzi',
+    standalone: true,
+    templateUrl: './prezzi.component.html',
+    styleUrl: './prezzi.component.scss',
+    imports: [ReversePadZeroPipe]
 })
 export class PrezziComponent {
   hivePrice: number = 0;

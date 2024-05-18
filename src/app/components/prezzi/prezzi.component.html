@@ -1,11 +1,58 @@
-
-<h1>{{platform}}</h1>
-<!-- scrivi i prezzi di ogni piattaforma -->
+<h1>{{ platform }} price</h1>
+<!-- Visualizza i prezzi di ogni piattaforma -->
 @if(platform.toLocaleLowerCase() == 'hive' ){
-    Prezzo hive: {{hivePrice}}<br>
-    Prezzo hive in dollari: {{hivePriceDollaro}}
-}@else {
-    Prezzo steem: {{steemPrice}}<br>
-    Prezzo steem in dollari: {{steemPriceDollaro}}
-}
+<div class="price-container">
+    <div class="price-item">
+        <span class="label">Prezzo Hive:</span>
+        <span class="value">{{ hivePrice | reversePadZero }}</span>
+    </div>
+    <div class="price-item">
+        <span class="label">Prezzo Hive in dollari:</span>
+        <span class="value">{{ hivePriceDollaro | reversePadZero }}</span>
+    </div>
+</div>}
+@else{
+<div class="price-container">
+    <div class="price-item">
+        <span class="label">Prezzo Steem:</span>
+        <span class="value">{{ steemPrice | reversePadZero }}</span>
+    </div>
+    <div class="price-item">
+        <span class="label">Prezzo Steem in dollari:</span>
+        <span class="value">{{ steemPriceDollaro | reversePadZero }}</span>
+    </div>
+</div>}
 
+<style>
+   
+
+    .price-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        background: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .price-item {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .price-item .label {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .price-item .value {
+        font-weight: normal;
+        color: #000;
+    }
+</style>

@@ -1,15 +1,11 @@
 import { Component, HostBinding } from '@angular/core';
-//importa la toolbar de material
 import { MatToolbar } from '@angular/material/toolbar';
-//importa la row
 import { MatToolbarRow } from '@angular/material/toolbar';
 import { SidebarService } from '../../../services/sidebar.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-//mat-slide
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SwitchService } from '../../../services/switch.service';
-//ngIf
 import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 @Component({
@@ -42,21 +38,30 @@ export class HeaderComponent {
       //se siamo sul profilo steem navighiamo verso il profilo hive
       if (urlAttuale === '/steem') {
         this.router.navigate(['/hive']);
-      } else {
-        //se siamo sulla dashboard steem navighiamo verso la dashboard hive
-        this.router.navigate(['/home-hive']);
       }
-    } else if (platform === 'STEEM' && urlAttuale === '/hive') {
+    }
+    if (platform === 'STEEM' && urlAttuale === '/hive') {
       //se siamo sul profilo hive navighiamo verso il profilo steem
       if (urlAttuale === '/hive') {
         this.router.navigate(['/steem']);
-      } else {
-        //se siamo sulla dashboard hive navighiamo verso la dashboard steem
+      }
+    }
+    if (platform === 'HIVE' && urlAttuale === '/home-steem') {
+      //se siamo sulla dashboard steem navighiamo verso la dashboard hive
+      if (urlAttuale === '/home-steem') {
+        this.router.navigate(['/home-hive']);
+      }
+    }
+    if (platform === 'STEEM' && urlAttuale === '/home-hive') {
+      //se siamo sulla dashboard hive navighiamo verso la dashboard steem
+      if (urlAttuale === '/home-hive') {
         this.router.navigate(['/home-steem']);
       }
     }
-
-
+    //se sei su mobile apri la sidebar
+    if ( this.sidebarservice.isOpen && urlAttuale === '/start') {
+      this.sidebarservice.toggle();
+    }
 
   }
 
