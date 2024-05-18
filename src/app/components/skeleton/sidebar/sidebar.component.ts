@@ -9,15 +9,16 @@ import { NgFor } from '@angular/common';
 import { MatDivider } from '@angular/material/divider';
 //ngIf
 import { NgIf } from '@angular/common';
-import { SwitchService } from '../../services/switch.service';
-import { SidebarService } from '../../services/sidebar.service';
+import { SwitchService } from '../../../services/switch.service';
+import { SidebarService } from '../../../services/sidebar.service';
+import { PrezziComponent } from "../../prezzi/prezzi.component";
 
 @Component({
-  selector: 'app-sidebar',
-  standalone: true,
-  imports: [MatSidenav, MatNavList, MatListItem, MatIcon, NgFor, MatDivider, NgIf],
-  templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+    selector: 'app-sidebar',
+    standalone: true,
+    templateUrl: './sidebar.component.html',
+    styleUrl: './sidebar.component.scss',
+    imports: [MatSidenav, MatNavList, MatListItem, MatIcon, NgFor, MatDivider, NgIf, PrezziComponent]
 })
 export class SidebarComponent {
 
@@ -32,18 +33,19 @@ export class SidebarComponent {
   ];
 
   items = this.itemsHive;
+  platform = 'hive';
 
-  constructor(private router: Router,private switchService: SwitchService,private sidebarService: SidebarService) {
+  constructor(private router: Router,public switchService: SwitchService,private sidebarService: SidebarService) {
+    
     this.switchService.switchEmitter.subscribe((platform: string) => {
+      this.platform = platform;
       this.items = platform === 'HIVE' ? this.itemsHive : this.itemsSteem;
       this.navigateTo(this.items[0].url);
     });
   }
 
   navigateTo(url: string) {
-    if (window.innerWidth < 768) {
-      this.sidebarService.toggle();
-    }
+   
     this.router.navigate([url]);
   }
 

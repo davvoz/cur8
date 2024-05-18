@@ -1,13 +1,28 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Client } from '@hiveio/dhive';
-import { Utils } from '../classes/my_utils';
+import { GlobalPrezzi, Utils } from '../classes/my_utils';
 import { IMRiddData } from '../interfaces/interfaces';
 import { ApiService } from './api.service';
+import { VoteTransaction } from '../classes/biz/hive-user';
+
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class GlobalPropertiesService {
+export class GlobalPropertiesHiveService {
+
+  async setPrices(): Promise<void> {
+    if (this.global_prezzi.price == 0) {
+      await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices').then((result) => {
+        this.global_prezzi.price = result['HIVE'];
+        this.global_prezzi.price_dollar = result['HBD'];
+      }).finally(() => {
+        console.log('Hive prices set');
+      });
+    }
+  }
+
   global_properties = {
     totalVestingFundHive: 0,
     totalVestingShares: 0
@@ -17,10 +32,18 @@ export class GlobalPropertiesService {
     delegaCur8: 0,
     ultimoPagamento: 0
   }
-  delegatori =0;
+  delegatori = 0;
+  transazioniCUR8: VoteTransaction[] = [];
 
-  constructor(apiService: ApiService) {
+  global_prezzi: GlobalPrezzi = {
+    price: 0,
+    price_dollar: 0
+  }
+
+  constructor(private apiService: ApiService) {
+
     const client = new Client('https://api.hive.blog');
+
     client.database.getDynamicGlobalProperties().then((result) => {
       this.global_properties.totalVestingFundHive = Utils.toStringParseFloat(result.total_vesting_fund_hive);
       this.global_properties.totalVestingShares = Utils.toStringParseFloat(result.total_vesting_shares);
@@ -50,11 +73,23 @@ export class GlobalPropertiesService {
       }
       this.imridData.ultimoPagamento = parseFloat(importo.toString());
     });
+    
 
     apiService.get('https://ecency.com/private-api/received-vesting/cur8').then((result) => {
       this.delegatori = result['list'].length;
-    } );
+    });
+
+
   }
 
+  async setTransazioniCur8(): Promise<void> {
+    const client = new Client('https://api.hive.blog');
 
+    await client.database.getAccountHistory('cur8', -1, 1000, [1, 40]).then((result) => {
+      result.forEach((transazione: any) => {
+        this.transazioniCUR8.push(transazione[1]);
+      });
+    })
+    return Promise.resolve().then(() => {console.log('Transazioni set')});
+  }
 }

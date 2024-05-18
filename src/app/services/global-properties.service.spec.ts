@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GlobalPropertiesService } from './global-properties.service';
+import { GlobalPropertiesHiveService } from './global-properties-hive.service';
 
 describe('GlobalPropertiesService', () => {
-  let service: GlobalPropertiesService;
+  let service: GlobalPropertiesHiveService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GlobalPropertiesService);
+    service = TestBed.inject(GlobalPropertiesHiveService);
   });
 
   it('should be created', () => {

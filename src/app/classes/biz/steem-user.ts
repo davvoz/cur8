@@ -99,9 +99,7 @@ class UserManager {
         await this.setValutes().then(() => {
             this.user.valutes = this.valutes;
         });
-        await this.setSocial().then(() => {
-            this.user.social = this.social;
-        });
+        this.setSocial();
         await this.setTransactions().then(() => {
             this.user.transactions = this.transactions;
         });
@@ -322,10 +320,10 @@ class UserManager {
         };
     }
 
-    private async setSocial(): Promise<void> {
+    private  setSocial() {
         this.social = {
-            followers: 10,
-            following: 10,
+            followers: this.account.follower_count,
+            following: this.account.following_count,
             postsNumber: this.account.post_count,
             level: 0
         };

@@ -11,7 +11,8 @@
         <h3 mat-line>{{item.label}}</h3>
     </div>
 </mat-nav-list>
-
+---{{switchService.platform}}---
+<app-prezzi [platform]="platform"></app-prezzi>
 <style>
     mat-nav-list {
         width: 100%;

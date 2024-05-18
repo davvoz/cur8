@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SwitchService } from '../services/switch.service';
+import { SwitchService } from '../../services/switch.service';
 //mat slide toggle
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 @Component({
@@ -21,12 +21,12 @@ export class StartComponent {
   toggle() {
     if (this.switchService.platform === 'STEEM') {
       document.documentElement.setAttribute('theme', 'light');
-      this.switchService.switchPlatform('STEEM');
+      this.switchService.switchPlatform();
       this.lightTheme = true;
     } 
     if (this.switchService.platform === 'HIVE') {
-      this.switchService.switchPlatform('HIVE');
       document.documentElement.setAttribute('theme', '');
+      this.switchService.switchPlatform();
       this.lightTheme = false;
     }
   }

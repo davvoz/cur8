@@ -1,5 +1,6 @@
 import { Client, ExtendedAccount, VestingDelegation } from "@hiveio/dhive";
 import { Utils } from "../my_utils";
+import { ApiService } from "../../services/api.service";
 
 interface DynamicGlobalProperties {
     totalVestingFundHive: number;
@@ -34,7 +35,7 @@ interface Valutes {
 
 type Platform = 'HIVE';
 
-export interface MYTransaction {
+export interface TransferTransaction {
     timestamp: string;
     amount: string;
     from: string;
@@ -52,7 +53,7 @@ export interface User {
     rapportoConCUR8: RapportoConCUR8;
     account_value: number;
     global_properties: DynamicGlobalProperties;
-    transactions: MYTransaction[];
+    transactions: TransferTransaction[];
     expiringDelegations: ExpiringDelegation[];
 }
 
@@ -61,9 +62,15 @@ export interface ExpiringDelegation {
     expiration: Date;
 }
 
+export interface VoteTransaction {
+    voter: string;
+    author: string;
+    weight: number;
+    timestamp: string;
+}
 
 class UserManager {
-    private client: Client = new Client('https://api.hive.blog')
+    private client: Client = new Client('https://api.hive.blog');
     private dynamicGlobalProperties!: DynamicGlobalProperties;
     private account!: ExtendedAccount;
     private valutes: Valutes = {
@@ -77,7 +84,7 @@ class UserManager {
         postsNumber: 0,
         level: 0
     };
-    private transactions: MYTransaction[] = [];
+    private transactions: TransferTransaction[] = [];
     private expringDelegations: ExpiringDelegation[] = [];
     private user: User = this.getDefaultUser();
     private delegations: VestingDelegation[] = [];
@@ -139,14 +146,6 @@ class UserManager {
         });
     }
 
-    private async fetchDynamicGlobalProperties(): Promise<void> {
-        const properties = await this.client.database.getDynamicGlobalProperties();
-        this.dynamicGlobalProperties = {
-            totalVestingFundHive: Utils.toStringParseFloat(properties.total_vesting_fund_hive),
-            totalVestingShares: Utils.toStringParseFloat(properties.total_vesting_shares)
-        };
-    }
-
     private async fetchAccount(username: string): Promise<void> {
         const account = await this.client.database.getAccounts([username]);
         this.account = account[0];
@@ -165,20 +164,18 @@ class UserManager {
     private async fetchAccountTransactions(username: string): Promise<void> {
         let listaDiTransazioni = await this.client.database.getAccountHistory(username, -1, 1000, [4, 0]);
         listaDiTransazioni.reverse();
-        let transactions: MYTransaction[] = [];
+        let transactions: TransferTransaction[] = [];
         for (let i = 0; i < listaDiTransazioni.length; i++) {
             const transazione = listaDiTransazioni[i];
             const op = transazione[1].op;
-            if (op[0] === 'transfer') {
-                const data = new Date(transazione[1].timestamp);
-                const timestamp = data + '';
-                const amount = op[1]['amount'];
-                const from = op[1]['from'];
-                const to = op[1]['to'];
-                const memo = op[1]['memo'];
-                const id = transazione[0];
-                transactions.push({ timestamp   , amount, from, to, memo, id });
-            }
+            const data = new Date(transazione[1].timestamp);
+            const timestamp = data + '';
+            const amount = op[1]['amount'];
+            const from = op[1]['from'];
+            const to = op[1]['to'];
+            const memo = op[1]['memo'];
+            const id = transazione[0];
+            transactions.push({ timestamp, amount, from, to, memo, id });
         }
         this.transactions = transactions;
     }
@@ -311,11 +308,15 @@ class UserManager {
     }
 
     private async setSocial(): Promise<void> {
+        //come si injecta il servizio apiService? 
+        const apiService = new ApiService();
+        const url = 'https://imridd.eu.pythonanywhere.com/api/hive/follow/' + this.account.name;
+        const res = await apiService.get(url);
         this.social = {
-            followers: 10,
-            following: 10,
+            followers: res.follower_count,
+            following: res.following_count,
             postsNumber: this.account.post_count,
-            level: 0
+            level: Math.round(res.rep)
         };
     }
 

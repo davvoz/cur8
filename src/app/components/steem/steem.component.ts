@@ -6,30 +6,31 @@ import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import { NgFor } from '@angular/common';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
-import { User, UserFactory } from '../classes/biz/hive-user';
+
 import { MatCard, MatCardContent, MatCardSubtitle, MatCardTitle, MatCardActions, MatCardHeader, MatCardAvatar, MatCardFooter, MatCardImage, MatCardSmImage, MatCardModule } from '@angular/material/card';
 import { MatGridTile, MatGridList, MatGridAvatarCssMatStyler, MatGridTileFooterCssMatStyler, MatGridTileHeaderCssMatStyler } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
-import { DateFormatPipe } from "../pipes/date-format.pipe";
-import { TruncatePipe } from "../pipes/truncate.pipe";
-import { Vest2HPPipe } from "../pipes/vest2-hp.pipe";
-import { ColoreRankDirective } from '../directives/colore-rank.directive';
+import { DateFormatPipe } from "../../pipes/date-format.pipe";
+import { TruncatePipe } from "../../pipes/truncate.pipe";
+import { Vest2HPPipe } from "../../pipes/vest2-hp.pipe";
+import { ColoreRankDirective } from '../../directives/colore-rank.directive';
 import { MatTableModule } from '@angular/material/table';
-import { StaticDelegator } from '../classes/biz/delegator';
+import { StaticDelegator } from '../../classes/biz/delegator';
 import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { UserMemoryService } from '../services/user-memory.service';
-import { ReversePadZeroPipe } from "../pipes/reverse-pad-zero.pipe";
-import { GlobalPropertiesService } from '../services/global-properties.service';
-import { IMRiddData } from '../interfaces/interfaces';
-
+import { ReversePadZeroPipe } from "../../pipes/reverse-pad-zero.pipe";
+import { IMRiddData } from '../../interfaces/interfaces';
+import { User, UserFactory } from '../../classes/biz/steem-user';
+import { GlobalPropertiesSteemService } from '../../services/global-properties-steem.service';
+import { UserMemorySteemService } from '../../services/user-memory-steem.service';
+import { Utils } from '../../classes/my_utils';
 
 
 @Component({
-  selector: 'app-hive',
+  selector: 'app-steem',
   standalone: true,
-  templateUrl: './hive.component.html',
-  styleUrl: './hive.component.scss',
+  templateUrl: './steem.component.html',
+  styleUrl: './steem.component.scss',
   imports: [
     MatProgressSpinnerModule,
     FormsModule,
@@ -66,35 +67,33 @@ import { IMRiddData } from '../interfaces/interfaces';
     ReversePadZeroPipe
   ]
 })
+export class SteemComponent {
 
-export class HiveComponent {
-
-
-  powerUpHPValue: any;
   sendTo: any;
   sendAmount: any;
   estimatedDailyProfit: number = 0;
-  search: any;
-  isLoading = true;
-  loaded = false;
-  imridAccoount: any;
-  valoreDelega = 0;
-  displayedColumns = ['account', 'ammount', 'exp date'];
+
   imridData: IMRiddData = {
     delegaCur8: 0,
     ultimoPagamento: 0
   }
-  global_properties: { totalVestingFundHive: number; totalVestingShares: number; };
+
+  global_properties: { totalVestingFundSteem: number; totalVestingShares: number; };
+  powerUpSPValue: any;
+
+
+
+  valoreDelega = 0;
   user: User = {
     expiringDelegations: [],
     image: '',
     transactions: [],
     global_properties: {
-      totalVestingFundHive: 0,
+      totalVestingFundSteem: 0,
       totalVestingShares: 0,
     },
     username: '',
-    platform: 'HIVE',
+    platform: 'STEEM',
     rapportoConCUR8: {
       delega: 0,
       share: 0,
@@ -106,9 +105,9 @@ export class HiveComponent {
       powerDisponibili: 0
     },
     valutes: {
-      HIVE: 0,
-      HBD: 0,
-      HP: 0
+      STEEM: 0,
+      SBD: 0,
+      SP: 0
     },
     social: {
       followers: 0,
@@ -118,13 +117,19 @@ export class HiveComponent {
     },
     account_value: 0,
   };
+
+  displayedColumns = ['account', 'ammount', 'exp date'];
+
   delegations = [
     { ammount: 100, expDate: '2021-01-01' },
     { ammount: 200, expDate: '2021-01-01' }
   ];
+  search: any;
+  isLoading = true;
+  loaded = false;
+  imridAccoount: any;
   isMobile = false;
-
-  constructor(private userMemoryService: UserMemoryService, private gs: GlobalPropertiesService) {
+  constructor(private gs: GlobalPropertiesSteemService, private userMemoryService: UserMemorySteemService) {
     this.isMobile = window.innerWidth < 768;
     this.global_properties = this.gs.global_properties;
     this.user.global_properties = this.global_properties;
@@ -137,63 +142,61 @@ export class HiveComponent {
     this.isLoading = false;
   }
 
-  sendHbd() {
-    if ((window as any).hive_keychain) {
-      const keychain = (window as any).hive_keychain;
-      if (typeof this.sendAmount == 'string') {
-        this.sendAmount = parseFloat(this.sendAmount);
-      }
-      this.sendAmount = this.sendAmount.toFixed(3);
-      keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'HBD', (response: any) => {
-        console.log(response);
-      });
-    }
-  }
-
-  sendHive() {
-    if ((window as any).hive_keychain) {
-      const keychain = (window as any).hive_keychain;
-      if (typeof this.sendAmount == 'string') {
-        this.sendAmount = parseFloat(this.sendAmount);
-      }
-      this.sendAmount = this.sendAmount.toFixed(3);
-      keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'HIVE', (response: any) => {
-        console.log(response);
-      });
-    }
-  }
-
   changeDailyProfit() {
     const apr = this.imridData.ultimoPagamento * 365 * 100 / this.imridData.delegaCur8;
     this.estimatedDailyProfit = this.valoreDelega * apr / 365 / 100;
   }
 
-  powerUpHP() {
-    if ((window as any).hive_keychain) {
-      const keychain = (window as any).hive_keychain;
-      if (typeof this.powerUpHPValue == 'string') {
-        this.powerUpHPValue = parseFloat(this.powerUpHPValue);
-      }
-      this.powerUpHPValue = this.powerUpHPValue.toFixed(3);
-      keychain.requestPowerUp(this.user.username, this.user.username, this.powerUpHPValue, (response: any) => {
+  sendSbd() {
+    if ((window as any).steem_keychain) {
+      const keychain = (window as any).steem_keychain;
+      keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'SBD', (response: any) => {
         console.log(response);
       });
+    } else {
+      alert('You do not have steem keychain installed');
     }
   }
 
-
-  powerDownHP() {
-    if ((window as any).hive_keychain) {
-      const keychain = (window as any).hive_keychain;
-      if (typeof this.powerUpHPValue == 'string') {
-        this.powerUpHPValue = parseFloat(this.powerUpHPValue);
-      }
-
-      this.powerUpHPValue = this.powerUpHPValue.toFixed(3);
-      keychain.requestPowerDown(this.user.username, this.powerUpHPValue, (response: any) => {
+  sendSteem() {
+    if ((window as any).steem_keychain) {
+      const keychain = (window as any).steem_keychain;
+      keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'STEEM', (response: any) => {
         console.log(response);
-
       });
+    } else {
+      alert('You do not have steem keychain installed');
+
+    }
+  }
+
+  powerDownSP() {
+    if ((window as any).steem_keychain) {
+      const keychain = (window as any).steem_keychain;
+      if (typeof this.powerUpSPValue !== undefined && typeof this.powerUpSPValue == 'string') {
+        this.powerUpSPValue = parseFloat(this.powerUpSPValue);
+      }
+      this.powerUpSPValue = Utils.toStringParseFloat(this.powerUpSPValue);
+      this.powerUpSPValue = this.powerUpSPValue.toFixed(3);
+      keychain.requestPowerDown(this.user.username, this.powerUpSPValue, (response: any) => {
+        console.log(response);
+      });
+    } else {
+      alert('You do not have steem keychain installed');
+    }
+
+  }
+
+  powerUpSP() {
+    if ((window as any).steem_keychain) {
+      const keychain = (window as any).steem_keychain;
+      this.powerUpSPValue = Utils.toStringParseFloat(this.powerUpSPValue);
+      this.powerUpSPValue = this.powerUpSPValue.toFixed(3);
+      keychain.requestPowerUp(this.user.username, this.user.username, this.powerUpSPValue, (response: any) => {
+        console.log(response);
+      });
+    } else {
+      alert('You do not have steem keychain installed');
     }
   }
 
@@ -208,7 +211,7 @@ export class HiveComponent {
   }
 
   delega() {
-    StaticDelegator.delegateWithHive(this.user.username, 'cur8', this.valoreDelega.toString(), () => { console.log('fatto') }).then((result) => {
+    StaticDelegator.delegateWithSteem(this.user.username, 'cur8', this.valoreDelega.toString(), () => { console.log('fatto') }).then((result) => {
       console.log('delega effettuata');
     }).catch((error) => {
       console.log('errore nella delega');
@@ -216,6 +219,11 @@ export class HiveComponent {
 
   }
 
+  searchTrans() {
+    throw new Error('Method not implemented.');
+  }
 
-
+  searchTransaction() {
+    throw new Error('Method not implemented.');
+  }
 }

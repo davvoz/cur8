@@ -81,6 +81,12 @@
           <mat-card-title class="card_title">cur8 curation rewards (7 days)</mat-card-title>
         </mat-card-header>
         <mat-card-content class="card_content">
+          <app-bar-chart style="    width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-content: stretch;
+          justify-content: space-evenly;
+          align-items: center;"></app-bar-chart>
 
         </mat-card-content>
       </mat-card>
@@ -90,7 +96,8 @@
         <mat-card-header class="card_header">
           <mat-card-title class="card_title">cur8 recent operations</mat-card-title>
         </mat-card-header>
-        <mat-card-content class="card_content">
+        <mat-card-content class="card_content_special">
+          <app-transazioni-cur8></app-transazioni-cur8>
            </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -207,77 +214,3 @@
 
 
 </div>
-
-
-<style>
-  .propertiesList {
-    display: flex;
-    flex-direction: column;
-    justify-content: justify;
-    align-items: flex-end;
-  }
-  .desktop span {
-    font-size: xx-large;
-  }
-
-  .mobile {
-    overflow-x: hidden;
-  }
-
-  .mobile mat-card {
-    margin-top: 10px;
-    font-size: medium;
-  }
-
-  img {
-    border-radius: 50%;
-    background-color: white;
-    padding: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-  }
-
-  .card_header_special {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-  }
-
-  .card_title_special {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    width: 100%;
-  }
-
-  .card_content {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-around;
-  }
-
-  .card_header {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-  }
-
-  .card_title {
-    font-size: 16px;
-    font-weight: 500;
-    align-items: center;
-    justify-content: center;
-
-  }
-
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-
-  }
-
-  .card {
-    width: 100%;
-    height: 100%;
-  }
-</style>

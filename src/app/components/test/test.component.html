@@ -1,0 +1,13 @@
+<p>test works!</p>
+
+<input type="number" [(ngModel)]="id" placeholder="id">
+<button (click)="get()">Get</button>
+@for (item of elementi; track $index) {
+    <p>{{item.id}} - {{item.nome}}</p>
+
+}
+
+{{elementoById|json}}
+
+<input type="text" [(ngModel)]="nome" placeholder="nome">
+<button (click)="post()">Post</button>

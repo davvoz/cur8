@@ -3,12 +3,12 @@ import { Component, HostBinding } from '@angular/core';
 import { MatToolbar } from '@angular/material/toolbar';
 //importa la row
 import { MatToolbarRow } from '@angular/material/toolbar';
-import { SidebarService } from '../../services/sidebar.service';
+import { SidebarService } from '../../../services/sidebar.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 //mat-slide
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { SwitchService } from '../../services/switch.service';
+import { SwitchService } from '../../../services/switch.service';
 //ngIf
 import { NgIf } from '@angular/common';
 @Component({
@@ -21,7 +21,7 @@ import { NgIf } from '@angular/common';
 export class HeaderComponent {
   isMobile: any;
 
-  constructor(private sidebarservice: SidebarService, private switchService: SwitchService) {
+  constructor(private sidebarservice: SidebarService, public switchService: SwitchService) {
     this.isMobile = window.innerWidth <= 768;
   }
   get lightTheme(): boolean {

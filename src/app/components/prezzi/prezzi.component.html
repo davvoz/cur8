@@ -1,0 +1,11 @@
+
+<h1>{{platform}}</h1>
+<!-- scrivi i prezzi di ogni piattaforma -->
+@if(platform.toLocaleLowerCase() == 'hive' ){
+    Prezzo hive: {{hivePrice}}<br>
+    Prezzo hive in dollari: {{hivePriceDollaro}}
+}@else {
+    Prezzo steem: {{steemPrice}}<br>
+    Prezzo steem in dollari: {{steemPriceDollaro}}
+}
+

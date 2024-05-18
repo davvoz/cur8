@@ -11,13 +11,6 @@ export class Utils {
         const year = date.getFullYear();
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
-        console.log(`${day}/${month}/${year} ${hours}:${minutes}`);
-        console.log(date);
-        console.log(day);
-        console.log(month);
-        console.log(year);
-        console.log(hours);
-        console.log(minutes);
         
         return `${day}/${month}/${year} ${hours}:${minutes}`;
     }
@@ -54,3 +47,8 @@ export class Utils {
         return parseFloat(value.toString());
     }
 }
+
+export interface  GlobalPrezzi {
+    price: number;
+    price_dollar: number;
+  }
