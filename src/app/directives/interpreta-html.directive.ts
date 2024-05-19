@@ -57,4 +57,4 @@ export class InterpretaHTMLDirective implements OnInit {
 
 
 }
-//usage: <div [appInterpretaHTML]="content"></div>
+//usage: <div appInterpretaHTML [appInterpretaHTML]="content"></div>

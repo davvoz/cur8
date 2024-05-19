@@ -5,8 +5,6 @@ import { HiveData, IMRiddData } from '../interfaces/interfaces';
 import { ApiService } from './api.service';
 import { VoteTransaction } from '../classes/biz/hive-user';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -33,6 +31,7 @@ export class GlobalPropertiesHiveService {
   dataChart: HiveData[] = [];
   allTimePayOut_DA_MOLTIPLICARE = 0;
   days_payout_DA_MOLTIPLICARE = 0;
+  listaPost: any[] = [];
 
   constructor(private apiService: ApiService) {
 
@@ -44,6 +43,7 @@ export class GlobalPropertiesHiveService {
     });
 
     client.database.getAccounts(['cur8']).then((data) => {
+      console.log(data);
       this.accountCUR8 = data[0];
     });
 
@@ -69,6 +69,7 @@ export class GlobalPropertiesHiveService {
     });
 
 
+
     apiService.get('https://ecency.com/private-api/received-vesting/cur8').then((result) => {
       this.delegatori = result['list'].length;
     });
@@ -82,7 +83,24 @@ export class GlobalPropertiesHiveService {
       this.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'];
       this.days_payout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
     });
+    try {
+      const query = {
+        tag: 'cur8', // Tag dei post da ottenere, puoi cambiarlo a seconda delle tue esigenze
+        limit: 10, // Numero di post da ottenere, puoi cambiarlo a seconda delle tue esigenze
+      };
 
+      // Richiesta per ottenere i post
+      client.database.getDiscussions('blog', query).then((result) => {
+        console.log(result);
+        result.forEach((post) => {
+          this.listaPost.push(post.body);
+        });
+      }).finally(() => {
+        console.log('Post ottenuti',this.listaPost);
+      });
+    } catch (error) {
+      console.error('Errore durante l\'ottenimento dei post:', error);
+    }
 
   }
 
@@ -103,7 +121,6 @@ export class GlobalPropertiesHiveService {
 
     await client.database.getAccountHistory('cur8', -1, 1000, [1, 40]).then((result) => {
       result.forEach((transazione: any) => {
-        console.log(transazione);
         const voteTransaction: VoteTransaction = {
           voter: transazione[1].op[1].voter,
           author: transazione[1].op[1].author,

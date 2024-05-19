@@ -1,5 +1,4 @@
-<div class="desktop" >
-
+<div class="desktop">
   <mat-grid-list [cols]="gridCols" class="grid_list" [rowHeight]="rowHeight">
     <mat-grid-tile [colspan]="colspanWelcome" [rowspan]="rowspanWelcome">
       <mat-card class="card">
@@ -70,7 +69,7 @@
         </mat-card-header>
         <br>
         <mat-card-content class="card_content">
-          <span>  {{days_payout | reversePadZero}} $</span>
+          <span> {{days_payout | reversePadZero}} $</span>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -95,11 +94,11 @@
         <mat-card-header class="card_header">
           <mat-card-title class="card_title">cur8 recent operations</mat-card-title>
           <!--bottone refresh-->
-          
+
         </mat-card-header>
         <mat-card-content class="card_content_special">
           <app-transazioni-cur8></app-transazioni-cur8>
-           </mat-card-content>
+        </mat-card-content>
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="colspanCur8News" [rowspan]="rowspanCur8News">
@@ -107,8 +106,19 @@
         <mat-card-header class="card_header">
           <mat-card-title class="card_title">cur8 news</mat-card-title>
         </mat-card-header>
-        <mat-card-content class="card_content">
-           </mat-card-content>
+        <mat-card-content class="card_content" style="overflow-y: scroll;
+        display: flex;
+        flex-direction: column;">
+          @for( item of content; track $index){
+          <mat-card>
+            <mat-card-content >
+              <div appInterpretaHTML [appInterpretaHTML]="item" class="post"></div>
+            </mat-card-content>
+          </mat-card>
+          <mat-divider></mat-divider>
+          
+          }
+        </mat-card-content>
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="colspanSocial" [rowspan]="rowspanSocial">
@@ -126,3 +136,14 @@
     </mat-grid-tile>
   </mat-grid-list>
 </div>
+<style>
+  .post {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    
+  }
+</style>

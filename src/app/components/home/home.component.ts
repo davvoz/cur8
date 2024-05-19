@@ -18,7 +18,8 @@ import { GlobalPropertiesHiveService } from '../../services/global-properties-hi
 import { BarChartComponent } from '../bar-chart/bar-chart.component';
 import { TransazioniCur8Component } from '../transazioni-cur8/transazioni-cur8.component';
 import { ApiService } from '../../services/api.service';
-
+//appInterpretaHTML
+import { InterpretaHTMLDirective } from '../../directives/interpreta-html.directive';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -47,7 +48,8 @@ import { ApiService } from '../../services/api.service';
     NgFor,
     ReversePadZeroPipe,
     BarChartComponent,
-    TransazioniCur8Component
+    TransazioniCur8Component,
+    InterpretaHTMLDirective
   ]
 })
 
@@ -100,6 +102,7 @@ export class HomeComponent implements AfterViewInit {
   manaPercentageHive: number = 0;
   allTimePayOut: any;
   days_payout: any;
+  content: any;
 
 
   constructor(private gs: GlobalPropertiesHiveService, private apiService: ApiService) {
@@ -156,6 +159,8 @@ export class HomeComponent implements AfterViewInit {
   }
 
   private init() {
+    this.content = this.gs.listaPost;
+
     this.totalDelegators = this.gs.delegatori;
     this.totalHivePower = Utils.vestingShares2HP(
       Utils.toStringParseFloat(this.account.vesting_shares),
@@ -190,20 +195,17 @@ export class HomeComponent implements AfterViewInit {
     const radius = maxDimension / 2 - 10;
     const startAngle = 1.5 * Math.PI;
     const endAngle = 1.5 * Math.PI + 2 * Math.PI * manaPercentage / 100;
-    //pulisci 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, startAngle, endAngle);
     ctx.lineWidth = 20;
     ctx.strokeStyle = this.regoleRiempimentoColore(manaPercentage);
     ctx.stroke();
-    //dimesione del testo dinamico
     ctx.font = `${canvas.width / 3}px Impact`;
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(`${manaPercentage}%`, centerX, centerY);
-    //stroke text
     ctx.lineWidth = 1;
     ctx.strokeStyle = 'black';
     ctx.strokeText(`${manaPercentage}%`, centerX, centerY);
