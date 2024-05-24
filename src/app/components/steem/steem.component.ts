@@ -6,7 +6,6 @@ import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import { NgFor } from '@angular/common';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
-
 import { MatCard, MatCardContent, MatCardSubtitle, MatCardTitle, MatCardActions, MatCardHeader, MatCardAvatar, MatCardFooter, MatCardImage, MatCardSmImage, MatCardModule } from '@angular/material/card';
 import { MatGridTile, MatGridList, MatGridAvatarCssMatStyler, MatGridTileFooterCssMatStyler, MatGridTileHeaderCssMatStyler } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
@@ -131,7 +130,7 @@ export class SteemComponent {
   isMobile = false;
   constructor(private gs: GlobalPropertiesSteemService, private userMemoryService: UserMemorySteemService) {
     this.isMobile = window.innerWidth < 768;
-    this.global_properties = this.gs.global_properties;
+    this.global_properties = this.gs.globalProperties;
     this.user.global_properties = this.global_properties;
     this.imridData = this.gs.imridData;
 
@@ -202,7 +201,7 @@ export class SteemComponent {
 
   refresh() {
     this.isLoading = true;
-    UserFactory.getUser(this.user.username, this.gs.global_properties).then((user: User) => {
+    UserFactory.getUser(this.user.username, this.gs.globalProperties).then((user: User) => {
       this.user = user;
       this.isLoading = false;
       this.loaded = true;

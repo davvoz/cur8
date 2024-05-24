@@ -48,7 +48,3 @@ export class Utils {
     }
 }
 
-export interface  GlobalPrezzi {
-    price: number;
-    price_dollar: number;
-  }

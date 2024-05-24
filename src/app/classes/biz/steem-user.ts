@@ -1,6 +1,7 @@
 
 import { Client, VestingDelegation } from "dsteem";
 import { Utils } from "../my_utils";
+import { ApiService } from "../../services/api.service";
 
 interface DynamicGlobalProperties {
     totalVestingFundSteem: number;
@@ -314,12 +315,16 @@ class UserManager {
         };
     }
 
-    private  setSocial() {
+    private async setSocial(): Promise<void> {
+        //come si injecta il servizio apiService? 
+        const apiService = new ApiService();
+        const url = 'https://imridd.eu.pythonanywhere.com/api/steem/follow/' + this.account.name;
+        const res = await apiService.get(url);
         this.social = {
-            followers: this.account.follower_count,
-            following: this.account.following_count,
+            followers: res.follower_count,
+            following: res.following_count,
             postsNumber: this.account.post_count,
-            level: 0
+            level: Math.round(res.rep)
         };
     }
 

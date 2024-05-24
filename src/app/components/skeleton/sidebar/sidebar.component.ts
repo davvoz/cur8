@@ -25,19 +25,24 @@ export class SidebarComponent {
     { name: 'start', url: '/start', icon: 'home', label: 'welcome' },
     { name: 'Dashboard', url: '/home-hive', icon: 'dashboard', label: 'HIVE', image: '../assets/logoTra.png' },
     { name: 'Profile', url: '/hive', icon: 'account_circle', label: 'Profile', image: '../assets/hive_.png' },
+    //transazioni
+    //  { name: 'Transactions', url: '/transazioni-hive', icon: 'list', label: 'Transactions',image: '../assets/hive_.png' },
+    //lista post
+    // { name: 'Posts', url: '/lista-post', icon: 'list', label: 'Posts' }
   ];
 
   itemsSteem = [
     { name: 'start', url: '/start', icon: 'home', label: 'welcome' },
     { name: 'Dashboard', url: '/home-steem', icon: 'dashboard', label: 'STEEM', image: '../assets/logoTra.png' },
     { name: 'Profile', url: '/steem', icon: 'account_circle', label: 'Profile', image: '../assets/steem_traspa_piccola.png' },
+    //transazioni
+    //  { name: 'Transactions', url: '/transazioni-cur8-steem', icon: 'list', label: 'Transactions', image: '../assets/steem_traspa_piccola.png' }
   ];
 
   items = this.itemsHive;
   platform = 'HIVE';
-  textPre = 'You are in the ';
-  textPost = ' section.';
-  text = () => this.textPre + this.platform + this.textPost;
+  textPost = ' section';
+  text = () => this.platform + this.textPost;
   constructor(private router: Router, public switchService: SwitchService, private sidebarService: SidebarService) {
     this.switchService.switchEmitter.subscribe((platform: string) => {
       this.platform = platform;

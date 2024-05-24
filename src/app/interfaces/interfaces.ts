@@ -17,3 +17,14 @@ export interface HiveData {
   date: string;
   id: number;
 }
+
+export interface MyPost {
+  title: string;
+  imageUrl : string;
+  url: string;
+}
+
+export interface  GlobalPrezzi {
+  price: number;
+  price_dollar: number;
+}

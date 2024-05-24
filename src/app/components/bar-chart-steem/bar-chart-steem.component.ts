@@ -6,13 +6,13 @@ import { GlobalPropertiesHiveService } from '../../services/global-properties-hi
 import { HiveData } from '../../interfaces/interfaces';
 
 @Component({
-  selector: 'app-bar-chart',
+  selector: 'app-bar-chart-steem',
   standalone: true,
   imports: [NgFor],
-  templateUrl: './bar-chart.component.html',
-  styleUrl: './bar-chart.component.scss'
+  templateUrl: './bar-chart-steem.component.html',
+  styleUrl: './bar-chart-steem.component.scss'
 })
-export class BarChartComponent implements AfterViewInit {
+export class BarChartSteemComponent {
 
   @ViewChild('canvas')
   canvas!: ElementRef;
@@ -71,7 +71,7 @@ export class BarChartComponent implements AfterViewInit {
       const barHeight = this.calculateHeight(item.curation_rewards_hp);
       const y = height - barHeight;
   
-      ctx.fillStyle = '#f44336';
+      ctx.fillStyle = '#3f51b5';
       const spacing = 10;
       const widthBar = barWidth - spacing;
       ctx.fillRect(index * barWidth + spacing / 2, y, widthBar, barHeight);
@@ -104,6 +104,4 @@ export class BarChartComponent implements AfterViewInit {
       this.drawChart(data);
     });
   }
-
 }
-

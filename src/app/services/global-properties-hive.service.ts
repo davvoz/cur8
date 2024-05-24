@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Client } from '@hiveio/dhive';
-import { GlobalPrezzi, Utils } from '../classes/my_utils';
-import { HiveData, IMRiddData } from '../interfaces/interfaces';
+import { Utils } from '../classes/my_utils';
+import { GlobalPrezzi, HiveData, IMRiddData, MyPost } from '../interfaces/interfaces';
 import { ApiService } from './api.service';
 import { VoteTransaction } from '../classes/biz/hive-user';
 
@@ -9,7 +9,7 @@ import { VoteTransaction } from '../classes/biz/hive-user';
   providedIn: 'root'
 })
 export class GlobalPropertiesHiveService {
-  global_properties = {
+  globalProperties = {
     totalVestingFundHive: 0,
     totalVestingShares: 0
   }
@@ -23,115 +23,103 @@ export class GlobalPropertiesHiveService {
   delegatori = 0;
   transazioniCUR8: VoteTransaction[] = [];
 
-  global_prezzi: GlobalPrezzi = {
+  globalPrezzi: GlobalPrezzi = {
     price: 0,
     price_dollar: 0
   }
 
   dataChart: HiveData[] = [];
   allTimePayOut_DA_MOLTIPLICARE = 0;
-  days_payout_DA_MOLTIPLICARE = 0;
-  listaPost: any[] = [];
+  daysPayout_DA_MOLTIPLICARE = 0;
+  listaPost: MyPost[] = [];
+
+  private client: Client;
 
   constructor(private apiService: ApiService) {
+    this.client = new Client('https://api.hive.blog');
+    this.initGlobalProperties();
+    this.fetchAccountData('cur8');
+    this.fetchVestingDelegations('jacopo.eth', 'cur8');
+    this.fetchAccountHistory('jacopo.eth');
+    this.fetchDelegatori();
+    this.fetchHiveData();
+    this.fetchPostData('cur8', 10);
+  }
 
-    const client = new Client('https://api.hive.blog');
+  private async initGlobalProperties(): Promise<void> {
+    const result = await this.client.database.getDynamicGlobalProperties();
+    this.globalProperties.totalVestingFundHive = Utils.toStringParseFloat(result.total_vesting_fund_hive);
+    this.globalProperties.totalVestingShares = Utils.toStringParseFloat(result.total_vesting_shares);
+  }
 
-    client.database.getDynamicGlobalProperties().then((result) => {
-      this.global_properties.totalVestingFundHive = Utils.toStringParseFloat(result.total_vesting_fund_hive);
-      this.global_properties.totalVestingShares = Utils.toStringParseFloat(result.total_vesting_shares);
-    });
+  private async fetchAccountData(account: string): Promise<void> {
+    const data = await this.client.database.getAccounts([account]);
+    this.accountCUR8 = data[0];
+  }
 
-    client.database.getAccounts(['cur8']).then((data) => {
-      console.log(data);
-      this.accountCUR8 = data[0];
-    });
-
-    client.database.getVestingDelegations('jacopo.eth', 'cur8', 1000).then((result) => {
+  private async fetchVestingDelegations(from: string, to: string): Promise<void> {
+    const result = await this.client.database.getVestingDelegations(from, to, 1000);
+    if (result.length > 0) {
       this.imridData.delegaCur8 = Utils.vestingShares2HP(
         Utils.toStringParseFloat(result[0].vesting_shares),
-        this.global_properties.totalVestingFundHive,
-        this.global_properties.totalVestingShares);
-    });
-
-    client.database.getAccountHistory('jacopo.eth', -1, 1000).then((result) => {
-      const listaDiTransazioni = result;
-      let op: any;
-      const transferTransaction = listaDiTransazioni.reverse().find(transazione => {
-        op = transazione[1].op;
-        return op[0] === 'transfer' && op[1]['from'] === 'cur8';
-      });
-      let importo = 0;
-      if (transferTransaction) {
-        importo = op[1]['amount'];
-      }
-      this.imridData.ultimoPagamento = parseFloat(importo.toString());
-    });
-
-
-
-    apiService.get('https://ecency.com/private-api/received-vesting/cur8').then((result) => {
-      this.delegatori = result['list'].length;
-    });
-
-    apiService.get('https://imridd.eu.pythonanywhere.com/api/hive_cur').then((data: HiveData[]) => {
-      this.dataChart = data;
-    });
-
-    this.apiService.get('https://imridd.eu.pythonanywhere.com/api/hive').then((data) => {
-      //follow_count
-      this.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'];
-      this.days_payout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
-    });
-    try {
-      const query = {
-        tag: 'cur8', // Tag dei post da ottenere, puoi cambiarlo a seconda delle tue esigenze
-        limit: 10, // Numero di post da ottenere, puoi cambiarlo a seconda delle tue esigenze
-      };
-
-      // Richiesta per ottenere i post
-      client.database.getDiscussions('blog', query).then((result) => {
-        console.log(result);
-        result.forEach((post) => {
-          this.listaPost.push(post.body);
-        });
-      }).finally(() => {
-        console.log('Post ottenuti',this.listaPost);
-      });
-    } catch (error) {
-      console.error('Errore durante l\'ottenimento dei post:', error);
+        this.globalProperties.totalVestingFundHive,
+        this.globalProperties.totalVestingShares
+      );
     }
+  }
 
+  private async fetchAccountHistory(account: string): Promise<void> {
+    const result = await this.client.database.getAccountHistory(account, -1, 1000);
+    const transferTransaction = result.reverse().find(transazione => {
+      const op = transazione[1].op;
+      return op[0] === 'transfer' && op[1]['from'] === 'cur8';
+    });
+    if (transferTransaction) {
+      const importo = transferTransaction[1].op[1]['amount'];
+      this.imridData.ultimoPagamento = parseFloat(importo.toString());
+    }
+  }
+
+  private async fetchDelegatori(): Promise<void> {
+    const result = await this.apiService.get('https://ecency.com/private-api/received-vesting/cur8');
+    this.delegatori = result['list'].length;
+  }
+
+  private async fetchHiveData(): Promise<void> {
+    const data = await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/hive_cur');
+    this.dataChart = data;
+  }
+
+  private async fetchPostData(tag: string, limit: number): Promise<void> {
+    const query = { tag, limit };
+    const result = await this.client.database.getDiscussions('blog', query);
+    result.forEach((post) => {
+      const metadata = JSON.parse(post.json_metadata);
+      this.listaPost.push({
+        title: post.title,
+        imageUrl: metadata.image[0],
+        url: post.url
+      });
+    });
   }
 
   async setPrices(): Promise<void> {
-    if (this.global_prezzi.price == 0) {
-      await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices').then((result) => {
-        this.global_prezzi.price = result['HIVE'];
-        this.global_prezzi.price_dollar = result['HBD'];
-      }).finally(() => {
-        console.log('Hive prices set');
-      });
+    if (this.globalPrezzi.price === 0) {
+      const result = await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices');
+      this.globalPrezzi.price = result['HIVE'];
+      this.globalPrezzi.price_dollar = result['HBD'];
+      console.log('Hive prices set');
     }
   }
 
-
   async setTransazioniCur8(): Promise<void> {
-    const client = new Client('https://api.hive.blog');
-
-    await client.database.getAccountHistory('cur8', -1, 1000, [1, 40]).then((result) => {
-      result.forEach((transazione: any) => {
-        const voteTransaction: VoteTransaction = {
-          voter: transazione[1].op[1].voter,
-          author: transazione[1].op[1].author,
-          weight: transazione[1].op[1].weight,
-          timestamp: transazione[1].timestamp
-        }
-        this.transazioniCUR8.push(voteTransaction);
-      });
-    }).finally(() => {
-      console.log('Transazioni set');
-    });
+    const result = await this.client.database.getAccountHistory('cur8', -1, 1000, [1, 40]);
+    this.transazioniCUR8 = result.map(transazione => ({
+      voter: transazione[1].op[1]['voter'],
+      author: transazione[1].op[1]['author'],
+      weight: transazione[1].op[1]['weight'],
+      timestamp: transazione[1].timestamp
+    }));
+    console.log('Transazioni set');
   }
-
 }

@@ -7,7 +7,12 @@
         <mat-grid-tile [colspan]="2" [rowspan]="2" class="tile">
             <mat-card class="card" style="overflow: hidden;">
                 <mat-card-header class="card_header">
-                    <mat-card-title class="card_tittle">Your cur8 stats</mat-card-title>
+                    <mat-card-title class="card_tittle">
+                        <span>Your cur8 stats</span>
+<!--icona ?-->
+                            <mat-icon>help</mat-icon>
+
+                    </mat-card-title>
                 </mat-card-header>
                 <mat-card-content class="card_content">
                     <!--inserisci nome come input--><br>
@@ -111,7 +116,8 @@
                     <br>
                     <div class="valore_account">
                         Valore Account
-                        {{!user.account_value?'0':user.account_value}} $
+                        {{(user.valutes.HIVE + user.valutes.HP) * gs.globalPrezzi.price + user.valutes.HBD * gs.globalPrezzi.price_dollar |  reversePadZero}}$
+
                     </div>
 
                 </mat-card-content>
@@ -183,44 +189,7 @@
             </mat-card>
         </mat-grid-tile>
 
-        <!--LISTA TRANSAZIONI-->
-        <mat-grid-tile [colspan]="3" [rowspan]="4" class="tile">
-            <mat-spinner *ngIf="isLoading"></mat-spinner>
-            <mat-card class="card" *ngIf="!isLoading">
-                <mat-card-header class="c_lista_header">
-                    <mat-card-title class="card_tittle"><span>Transactions</span>
-                    </mat-card-title>
-                    <div>
-
-                        <button mat-icon-button (click)="refresh()" class="refresh" color="accent">
-                            <mat-icon>refresh</mat-icon>
-                        </button>
-                    </div>
-                </mat-card-header>
-                <mat-card-content class="card_content c_lista">
-                    <br>
-                    @for (item of user.transactions; track $index) {
-                    <div class="we">
-                        <div class="we_title">
-                            <h1>
-                                from {{item.from}}
-                                <span appColoreRank [colorByValue]="item.amount" [maxValue]="20"> {{item.amount}}</span>
-                                to {{item.to}}
-                            </h1>
-                            <mat-icon *ngIf="item.from==user.username" class="freccia_rossa">arrow_downward</mat-icon>
-                            <mat-icon *ngIf="item.to==user.username" class="freccia_verde">arrow_upward</mat-icon>
-                        </div>
-                        <div class="we_content">
-                            <div mat-line>{{item.timestamp | dateFormat}}</div>
-                        </div>
-                    </div>
-                    <div mat-line>{{item.memo}}</div>
-
-                    <mat-divider> </mat-divider>
-                    }
-                </mat-card-content>
-            </mat-card>
-        </mat-grid-tile>
+       
 
         <!--Expairing Delegation-->
         <mat-grid-tile [colspan]="3" [rowspan]="4" class="tile">
@@ -240,6 +209,49 @@
                             <td>{{item.expiration | dateFormat}}</td>
                         </tr>
                     </table>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+
+         <!--LISTA TRANSAZIONI-->
+         <mat-grid-tile [colspan]="3" [rowspan]="4" class="tile">
+            <mat-spinner *ngIf="isLoading"></mat-spinner>
+            <mat-card class="card" *ngIf="!isLoading">
+                <mat-card-header class="c_lista_header">
+                    <mat-card-title class="card_tittle"><span>Transactions</span>
+                    </mat-card-title>
+                    <div>
+
+                        <button mat-icon-button (click)="refresh()" class="refresh" color="accent">
+                            <mat-icon>refresh</mat-icon>
+                        </button>
+                    </div>
+                </mat-card-header>
+                <mat-card-content class="card_content c_lista">
+                    <br>
+                    @for (item of user.transactions; track $index) {
+                    <div class="we">
+                        <div class="we_title">
+                            <h1>
+                                from {{item.from}}
+                                @if(item.to==user.username){
+                                    <span appColoreRank [style.color]="'lime'"> {{item.amount}}</span>
+                                }@else{
+                                    <span appColoreRank [style.color]="'red'"> {{item.amount}}</span>
+                                }
+                                to {{item.to}}
+                            </h1>
+                            <mat-icon *ngIf="item.from==user.username" class="freccia_rossa">arrow_upward</mat-icon>
+                            <mat-icon *ngIf="item.to==user.username" class="freccia_verde">arrow_downward</mat-icon>
+                        </div>
+                        <div class="we_content">
+                            <div mat-line>{{item.timestamp | dateFormat}}</div>
+                        </div>
+                    </div>
+                    <div mat-line>{{item.memo}}</div>
+
+                    <mat-divider> </mat-divider>
+                    }
                 </mat-card-content>
             </mat-card>
         </mat-grid-tile>
@@ -344,8 +356,9 @@
 
             <br>
             <div class="valore_account">
-                Valore Account
-                {{!user.account_value?'0':user.account_value}} $
+                Valore Accountossss
+               
+                
             </div>
 
         </mat-card-content>
@@ -435,12 +448,13 @@
                     <mat-icon *ngIf="item.to==user.username" class="freccia_verde">arrow_upward</mat-icon>
                 </div>
                 <div class="we_content">
-                    <div mat-line>{{item.timestamp }}</div>
-                </div>
-            </div>
-            <div mat-line>{{item.memo}}</div>
+                    <div >{{item.timestamp }}</div>
+                    <div >{{item.memo}}</div>
 
-            <mat-divider> </mat-divider>
+                </div>
+                
+            </div>
+
             }
         </mat-card-content>
     </mat-card>
@@ -482,7 +496,7 @@
     }
 
     .freccia_verde {
-        color: green;
+        color: lime;
     }
 
     .buttons_container {

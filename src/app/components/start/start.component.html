@@ -1,69 +1,121 @@
 <div class="container">
-    <h1 class="title">🎉 Welcome to cur8 </h1>
-    <p class="subtitle">
-        🚀 The best way to get the most out of your Steem or Hive account
-        <span>Select an environment with the switch on the top to get started</span>
-    </p>
-    <p class="subtitle">
-        🍔 Click on the burger menu to see the functionalities
-    </p>
-    <p class="subtitle">
-        💰 Start earning by delegating your Steem or Hive Power
-        <span>Check your earnings and the total amount of Steem or Hive Power delegated</span>
-    </p>
-    <p class="subtitle">
-        👥 Check the total amount of delegators and the total amount of payouts
-    </p>
-    <p class="subtitle">
-        ⚡ Check your voting power
-    </p>
-    <p class="subtitle">
-        💸 Check the total amount of payouts
-    </p>
+    <h2>Welcome to Cur8</h2>
+    <p>🚀 Maximize the potential of your Steem or Hive account.</p>
+    <p>Use the switch at the top to select your preferred blockchain environment, either Hive or Steem.</p>
+
+    <div class="features">
+        <h3>Main Features</h3>
+        <ul>
+            <li>💰 <strong>Start Earning Today:</strong> Delegate your Steem or Hive Power to Cur8 and start earning rewards. Track your earnings and view the total amount of delegated Steem or Hive Power.</li>
+            <li>👥 <strong>Delegation Insights:</strong> See the total number of delegators and the cumulative payouts over time.</li>
+            <li>⚡ <strong>Voting Power Status:</strong> Check the available voting power percentage for the Cur8 account, giving you insights into how your delegations are being used.</li>
+            <li>📈 <strong>Manage Your Account:</strong> Easily manage your delegations, convert Hive, and transfer Steem or SBD.</li>
+        </ul>
+    </div>
+
+    <div class="statistics">
+        <h3>Cur8 Statistics Page</h3>
+        <p>📊 <strong>Cur8 Account Data:</strong> Access detailed information about the Cur8 account on the statistics page:</p>
+        <ul>
+            <li>Total Hive Power: View the overall Hive Power delegated to Cur8.</li>
+            <li>Number of Delegators: See how many users are delegating to Cur8.</li>
+            <li>Total Payouts: Review the total payouts, including all-time and the last 7 days.</li>
+            <li>Voting Power: Monitor the available voting power percentage of Cur8.</li>
+            <li>Curation Rewards: Analyze the graph showing Cur8's curation rewards over recent days.</li>
+            <li>Recent Votes: Check the latest voting activities by Cur8.</li>
+            <li>Latest Updates: Stay informed with the newest posts and updates from Cur8.</li>
+        </ul>
+    </div>
+
+    <div class="user-statistics">
+        <h3>User Statistics Page</h3>
+        <p>📈 <strong>Manage Your Account:</strong> In the user statistics section, you can:</p>
+        <ul>
+            <li>Your Cur8 Stats: View your delegation stats and earnings.</li>
+            <li>Delegate to Cur8: Easily delegate your Hive Power.</li>
+            <li>Power Up/Power Down: Convert between liquid Hive and Hive Power.</li>
+            <li>Send Steem/SBD: Send Steem or SBD to others.</li>
+            <li>Expiring Delegations: Track delegations that are about to expire.</li>
+        </ul>
+    </div>
 </div>
+<br><br><br><br><br>
 <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+    }
+
     .container {
         max-width: 800px;
-        margin: 0 auto;
+        margin: auto;
         background: #fff;
-        border-radius: 15px;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         padding: 40px;
-        margin-top: 50px;
         transition: transform 0.3s, box-shadow 0.3s;
+        color: #333;
     }
 
     .container:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
 
-    .title {
-        font-size: 2.5em;
+    h2 {
+        font-size: 2rem;
         margin-bottom: 20px;
-        color: #2c3e50;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        color: #0056b3;
     }
 
-    .subtitle {
-        font-size: 1.3em;
+    h3 {
+        font-size: 1.5rem;
+        margin-top: 40px;
         margin-bottom: 20px;
-        color: #34495e;
-        line-height: 1.6;
+        color: #003d75;
     }
 
-    .subtitle span {
-        display: block;
-        margin-top: 10px;
-        font-size: 1em;
-        color: #16a085;
-        font-style: italic;
+    p {
+        font-size: 1rem;
+        line-height: 1.5;
+        margin-bottom: 20px;
     }
 
-    /*su mobile no margin top*/
+    ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    ul li {
+        padding-left: 1.5em;
+        text-indent: -1.5em;
+    }
+
+    ul li:before {
+        content: '✔️';
+        margin-right: 10px;
+        color: #28a745;
+    }
+
+    strong {
+        color: #0056b3;
+    }
+
     @media (max-width: 600px) {
         .container {
             margin-top: 0;
+            padding: 20px;
+        }
+
+        h2, h3 {
+            font-size: 1.5rem;
+        }
+
+        p, ul li {
+            font-size: 0.875rem;
         }
     }
 </style>

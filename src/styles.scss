@@ -10,7 +10,6 @@ $dark-theme: mat.define-dark-theme(
       accent: mat.define-palette(mat.$blue-grey-palette),
         warn: mat.define-palette(mat.$amber-palette),
     ),
-    
   )
 );
 
@@ -34,6 +33,8 @@ $light-theme: mat.define-dark-theme(
   // typography and density styles.
   @include mat.all-component-themes($light-theme);
 }
+
+
 
 html,
 body {

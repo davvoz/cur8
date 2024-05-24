@@ -18,71 +18,73 @@ import { GlobalPropertiesHiveService } from '../../services/global-properties-hi
 import { BarChartComponent } from '../bar-chart/bar-chart.component';
 import { TransazioniCur8Component } from '../transazioni-cur8/transazioni-cur8.component';
 import { ApiService } from '../../services/api.service';
-//appInterpretaHTML
 import { InterpretaHTMLDirective } from '../../directives/interpreta-html.directive';
+import { TransazioniCur8SteemComponent } from "../transazioni-cur8-steem/transazioni-cur8-steem.component";
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  templateUrl: './home.component2.html',
-  styleUrl: './home.component.scss',
-  imports: [
-    NgIf,
-    MatToolbar,
-    MatToolbarRow,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatGridTile,
-    MatGridList,
-    MatGridAvatarCssMatStyler,
-    MatGridTileFooterCssMatStyler,
-    MatDivider,
-    MatCard,
-    MatCardContent,
-    MatCardTitle,
-    MatCardSubtitle,
-    MatCardActions,
-    MatButton,
-    MatIcon,
-    MatCardImage,
-    NgFor,
-    ReversePadZeroPipe,
-    BarChartComponent,
-    TransazioniCur8Component,
-    InterpretaHTMLDirective
-  ]
+    selector: 'app-home',
+    standalone: true,
+    templateUrl: './home.component2.html',
+    styleUrl: './home.component.scss',
+    imports: [
+        NgIf,
+        MatToolbar,
+        MatToolbarRow,
+        MatCard,
+        MatCardContent,
+        MatCardHeader,
+        MatGridTile,
+        MatGridList,
+        MatGridAvatarCssMatStyler,
+        MatGridTileFooterCssMatStyler,
+        MatDivider,
+        MatCard,
+        MatCardContent,
+        MatCardTitle,
+        MatCardSubtitle,
+        MatCardActions,
+        MatButton,
+        MatIcon,
+        MatCardImage,
+        NgFor,
+        ReversePadZeroPipe,
+        BarChartComponent,
+        TransazioniCur8Component,
+        InterpretaHTMLDirective,
+        TransazioniCur8SteemComponent
+    ]
 })
 
 export class HomeComponent implements AfterViewInit {
   gridCols: number = 6;
-  rowHeight: string = '200px';
-
+  rowHeight: string = '120px';
+  
+  factor: number = 2;
   colspanWelcome: number = 6;
-  rowspanWelcome: number = 1;
+  rowspanWelcome: number = 1 * this.factor;
 
   colspanTotalHivePower: number = 3;
-  rowspanTotalHivePower: number = 1;
+  rowspanTotalHivePower: number = 1 * this.factor;
 
   colspanTotalDelegators: number = 3;
-  rowspanTotalDelegators: number = 1;
+  rowspanTotalDelegators: number = 1 * this.factor;
 
   colspanAllTimePayOut: number = 2;
-  rowspanAllTimePayOut: number = 1;
+  rowspanAllTimePayOut: number = 1 * this.factor;
 
   colspanVotingPower: number = 2;
-  rowspanVotingPower: number = 1;
+  rowspanVotingPower: number = 1 * this.factor;
 
   colspanLast7DaysPayout: number = 2;
-  rowspanLast7DaysPayout: number = 1;
+  rowspanLast7DaysPayout: number = 1 * this.factor;
 
   colspanCurationRewards: number = 3;
   rowspanCurationRewards: number = 2;
 
   colspanRecentOperations: number = 3;
-  rowspanRecentOperations: number = 2;
+  rowspanRecentOperations: number = 3;
 
   colspanCur8News: number = 3;
-  rowspanCur8News: number = 2;
+  rowspanCur8News: number = 4;
 
   colspanSocial: number = 3;
   rowspanSocial: number = 2;
@@ -121,17 +123,17 @@ export class HomeComponent implements AfterViewInit {
       this.colspanSocial = 1;
     }
 
-    if (gs.allTimePayOut_DA_MOLTIPLICARE === 0 || gs.days_payout_DA_MOLTIPLICARE === 0) {
+    if (gs.allTimePayOut_DA_MOLTIPLICARE === 0 || gs.daysPayout_DA_MOLTIPLICARE === 0) {
       this.apiService.get('https://imridd.eu.pythonanywhere.com/api/hive').then((data) => {
         //follow_count
-        this.allTimePayOut = data[0]['total_rewards'] * this.gs.global_prezzi.price;
-        this.days_payout = data[0]['curation_rewards_7d'] * this.gs.global_prezzi.price;
+        this.allTimePayOut = data[0]['total_rewards'] * this.gs.globalPrezzi.price;
+        this.days_payout = data[0]['curation_rewards_7d'] * this.gs.globalPrezzi.price;
         this.gs.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'];
-        this.gs.days_payout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
+        this.gs.daysPayout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
       });
     } else {
-      this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.global_prezzi.price;
-      this.days_payout = this.gs.days_payout_DA_MOLTIPLICARE * this.gs.global_prezzi.price;
+      this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
+      this.days_payout = this.gs.daysPayout_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
     }
 
     if (!this.gs.accountCUR8) {
@@ -164,12 +166,12 @@ export class HomeComponent implements AfterViewInit {
     this.totalDelegators = this.gs.delegatori;
     this.totalHivePower = Utils.vestingShares2HP(
       Utils.toStringParseFloat(this.account.vesting_shares),
-      this.gs.global_properties.totalVestingFundHive,
-      this.gs.global_properties.totalVestingShares);
+      this.gs.globalProperties.totalVestingFundHive,
+      this.gs.globalProperties.totalVestingShares);
     this.totalHiveRecieved = Utils.vestingShares2HP(
       Utils.toStringParseFloat(this.account.received_vesting_shares),
-      this.gs.global_properties.totalVestingFundHive,
-      this.gs.global_properties.totalVestingShares);
+      this.gs.globalProperties.totalVestingFundHive,
+      this.gs.globalProperties.totalVestingShares);
     this.totalHive = this.totalHivePower + this.totalHiveRecieved;
   }
 

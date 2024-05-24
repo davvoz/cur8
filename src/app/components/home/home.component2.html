@@ -4,17 +4,27 @@
       <mat-card class="card">
         <mat-card-header class="card_header_special">
           <mat-card-title class="card_title_special">
-            <img src="assets/logo_tra.png" alt="cur8 logo" style="width: 100px; height: 100px; margin-right: 10px;">
-            <img src="assets/hive_.png" alt="hive logo" style="width: 100px; height: 100px; margin-right: 10px;">
+            <img src="assets/logo_tra.png" alt="cur8 logo" style="
+            width: 100px; 
+            height: 100px; 
+            margin-right: 10px;
+            border-radius: 50%;
+            background-color: white;
+            padding: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.12);">
+            <img src="assets/hive_.png" alt="hive logo" style="
+            width: 100px; height: 
+            100px; margin-right: 
+            10px;border-radius: 50%;
+            background-color: white;
+            padding: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.12);">
             <span>
-              Welecome to cur8.ern!
+              Welecome to cur8.ern! To start early daily incomes just delegate some Hive Power in profile
+              section
             </span>
           </mat-card-title>
-        </mat-card-header><br>
-        <mat-card-content class="card_content">
-          <span> To start early daily incomes just delegate some Hive Power in profile
-            section</span>
-        </mat-card-content>
+        </mat-card-header>
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="colspanTotalHivePower" [rowspan]="rowspanTotalHivePower">
@@ -79,45 +89,8 @@
           <mat-card-title class="card_title">cur8 curation rewards (7 days)</mat-card-title>
         </mat-card-header>
         <mat-card-content class="card_content">
-          <app-bar-chart style="width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-content: stretch;
-          justify-content: space-evenly;
-          align-items: center;"></app-bar-chart>
-
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile [colspan]="colspanRecentOperations" [rowspan]="rowspanRecentOperations">
-      <mat-card class="card">
-        <mat-card-header class="card_header">
-          <mat-card-title class="card_title">cur8 recent operations</mat-card-title>
-          <!--bottone refresh-->
-
-        </mat-card-header>
-        <mat-card-content class="card_content_special">
-          <app-transazioni-cur8></app-transazioni-cur8>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile [colspan]="colspanCur8News" [rowspan]="rowspanCur8News">
-      <mat-card class="card">
-        <mat-card-header class="card_header">
-          <mat-card-title class="card_title">cur8 news</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="card_content" style="overflow-y: scroll;
-        display: flex;
-        flex-direction: column;">
-          @for( item of content; track $index){
-          <mat-card>
-            <mat-card-content >
-              <div appInterpretaHTML [appInterpretaHTML]="item" class="post"></div>
-            </mat-card-content>
-          </mat-card>
-          <mat-divider></mat-divider>
-          
-          }
+          <app-bar-chart class="bar-chart"></app-bar-chart>
+          <app-bar-chart></app-bar-chart>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -134,16 +107,38 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
+    <mat-grid-tile [colspan]="colspanCur8News" [rowspan]="rowspanCur8News">
+      <mat-card class="card">
+        <mat-card-header class="card_header">
+          <mat-card-title class="card_title">cur8 news</mat-card-title>
+        </mat-card-header>
+        <div class="card_contento">
+          @for( item of content; track $index){
+
+          <div class="post">
+            <div class="postContainer">
+              <div class="post_image">
+                <img src="{{item.imageUrl}}" alt="cur8 news" style="width: 100px; height: 100px;">
+              </div>
+              <div class="post_header">
+                <span>{{item.title}}</span>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="colspanCur8News" [rowspan]="colspanCur8News+1">
+      <mat-card class="card">
+        <mat-card-header class="card_header">
+          <mat-card-title class="card_title">Vote</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="card_content_trans">
+          <app-transazioni-cur8></app-transazioni-cur8>
+
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
   </mat-grid-list>
 </div>
-<style>
-  .post {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-    
-  }
-</style>

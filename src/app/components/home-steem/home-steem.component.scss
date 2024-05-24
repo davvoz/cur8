@@ -1,131 +1,201 @@
+/* Stili generali */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.card_title_special {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  font-size: 1.5em;
+}
+
+.desktop, .mobile {
+  background: #333; /* Sfondo scuro */
+  color: #fff; /* Testo bianco per contrasto */
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.grid_list {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Stile delle card */
+.card {
+  background: #444; /* Sfondo card scuro */
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px;
+  padding: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 100%;
+  height: 100%;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Header delle card */
+.card_header, .card_header_special {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.card_header {
+  background-color: #555; /* Sfondo header card */
+  color: #fff; /* Testo bianco */
+}
+
+.card_header_special {
+  background: linear-gradient(to right, #192046, #3f51b5); /* Gradient blu */
+  color: white; /* Testo bianco per contrasto */
+  padding: 15px;
+}
+
+.card_title, .card_title_special {
+  font-size: 1.2em;
+}
+
+.card_title_special {
+  font-size: 1.5em;
+  margin-left: 15px;
+}
+
+/* Contenuto delle card */
+.card_content, .card_content_special {
+  padding: 15px;
+  background-color: #666; /* Sfondo contenuto card */
+  color: #fff; /* Testo bianco */
+}
+
+.card_content span {
+  display: block;
+  text-align: center;
+  font-size: 1.5em;
+}
+
+/* Pulsanti */
+button.mat-raised-button {
+  background-color: #3f51b5; /* Pulsante blu */
+  color: #fff; /* Testo bianco */
+  margin: 5px;
+  border: none;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  transition: background-color 0.3s;
+  border-radius: 20px;
+  box-shadow: 0 4px 14px rgba(63, 81, 181, 0.4);
+}
+
+button.mat-raised-button:hover {
+  background-color: #5c6bc0; /* Pulsante blu più chiaro al passaggio del mouse */
+}
+
+/* Post e contenuti delle news */
+.post {
+  background-color: #555; /* Sfondo post */
+  margin: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.post:hover {
+  transform: translateY(-5px);
+}
+
+.postContainer {
+  padding: 10px;
+}
+
+.post_image {
+  width: 100px;
+  height: 100px;
+  margin: auto;
+}
+
+.post_header {
+  text-align: center;
+  font-size: 1em;
+  color: #fff; /* Testo bianco */
+}
+
+/* Layout flex e grid */
+.card_contento, .card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
 .card_content_special {
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  justify-content: space-evenly;
+  align-items: center;
+  overflow-y: scroll;
+}
+
+.propertiesList {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.card_contento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  overflow: auto;
+}
+
+.card_content_trans {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  overflow: auto;
+}
+
+/* Layout per dispositivi mobili */
+@media screen and (max-width: 600px) {
+  .card_content, .card_content_special {
     display: flex;
     flex-direction: column;
-    align-content: stretch;
+    align-items: center;
     justify-content: space-evenly;
-    align-items: center;
-    overflow-y: scroll;
   }
-  
-  app-transazioni-cur8 {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+
+  .card_title_special {
+    grid-template-columns: repeat(3, 1fr);
+    font-size: small;
   }
-  
-  .propertiesList {
-    display: flex;
-    flex-direction: column;
-    justify-content: justify;
-    align-items: flex-end;
+
+  .card_title {
+    font-size: small;
   }
-  
+
   .desktop span {
-    font-size: xx-large;
+    font-size: large;
   }
-  
+
   .mobile {
     overflow-x: hidden;
   }
-  
+
   .mobile mat-card {
     margin-top: 10px;
     font-size: medium;
   }
-  
-  img {
-    border-radius: 50%;
-    background-color: white;
-    padding: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-  }
-  
-  .card_header_special {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-  }
-  
-  .card_title_special {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    width: 100%;
-  }
-  
-  .card_content {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-around;
-  }
-  
-  .card_header {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-  }
-  
-  .card_title {
-    font-size: 16px;
-    font-weight: 500;
-    align-items: center;
-    justify-content: center;
-  
-  }
-  
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  
-  }
-  
-  .card {
-    width: 100%;
-    height: 100%;
-  }
-  
-  /*organizza per il mobile */
-  @media screen and (max-width: 600px) {
-  
-    .card_content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-evenly;
-    }
-  
-    .card_content_special {
-      display: flex;
-      flex-direction: column;
-      align-content: stretch;
-      justify-content: space-evenly;
-      align-items: center;
-      overflow-y: scroll;
-    }
-  
-    .card_title_special {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      width: 100%;
-      font-size: small;
-    }
-  
-    .card_title {
-      font-size: small;
-      font-weight: 500;
-      align-items: center;
-      justify-content: center;
-    }
-  
-    .card_header {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-    }
-    .desktop span {
-      font-size: large;
-    }
-  }
+}

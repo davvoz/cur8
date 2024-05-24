@@ -58,6 +58,19 @@ export class HeaderComponent {
         this.router.navigate(['/home-steem']);
       }
     }
+    //Se siamo sulle transazioni 
+    if (platform === 'HIVE' && urlAttuale === '/transazioni-cur8-steem') {
+      //se siamo sulle transazioni steem navighiamo verso le transazioni hive
+      if (urlAttuale === '/transazioni-cur8-steem') {
+        this.router.navigate(['/transazioni-hive']);
+      }
+    }
+    if (platform === 'STEEM' && urlAttuale === '/transazioni-hive') {
+      //se siamo sulle transazioni hive navighiamo verso le transazioni steem
+      if (urlAttuale === '/transazioni-hive') {
+        this.router.navigate(['/transazioni-cur8-steem']);
+      }
+    }
     //se sei su mobile apri la sidebar
     if ( this.sidebarservice.isOpen && urlAttuale === '/start') {
       this.sidebarservice.toggle();
