@@ -1,4 +1,4 @@
-import {  Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { GlobalPrezzi, HiveData, IMRiddData, MyPost } from '../interfaces/interfaces';
 import { Client } from 'dsteem';
 import { Utils } from '../classes/my_utils';
@@ -44,7 +44,11 @@ export class GlobalPropertiesSteemService {
     this.fetchAccountHistory('jacopo.eth');
     this.fetchDelegatori();
     this.fetchHiveData();
-    this.fetchPostData('cur8', 10);
+    //this.fetchPostData('luciojolly', 9);
+    //cicla 9 post di luciojolly
+
+    this.setPrices();
+    this.setTransazioniCur8();
   }
 
   private async initGlobalProperties(): Promise<void> {
@@ -72,7 +76,7 @@ export class GlobalPropertiesSteemService {
   private async fetchAccountHistory(account: string): Promise<void> {
     //using call instead of getAccountHistory
     const result = await this.client.database.call('get_account_history', [account, -1, 1000]);
-    const transferTransaction = result.reverse().find((transazione: { op: any; }[]) => {
+    result.reverse().find((transazione: { op: any; }[]) => {
       const op = transazione[1].op;
       return op[0] === 'transfer' && op[1]['from'] === 'cur8';
     });
@@ -93,6 +97,7 @@ export class GlobalPropertiesSteemService {
     const query = { tag, limit };
     const result = await this.client.database.getDiscussions('blog', query);
     result.forEach((post) => {
+      console.log(post);
       const metadata = JSON.parse(post.json_metadata);
       this.listaPost.push({
         title: post.title,
@@ -100,6 +105,21 @@ export class GlobalPropertiesSteemService {
         url: post.url
       });
     });
+  }
+
+  async fetchPostDataCiclo(autor: string): Promise<void> {
+
+      const query = { tag: autor, limit: 1, };
+      const result = await this.client.database.getDiscussions('blog', query);
+      const metadata = JSON.parse(result[0].json_metadata);
+      if(metadata.image){
+        this.listaPost.push({
+          title: result[0].title,
+          imageUrl: metadata.image[0],
+          url:'https://steemit.com'+ result[0].url
+        });
+
+      }
   }
 
   async setPrices() {
@@ -111,14 +131,31 @@ export class GlobalPropertiesSteemService {
     });
   }
 
-  async setTransazioniCur8(): Promise<void> {
-    const result = await this.client.database.call('get_account_history', ['cur8', -1, 1000]);
-    this.transazioniCUR8 = result.map((transazione: any) => ({
-      voter: transazione[1].op[1]['voter'],
-      author: transazione[1].op[1]['author'],
-      weight: transazione[1].op[1]['weight'],
-      timestamp: transazione[1].timestamp
-    }));
-    console.log('Transazioni set');
+  private async setTransazioniCur8(): Promise<void> {
+    const _3DaysAgo = new Date();
+    _3DaysAgo.setDate(_3DaysAgo.getDate() - 4);
+    const today = new Date();
+    const baseUrl = 'https://sds.steemworld.org/account_history_api/getHistoryByOpTypesTime/cur8/vote/';
+    const url = baseUrl + Math.floor(_3DaysAgo.getTime() / 1000) + '-' + Math.floor(today.getTime() / 1000);
+    this.apiService.get(url).then((result) => {
+      const muta = result.result.rows;
+      muta.forEach((transazione: any) => {
+        const oggetto = transazione[6][1];
+        this.transazioniCUR8.push({
+          voter: oggetto.voter,
+          author: oggetto.author,
+          weight: oggetto.weight,
+          timestamp: transazione[1]
+        });
+      });
+    }).finally(() => {
+      console.log('Transazioni set');
+      //usa le prime 9 transazioni di cur8
+  //cicla
+      for (let i = 0; i < 10; i++) {
+        this.fetchPostDataCiclo(this.transazioniCUR8[i].author);
+      } 
+    });
   }
+
 }

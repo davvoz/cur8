@@ -58,14 +58,12 @@ body {
 }
 
 .card_header_special {
-  background: linear-gradient(to right, #ff9800, #ffc107); /* Gradient arancione-giallo */
-  color: #333; /* Testo scuro per contrasto */
+  background: linear-gradient(to right, #8a1f1f, #d32f2f); /* Gradient arancione-giallo */
   padding: 15px;
 }
 
 .card_title, .card_title_special {
   font-size: 1.2em;
-  font-weight: bold;
 }
 
 .card_title_special {
@@ -84,7 +82,6 @@ body {
   display: block;
   text-align: center;
   font-size: 1.5em;
-  font-weight: bold;
 }
 
 /* Pulsanti */
@@ -130,7 +127,6 @@ button.mat-raised-button:hover {
 .post_header {
   text-align: center;
   font-size: 1em;
-  font-weight: bold;
   color: #fff; /* Testo bianco */
 }
 
@@ -162,8 +158,6 @@ button.mat-raised-button:hover {
   overflow : auto;
 }
 .card_content_trans{
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
   overflow: auto;

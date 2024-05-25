@@ -33,22 +33,12 @@ export class TransazioniCur8SteemComponent {
 
 
   listaTransazioni: VoteTransaction[] = [];
-  isLoading = true;
+  isLoading = false;
   search: any;
   constructor(public gb: GlobalPropertiesSteemService) { }
 
   ngOnInit(): void {
-    if (this.gb.transazioniCUR8.length > 0) {
-      this.listaTransazioni = this.gb.transazioniCUR8;
-      this.isLoading = false;
-    } else {
-      this.gb.setTransazioniCur8().then(() => {
-        this.gb.transazioniCUR8.reverse().forEach((transazione: VoteTransaction) => {
-          this.listaTransazioni.push(transazione);
-        });
-        this.isLoading = false;
-      });
-    }
+    this.listaTransazioni =  this.gb.transazioniCUR8;
   }
 
   // goSearch() {

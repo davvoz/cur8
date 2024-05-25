@@ -20,8 +20,8 @@
               padding: 5px;
               border: 1px solid rgba(0, 0, 0, 0.12);">
             <span>
-              Welecome to cur8.ern!To start early daily incomes just delegate some steem Power in profile
-              section
+              Welcome to cur8.earn! To start earning daily income, delegate some Steem Power in the profile section.
+
             </span>
           </mat-card-title>
         </mat-card-header>
@@ -30,7 +30,7 @@
     <mat-grid-tile [colspan]="colspanTotalSteemPower" [rowspan]="rowspanTotalSteemPower">
       <mat-card class="card">
         <mat-card-header class="card_header">
-          <mat-card-title class="card_title">Total cur8 steem Power</mat-card-title>
+          <mat-card-title class="card_title">Total cur8 STEEM power</mat-card-title>
         </mat-card-header><br>
         <mat-card-content class="card_content">
           <span> {{totalSteem | reversePadZero}} HP</span>
@@ -61,7 +61,7 @@
     <mat-grid-tile [colspan]="colspanVotingPower" [rowspan]="rowspanVotingPower">
       <mat-card class="card">
         <mat-card-header class="card_header">
-          <mat-card-title class="card_title">Voting Power</mat-card-title>
+          <mat-card-title class="card_title">Voting power</mat-card-title>
           <mat-card-subtitle></mat-card-subtitle>
         </mat-card-header>
         <mat-card-content style="display: flex;
@@ -75,7 +75,7 @@
     <mat-grid-tile [colspan]="colspanLast7DaysPayout" [rowspan]="rowspanLast7DaysPayout">
       <mat-card class="card">
         <mat-card-header class="card_header">
-          <mat-card-title class="card_title">Last 7 days Payout</mat-card-title>
+          <mat-card-title class="card_title">Last 7 days payout</mat-card-title>
         </mat-card-header>
         <br>
         <mat-card-content class="card_content">
@@ -86,7 +86,7 @@
     <mat-grid-tile [colspan]="colspanCurationRewards" [rowspan]="rowspanCurationRewards">
       <mat-card class="card">
         <mat-card-header class="card_header">
-          <mat-card-title class="card_title">cur8 curation rewards (7 days)</mat-card-title>
+          <mat-card-title class="card_title">Curation rewards (7 days)</mat-card-title>
         </mat-card-header>
         <mat-card-content class="card_content">
           <app-bar-chart-steem></app-bar-chart-steem>
@@ -108,19 +108,21 @@
     <mat-grid-tile [colspan]="colspanCur8News" [rowspan]="rowspanCur8News">
       <mat-card class="card">
         <mat-card-header class="card_header">
-          <mat-card-title class="card_title">cur8 news</mat-card-title>
+          <mat-card-title class="card_title">Best authors</mat-card-title>
         </mat-card-header>
-        <mat-card-content class="card_content" style="
-          overflow-y: scroll;
-          display: flex;
-          flex-direction: column;">
+        <mat-card-content class="card_contento" >
           @for( item of content; track $index){
-          <mat-card>
-            <mat-card-content>
-
-            </mat-card-content>
-          </mat-card>
-          <mat-divider></mat-divider>
+            <div class="post">
+              <div class="postContainer">
+                <div class="post_image">
+                  
+                  <a href="{{item.url}}" target="_blank"><img src="{{item.imageUrl}}" alt="cur8 news" style="width: 100px; height: 100px;"></a>
+                </div>
+                <div class="post_header">
+                  <span>{{item.title}}</span>
+                </div>
+              </div>
+            </div>
           }
         </mat-card-content>
       </mat-card>
@@ -128,7 +130,7 @@
     <mat-grid-tile [colspan]="colspanRecentOperations" [rowspan]="rowspanRecentOperations+1">
       <mat-card class="card">
         <mat-card-header class="card_header">
-          <mat-card-title class="card_title">cur8 recent operations</mat-card-title>
+          <mat-card-title class="card_title">Recent votes</mat-card-title>
         </mat-card-header>
         <mat-card-content class="card_content_special">
           <app-transazioni-cur8-steem></app-transazioni-cur8-steem>

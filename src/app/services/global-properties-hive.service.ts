@@ -43,7 +43,9 @@ export class GlobalPropertiesHiveService {
     this.fetchAccountHistory('jacopo.eth');
     this.fetchDelegatori();
     this.fetchHiveData();
-    this.fetchPostData('cur8', 10);
+    //this.fetchPostData('cur8', 10);
+    this.setPrices();
+    this.setTransazioniCur8();
   }
 
   private async initGlobalProperties(): Promise<void> {
@@ -102,7 +104,20 @@ export class GlobalPropertiesHiveService {
       });
     });
   }
+  async fetchPostDataCiclo(autor: string): Promise<void> {
 
+    const query = { tag: autor, limit: 1, };
+    const result = await this.client.database.getDiscussions('blog', query);
+    const metadata = JSON.parse(result[0].json_metadata);
+    if(metadata.image){
+      this.listaPost.push({
+        title: result[0].title,
+        imageUrl: metadata.image[0],
+        url:'https://peakd.com'+ result[0].url
+      });
+
+    }
+}
   async setPrices(): Promise<void> {
     if (this.globalPrezzi.price === 0) {
       const result = await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices');
@@ -112,7 +127,7 @@ export class GlobalPropertiesHiveService {
     }
   }
 
-  async setTransazioniCur8(): Promise<void> {
+  private async setTransazioniCur8(): Promise<void> {
     const result = await this.client.database.getAccountHistory('cur8', -1, 1000, [1, 40]);
     this.transazioniCUR8 = result.map(transazione => ({
       voter: transazione[1].op[1]['voter'],
@@ -121,5 +136,9 @@ export class GlobalPropertiesHiveService {
       timestamp: transazione[1].timestamp
     }));
     console.log('Transazioni set');
+  for (let i = 0; i < 11; i++) {
+   this.fetchPostDataCiclo(this.transazioniCUR8[i].author);
   }
+  }
+
 }

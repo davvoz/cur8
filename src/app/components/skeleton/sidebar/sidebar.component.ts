@@ -20,11 +20,11 @@ import { SidebarService } from '../../../services/sidebar.service';
 })
 export class SidebarComponent {
 
-
+  welcome = { name: 'start', url: '/start', icon: 'home', label: 'Welcome' , image: ''};
   itemsHive = [
-    { name: 'start', url: '/start', icon: 'home', label: 'welcome' },
-    { name: 'Dashboard', url: '/home-hive', icon: 'dashboard', label: 'HIVE', image: '../assets/logoTra.png' },
-    { name: 'Profile', url: '/hive', icon: 'account_circle', label: 'Profile', image: '../assets/hive_.png' },
+    this.welcome,
+    { name: 'Dashboard', url: '/home-hive', icon: '', label: 'HIVE Dashboard', image: '../assets/logoTra.png' },
+    { name: 'Profile', url: '/hive', icon: '', label: 'Profile', image: '../assets/hive_.png' },
     //transazioni
     //  { name: 'Transactions', url: '/transazioni-hive', icon: 'list', label: 'Transactions',image: '../assets/hive_.png' },
     //lista post
@@ -32,9 +32,9 @@ export class SidebarComponent {
   ];
 
   itemsSteem = [
-    { name: 'start', url: '/start', icon: 'home', label: 'welcome' },
-    { name: 'Dashboard', url: '/home-steem', icon: 'dashboard', label: 'STEEM', image: '../assets/logoTra.png' },
-    { name: 'Profile', url: '/steem', icon: 'account_circle', label: 'Profile', image: '../assets/steem_traspa_piccola.png' },
+    this.welcome,
+    { name: 'Dashboard', url: '/home-steem', icon: '', label: 'STEEM Dashboard', image: '../assets/logoTra.png' },
+    { name: 'Profile', url: '/steem', icon: '', label: 'Profile', image: '../assets/steem_traspa_piccola.png' },
     //transazioni
     //  { name: 'Transactions', url: '/transazioni-cur8-steem', icon: 'list', label: 'Transactions', image: '../assets/steem_traspa_piccola.png' }
   ];

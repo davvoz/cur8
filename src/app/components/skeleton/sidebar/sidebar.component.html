@@ -1,5 +1,4 @@
 <!--facciamo il contenuto del sidebar.component.html-->
-<h1>{{text()}}</h1>
 <mat-nav-list>
     <div *ngFor="let item of items" (click)="navigateTo(item.url)" class="item">
         
@@ -15,7 +14,7 @@
         <h3 mat-line>{{item.label}}</h3>
     </div>
 </mat-nav-list>
-
+<br><br>
 <app-prezzi [platform]="platform"></app-prezzi>
 <style>
     mat-nav-list {
