@@ -84,6 +84,7 @@ export class SteemComponent {
 
   valoreDelega = 0;
   user: User = {
+    totalExpiringDelegations:  0,
     expiringDelegations: [],
     image: '',
     transactions: [],

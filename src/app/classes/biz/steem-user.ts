@@ -56,6 +56,9 @@ export interface User {
     global_properties: DynamicGlobalProperties;
     transactions: MYTransaction[];
     expiringDelegations: ExpiringDelegation[];
+    totalExpiringDelegations: number;
+
+
 }
 
 export interface ExpiringDelegation {
@@ -311,7 +314,9 @@ class UserManager {
             social: this.social,
             rapportoConCUR8,
             transactions: this.transactions,
-            expiringDelegations: this.expringDelegations
+            expiringDelegations: this.expringDelegations,
+            totalExpiringDelegations: this.expringDelegations.reduce((acc, val) => acc + val.vesting_shares, 0)
+
         };
     }
 
@@ -352,6 +357,7 @@ class UserManager {
 
     getDefaultUser(): User {
         return {
+            totalExpiringDelegations: 0,
             expiringDelegations: [],
             image: '',
             username: '',

@@ -22,6 +22,7 @@ import { TruncatePipe } from '../../pipes/truncate.pipe';
 import { Vest2HPPipe } from '../../pipes/vest2-hp.pipe';
 import { GlobalPropertiesHiveService } from '../../services/global-properties-hive.service';
 import { UserMemoryService } from '../../services/user-memory.service';
+import { Utils } from '../../classes/my_utils';
 
 
 
@@ -93,6 +94,7 @@ export class HiveComponent {
       totalVestingFundHive: 0,
       totalVestingShares: 0,
     },
+      totalExpiringDelegations: 0,
     username: '',
     platform: 'HIVE',
     rapportoConCUR8: {
@@ -123,11 +125,18 @@ export class HiveComponent {
     { ammount: 200, expDate: '2021-01-01' }
   ];
   isMobile = false;
+  sommaExpire = 0;
 
   constructor(private userMemoryService: UserMemoryService, public gs: GlobalPropertiesHiveService) {
     this.isMobile = window.innerWidth < 768;
     this.global_properties = this.gs.globalProperties;
     this.user.global_properties = this.gs.globalProperties;
+
+    this.sommaExpire = Utils.vestingShares2HP(
+       this.user.expiringDelegations.reduce((acc, val) => acc + val.vesting_shares, 0),
+       this.user.global_properties.totalVestingFundHive, 
+       this.user.global_properties.totalVestingShares);
+
     this.imridData = this.gs.imridData;
 
     if (this.userMemoryService.user) {

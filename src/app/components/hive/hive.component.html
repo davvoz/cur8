@@ -63,8 +63,7 @@
                         </div>
                         <div *ngIf="!isLoading">
                             Power disponibile
-                            {{!user.rapportoConCUR8.powerDisponibili?'0':user.rapportoConCUR8.powerDisponibili |
-                            reversePadZero}}
+    {{ !user.rapportoConCUR8.powerDisponibili ? '0' : user.rapportoConCUR8.powerDisponibili - user.totalExpiringDelegations | reversePadZero}}
                             HP
                         </div>
                         <br>
@@ -260,6 +259,51 @@
     <br><br><br>
 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="mobile" *ngIf="isMobile">
     <mat-card class="card">
         <mat-card-header class="card_header">
@@ -292,7 +336,7 @@
 
     <mat-card class="card" *ngIf="!isLoading">
         <mat-card-header class="card_header">
-            <mat-card-title class="card_tittle">Delegated to cur8</mat-card-title>
+            <mat-card-title class="card_tittle">Delegated to cur8  </mat-card-title>
         </mat-card-header>
         <mat-card-content class="card_content">
             <br>
@@ -303,16 +347,14 @@
                         (ngModelChange)="changeDailyProfit()">
                 </div>
                 <div >
-                    Estimated daily profit
+                    Estimated daily profit 
                     {{estimatedDailyProfit | reversePadZero}}
                     HIVE
                 </div>
                 <div >
-                    Power disponibile
-                    {{!user.rapportoConCUR8.powerDisponibili?'0':user.rapportoConCUR8.powerDisponibili |
-                    reversePadZero}}
-                    HP
-                </div>
+                    Power disponibile 
+                    {{ !user.rapportoConCUR8.powerDisponibili ? '0' : user.rapportoConCUR8.powerDisponibili - user.totalExpiringDelegations | reversePadZero}}
+                </div> 
                 <br>
             </div>
         </mat-card-content>

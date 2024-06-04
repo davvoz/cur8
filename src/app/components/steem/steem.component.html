@@ -56,8 +56,8 @@
                         </div>
                         <div *ngIf="!isLoading">
                             Power disponibile
-                            {{!user.rapportoConCUR8.powerDisponibili?'0':user.rapportoConCUR8.powerDisponibili |
-                            reversePadZero}}
+                            {{ !user.rapportoConCUR8.powerDisponibili ? '0' : user.rapportoConCUR8.powerDisponibili - user.totalExpiringDelegations | reversePadZero}}
+
                             SP
                         </div>
                         <br>
@@ -299,8 +299,8 @@
                 </div>
                 <div >
                     Power disponibile
-                    {{!user.rapportoConCUR8.powerDisponibili?'0':user.rapportoConCUR8.powerDisponibili |
-                    reversePadZero}}
+                    {{ !user.rapportoConCUR8.powerDisponibili ? '0' : user.rapportoConCUR8.powerDisponibili - user.totalExpiringDelegations | reversePadZero}}
+
                     SP
                 </div>
                 <br>
