@@ -16,7 +16,10 @@ export class ReversePadZeroPipe implements PipeTransform {
     while (stringValue.includes('.') && (stringValue.endsWith('0') || stringValue.endsWith('.'))) {
       stringValue = stringValue.slice(0, -1);
     }
-
+    //trasforma in numero
+    const numberValue = Number(stringValue);
+    //approssima al centesimo
+    stringValue = numberValue.toFixed(2);
     return stringValue;
   }
 }

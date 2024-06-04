@@ -20,6 +20,9 @@ import { TransazioniCur8Component } from '../transazioni-cur8/transazioni-cur8.c
 import { ApiService } from '../../services/api.service';
 import { InterpretaHTMLDirective } from '../../directives/interpreta-html.directive';
 import { TransazioniCur8SteemComponent } from "../transazioni-cur8-steem/transazioni-cur8-steem.component";
+//ranzaAllintero
+import { RanzaAllinteroPipe } from '../../pipes/ranza-allintero.pipe';
+
 @Component({
     selector: 'app-home',
     standalone: true,
@@ -50,7 +53,8 @@ import { TransazioniCur8SteemComponent } from "../transazioni-cur8-steem/transaz
         BarChartComponent,
         TransazioniCur8Component,
         InterpretaHTMLDirective,
-        TransazioniCur8SteemComponent
+        TransazioniCur8SteemComponent,
+        RanzaAllinteroPipe
     ]
 })
 

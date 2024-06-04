@@ -19,6 +19,7 @@ import { GlobalPropertiesSteemService } from '../../services/global-properties-s
 import { InterpretaHTMLDirective } from '../../directives/interpreta-html.directive';
 import { TransazioniCur8SteemComponent } from "../transazioni-cur8-steem/transazioni-cur8-steem.component";
 import { BarChartSteemComponent } from "../bar-chart-steem/bar-chart-steem.component";
+import { RanzaAllinteroPipe } from "../../pipes/ranza-allintero.pipe";
 
 @Component({
     selector: 'app-home',
@@ -49,7 +50,8 @@ import { BarChartSteemComponent } from "../bar-chart-steem/bar-chart-steem.compo
         ReversePadZeroPipe,
         InterpretaHTMLDirective,
         TransazioniCur8SteemComponent,
-        BarChartSteemComponent
+        BarChartSteemComponent,
+        RanzaAllinteroPipe
     ]
 })
 export class HomeSteemComponent implements AfterViewInit{
