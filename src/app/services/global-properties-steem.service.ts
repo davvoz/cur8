@@ -76,10 +76,14 @@ export class GlobalPropertiesSteemService {
   private async fetchAccountHistory(account: string): Promise<void> {
     //using call instead of getAccountHistory
     const result = await this.client.database.call('get_account_history', [account, -1, 1000]);
-    result.reverse().find((transazione: { op: any; }[]) => {
+    const transferTransaction = result.reverse().find((transazione: { op: any; }[]) => {
       const op = transazione[1].op;
       return op[0] === 'transfer' && op[1]['from'] === 'cur8';
     });
+    if (transferTransaction) {
+      const importo = transferTransaction[1].op[1]['amount'];
+      this.imridData.ultimoPagamento = parseFloat(importo.toString());
+    }
   }
 
   private async fetchDelegatori(): Promise<void> {

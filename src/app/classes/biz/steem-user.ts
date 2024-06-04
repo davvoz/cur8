@@ -250,8 +250,10 @@ class UserManager {
 
     private async setDelega(delegations: VestingDelegation[]): Promise<number> {
         if (delegations.length > 0) {
-            const vs: VestingDelegation = delegations[0];
-            const { vesting_shares } = vs;
+            //const vs: VestingDelegation = delegations[0];
+            //prendiamo la delega riferita a cur8
+            const vs = delegations.find((delegation) => delegation.delegatee === 'cur8') as VestingDelegation;   
+            const { vesting_shares } = vs === undefined || vs === null ? { vesting_shares: 0 } : vs;
             if (!vesting_shares || !this.dynamicGlobalProperties) {
                 console.error("Invalid delegation or dynamic global properties");
                 return 0;
