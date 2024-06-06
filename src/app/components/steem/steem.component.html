@@ -109,7 +109,8 @@
                     <br>
                     <div class="valore_account">
                         Valore Account
-                        {{!user.account_value?'0':user.account_value}} $
+                        {{(user.valutes.STEEM + user.valutes.SP) * gs.globalPrezzi.price + user.valutes.SBD * gs.globalPrezzi.price_dollar |  reversePadZero}}$
+
                     </div>
 
                 </mat-card-content>

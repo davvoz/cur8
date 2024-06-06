@@ -224,10 +224,15 @@ class UserManager {
         if (this.delegations.length === 0) {
             return 0;
         }
-        const converted = Utils.toStringParseFloat(this.delegations[0].vesting_shares);
-        const out = Utils.vestingShares2HP(converted, this.dynamicGlobalProperties.totalVestingFundSteem, this.dynamicGlobalProperties.totalVestingShares) * 100 / totCur8;
-        this.user.rapportoConCUR8.share = out;
-        return out;
+        for (let i = 0; i < this.delegations.length; i++) {
+            if (this.delegations[i].delegatee === 'cur8') {
+                const converted = Utils.toStringParseFloat(this.delegations[0].vesting_shares);
+                const out = Utils.vestingShares2HP(converted, this.dynamicGlobalProperties.totalVestingFundSteem, this.dynamicGlobalProperties.totalVestingShares) * 100 / totCur8;
+                this.user.rapportoConCUR8.share = out;
+                return out;
+            }
+        }
+        return 0;
     }
 
     private async setUltimoPagamento(username: string): Promise<UltimoPagamento | null> {
@@ -252,7 +257,7 @@ class UserManager {
         if (delegations.length > 0) {
             //const vs: VestingDelegation = delegations[0];
             //prendiamo la delega riferita a cur8
-            const vs = delegations.find((delegation) => delegation.delegatee === 'cur8') as VestingDelegation;   
+            const vs = delegations.find((delegation) => delegation.delegatee === 'cur8') as VestingDelegation;
             const { vesting_shares } = vs === undefined || vs === null ? { vesting_shares: 0 } : vs;
             if (!vesting_shares || !this.dynamicGlobalProperties) {
                 console.error("Invalid delegation or dynamic global properties");
@@ -275,17 +280,20 @@ class UserManager {
         let powerDisponibili = 0;
         let ultimoPagamento: UltimoPagamento | null = null;
         let global_properties = this.dynamicGlobalProperties;
-
-        let image = JSON.parse(this.account.posting_json_metadata).profile.profile_image;
-        if (!this.account.posting_json_metadata) {
+        let image
+        if (this.account.posting_json_metadata) {
+            image = JSON.parse(this.account.posting_json_metadata).profile.profile_image;
+            if (!this.account.posting_json_metadata) {
+                image = '/assets/default_user.jpg';
+            }
+            if (JSON.parse(this.account.posting_json_metadata).profile.profile_image === undefined ||
+                JSON.parse(this.account.posting_json_metadata).profile.profile_image === '' ||
+                JSON.parse(this.account.posting_json_metadata).profile.profile_image === null) {
+                image = '/assets/default_user.jpg';
+            }
+        } else {
             image = '/assets/default_user.jpg';
         }
-        if (JSON.parse(this.account.posting_json_metadata).profile.profile_image === undefined ||
-            JSON.parse(this.account.posting_json_metadata).profile.profile_image === '' ||
-            JSON.parse(this.account.posting_json_metadata).profile.profile_image === null) {
-            image = '/assets/default_user.jpg';
-        }
-
         //const delegations = await this.fetchVestingDelegations(this.account.name);
         let shareValue = 0;
         await this.setDelega(this.delegations).then((res) => {

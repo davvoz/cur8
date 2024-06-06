@@ -183,6 +183,7 @@ class UserManager {
 
     private async calculateShare() {
         const res = await this.client.database.getAccounts(['cur8']);
+        console.log("************************************************", res);
 
         const totCur8 = Utils.toStringParseFloat(res[0].vesting_shares);
         const recivedVestingShares = Utils.toStringParseFloat(res[0].received_vesting_shares);
@@ -215,10 +216,15 @@ class UserManager {
         if (this.delegations.length === 0) {
             return 0;
         }
-        const converted = Utils.toStringParseFloat(this.delegations[0].vesting_shares);
-        const out = Utils.vestingShares2HP(converted, this.dynamicGlobalProperties.totalVestingFundHive, this.dynamicGlobalProperties.totalVestingShares) * 100 / totCur8;
-        this.user.rapportoConCUR8.share = out;
-        return out;
+        for (let i = 0; i < this.delegations.length; i++) {
+            if (this.delegations[i].delegatee === 'cur8') {
+                const converted = Utils.toStringParseFloat(this.delegations[0].vesting_shares);
+                const out = Utils.vestingShares2HP(converted, this.dynamicGlobalProperties.totalVestingFundHive, this.dynamicGlobalProperties.totalVestingShares) * 100 / totCur8;
+                this.user.rapportoConCUR8.share = out;
+                return out;
+            } 
+        }
+        return 0;
     }
 
     private async setUltimoPagamento(username: string): Promise<UltimoPagamento | null> {
@@ -241,7 +247,10 @@ class UserManager {
 
     private async setDelega(delegations: VestingDelegation[]): Promise<number> {
         if (delegations.length > 0) {
-            const vs = delegations.find((delegation) => delegation.delegatee === 'cur8') as VestingDelegation;   
+            const vs = delegations.find((delegation) => delegation.delegatee === 'cur8') as VestingDelegation;
+            if (!vs) {
+                return 0;
+            }
             const { vesting_shares } = vs;
             if (!vesting_shares || !this.dynamicGlobalProperties) {
                 console.error("Invalid delegation or dynamic global properties");
@@ -264,14 +273,18 @@ class UserManager {
         let powerDisponibili = 0;
         let ultimoPagamento: UltimoPagamento | null = null;
         let global_properties = this.dynamicGlobalProperties;
-
-        let image = JSON.parse(this.account.posting_json_metadata).profile.profile_image;
-        if (!this.account.posting_json_metadata) {
-            image = '/assets/default_user.jpg';
-        }
-        if (JSON.parse(this.account.posting_json_metadata).profile.profile_image === undefined ||
-            JSON.parse(this.account.posting_json_metadata).profile.profile_image === '' ||
-            JSON.parse(this.account.posting_json_metadata).profile.profile_image === null) {
+        let image = '';
+        if (this.account.posting_json_metadata) {
+            image = JSON.parse(this.account.posting_json_metadata).profile.profile_image;
+            if (!this.account.posting_json_metadata) {
+                image = '/assets/default_user.jpg';
+            }
+            if (JSON.parse(this.account.posting_json_metadata).profile.profile_image === undefined ||
+                JSON.parse(this.account.posting_json_metadata).profile.profile_image === '' ||
+                JSON.parse(this.account.posting_json_metadata).profile.profile_image === null) {
+                image = '/assets/default_user.jpg';
+            }
+        } else {
             image = '/assets/default_user.jpg';
         }
         //const delegations = await this.fetchVestingDelegations(this.account.name);

@@ -129,7 +129,7 @@ export class SteemComponent {
   loaded = false;
   imridAccoount: any;
   isMobile = false;
-  constructor(private gs: GlobalPropertiesSteemService, private userMemoryService: UserMemorySteemService) {
+  constructor(public gs: GlobalPropertiesSteemService, private userMemoryService: UserMemorySteemService) {
     this.isMobile = window.innerWidth < 768;
     this.global_properties = this.gs.globalProperties;
     this.user.global_properties = this.global_properties;
