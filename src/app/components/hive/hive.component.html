@@ -1,6 +1,6 @@
 <!-- <app-modal *ngIf="modalVisible" [callback]="modalCallback" [title]="modalTitle" [message]="modalMessage"
     [path]="modalPath" [type]="modalType" [conferma]="modalConferma"></app-modal> -->
-<div class="desktop">
+<div class="desktop" *ngIf="!isMobile">
     <mat-grid-list cols="6" class="grid_list" rowHeight="150px">
 
         <!--USER CUR8 (LOGIN)-->
@@ -10,7 +10,9 @@
                     <div class="card_tittle">
                         <div>Your cur8 stats</div>
                         <!--icona ?-->
-                        <div> <mat-icon matTooltip="View your statistics related to the delegation made to Cur8, including the amount delegated, the last payment received, and your share percentage">help</mat-icon></div>
+                        <div> <mat-icon
+                                matTooltip="View your statistics related to the delegation made to Cur8, including the amount delegated, the last payment received, and your share percentage">help</mat-icon>
+                        </div>
 
                     </div>
                 </mat-card-header>
@@ -22,7 +24,7 @@
                             <input matInput placeholder="Username" type="text" [(ngModel)]="user.username">
                         </div>
                     </div><br>
-                    <div >Delegated {{ user.rapportoConCUR8.delega | reversePadZero}} HP</div>
+                    <div>Delegated {{ user.rapportoConCUR8.delega | reversePadZero}} HP</div>
 
                     <br>
                     <div>
@@ -52,12 +54,13 @@
                     <div class="card_tittle">
                         <div>Delegate to cur8</div>
                         <!--icona ?-->
-                        <div> <mat-icon matTooltip="Delegate Hive Power to Cur8 to participate in the project and earn rewards. Enter the amount of Hive Power you wish to delegate and view the estimated daily profit. First payment will be after 7 days">help</mat-icon></div>
+                        <div> <mat-icon
+                                matTooltip="Delegate Hive Power to Cur8 to participate in the project and earn rewards. Enter the amount of Hive Power you wish to delegate and view the estimated daily profit. First payment will be after 7 days">help</mat-icon>
+                        </div>
 
                     </div>
                 </mat-card-header>
                 <mat-card-content class="card_content">
-                   
                     <div class="form_container">
                         <div class="form_content">
                             <mat-label>Amount</mat-label>
@@ -65,17 +68,17 @@
                                 (ngModelChange)="changeDailyProfit()">
                         </div>
                     </div><br>
-                        <div *ngIf="!isLoading">
-                            Est. daily profit
-                            {{estimatedDailyProfit | reversePadZero}}
-                            HIVE
-                        </div><br>
-                        <div *ngIf="!isLoading">
-                            Available
-                            {{ !user.rapportoConCUR8.powerDisponibili ? '0' : user.rapportoConCUR8.powerDisponibili -
-                            user.totalExpiringDelegations | reversePadZero}}
-                            HP
-                        </div>
+                    <div *ngIf="!isLoading">
+                        Est. daily profit
+                        {{estimatedDailyProfit | reversePadZero}}
+                        HIVE
+                    </div><br>
+                    <div *ngIf="!isLoading">
+                        Available
+                        {{ !user.rapportoConCUR8.powerDisponibili ? '0' : user.rapportoConCUR8.powerDisponibili -
+                        user.totalExpiringDelegations | reversePadZero}}
+                        HP
+                    </div>
                 </mat-card-content>
                 <mat-card-actions class="c_actions" *ngIf="!isLoading">
                     <button mat-raised-button class="action" color="primary" (click)="delega()">Delegate</button>
@@ -86,7 +89,7 @@
         <!--SOCIAL-->
         <mat-grid-tile [colspan]="2" [rowspan]="4" class="tile">
             <mat-spinner *ngIf="isLoading"></mat-spinner>
-            <mat-card class="card special" *ngIf="!isLoading">
+            <mat-card class="card_special" *ngIf="!isLoading">
                 <mat-card-header class="card_header_special">
                     <div class="card_tittle" *ngIf="loaded">{{user.username}}</div>
                     <div class="card_subtitle" *ngIf="loaded">Level
@@ -97,7 +100,7 @@
                     <div class="profile_image" *ngIf="loaded">
                         <img [src]="user.image" alt="User">
                     </div>
-                    <br>
+                    <br><br>
                     <div class="social">
                         {{!user.social.followers?'0':user.social.followers}} followers
                         {{!user.social.following?'0':user.social.following}} following
@@ -137,7 +140,9 @@
                 <mat-card-header class="card_header">
                     <div class="card_tittle">
                         <div>Power Up/Down</div>
-                        <div> <mat-icon matTooltip="Perform Power Up operations to convert liquid Hive into Hive Power or Power Down operations to convert Hive Power back into liquid Hive. Power Up is immediate, while Power Down takes 13 weeks to complete">help</mat-icon></div>
+                        <div> <mat-icon
+                                matTooltip="Perform Power Up operations to convert liquid Hive into Hive Power or Power Down operations to convert Hive Power back into liquid Hive. Power Up is immediate, while Power Down takes 13 weeks to complete">help</mat-icon>
+                        </div>
 
                     </div>
                 </mat-card-header>
@@ -175,7 +180,9 @@
                 <mat-card-header class="card_header">
                     <div class="card_tittle">
                         <div>Send HIVE/HBD</div>
-                        <div> <mat-icon matTooltip="Send HIVE or HBD to another wallet by entering the recipient account name and the desired amount">help</mat-icon></div>
+                        <div> <mat-icon
+                                matTooltip="Send HIVE or HBD to another wallet by entering the recipient account name and the desired amount">help</mat-icon>
+                        </div>
 
                     </div>
 
@@ -266,7 +273,7 @@
                     <div mat-line>{{item.memo}}</div>
                     <br>
                     <mat-divider> </mat-divider>
-                    
+
                     }
                 </mat-card-content>
             </mat-card>
