@@ -92,32 +92,20 @@ export class GlobalPropertiesHiveService {
     this.dataChart = data;
   }
 
-  private async fetchPostData(tag: string, limit: number): Promise<void> {
-    const query = { tag, limit };
-    const result = await this.client.database.getDiscussions('blog', query);
-    result.forEach((post) => {
-      const metadata = JSON.parse(post.json_metadata);
-      this.listaPost.push({
-        title: post.title,
-        imageUrl: metadata.image[0],
-        url: post.url
-      });
-    });
-  }
   async fetchPostDataCiclo(autor: string): Promise<void> {
 
     const query = { tag: autor, limit: 1, };
     const result = await this.client.database.getDiscussions('blog', query);
     const metadata = JSON.parse(result[0].json_metadata);
-    if(metadata.image){
+    if (metadata.image) {
       this.listaPost.push({
         title: result[0].title,
         imageUrl: metadata.image[0],
-        url:'https://peakd.com'+ result[0].url
+        url: 'https://peakd.com' + result[0].url
       });
 
     }
-}
+  }
   async setPrices(): Promise<void> {
     if (this.globalPrezzi.price === 0) {
       const result = await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices');
@@ -136,9 +124,11 @@ export class GlobalPropertiesHiveService {
       timestamp: transazione[1].timestamp
     }));
     console.log('Transazioni set');
-  for (let i = 0; i < 11; i++) {
-   this.fetchPostDataCiclo(this.transazioniCUR8[i].author);
-  }
+    console.log('Ciclo post',this.transazioniCUR8.length);
+
+    for (let i = this.transazioniCUR8.length -1; i > this.transazioniCUR8.length - 14; i--) {
+      this.fetchPostDataCiclo(this.transazioniCUR8[i].author);
+    }
   }
 
 }

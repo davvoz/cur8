@@ -18,6 +18,13 @@ export interface HiveData {
   id: number;
 }
 
+export interface SteemData {
+  account_name: string;
+  curation_rewards_sp: number;
+  date: string;
+  id: number;
+}
+
 export interface MyPost {
   title: string;
   imageUrl : string;

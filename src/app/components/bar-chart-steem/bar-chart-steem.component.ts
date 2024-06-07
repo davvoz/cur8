@@ -3,7 +3,8 @@ import { ApiService } from '../../services/api.service';
 //ngFor
 import { NgFor } from '@angular/common';
 import { GlobalPropertiesHiveService } from '../../services/global-properties-hive.service';
-import { HiveData } from '../../interfaces/interfaces';
+import { HiveData, SteemData } from '../../interfaces/interfaces';
+import { GlobalPropertiesSteemService } from '../../services/global-properties-steem.service';
 
 @Component({
   selector: 'app-bar-chart-steem',
@@ -16,18 +17,18 @@ export class BarChartSteemComponent {
 
   @ViewChild('canvas')
   canvas!: ElementRef;
-  data: HiveData[] | undefined;
+  data: SteemData[] | undefined;
 
-  constructor(private apiService: ApiService, private globalProperties: GlobalPropertiesHiveService) { }
+  constructor(private apiService: ApiService, private globalProperties: GlobalPropertiesSteemService) { }
   ngAfterViewInit(): void {
     this.fetchDataAndDrawChart();
   }
 
   fetchDataAndDrawChart(): void {
-    if (this.globalProperties.dataChart.length === 0) {
-      const apiUrl = 'https://imridd.eu.pythonanywhere.com/api/hive_cur';
-
-      this.apiService.get(apiUrl).then((data: HiveData[]) => {
+    if (this.globalProperties.dataChart.length === 0) { 
+      console.log('fetching data');
+      const apiUrl = 'https://imridd.eu.pythonanywhere.com/api/steem_cur';
+      this.apiService.get(apiUrl).then((data: SteemData[]) => {
         this.drawChart(data);
         this.globalProperties.dataChart = data;
       });
@@ -38,11 +39,11 @@ export class BarChartSteemComponent {
   }
 
   calculateHeight(value: number): number {
-    const maxValue = this.data ? Math.max(...this.data.map(item => item.curation_rewards_hp)) : 0;
+    const maxValue = this.data ? Math.max(...this.data.map(item => item.curation_rewards_sp)) : 0;
     return (value / maxValue) * 100;
   }
 
-  drawChart(data: HiveData[]): void {
+  drawChart(data: SteemData[]): void {
     const canvas = this.canvas.nativeElement;
     const ctx = canvas.getContext('2d');
     const container = canvas.parentElement;
@@ -67,8 +68,8 @@ export class BarChartSteemComponent {
     }
 
   
-    data.reverse().forEach((item, index) => {
-      const barHeight = this.calculateHeight(item.curation_rewards_hp);
+    data.forEach((item, index) => {
+      const barHeight = this.calculateHeight(item.curation_rewards_sp);
       const y = height - barHeight;
   
       ctx.fillStyle = '#3f51b5';

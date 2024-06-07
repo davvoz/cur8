@@ -67,7 +67,7 @@ export class BarChartComponent implements AfterViewInit {
     }
 
   
-    data.reverse().forEach((item, index) => {
+    data.forEach((item, index) => {
       const barHeight = this.calculateHeight(item.curation_rewards_hp);
       const y = height - barHeight;
   

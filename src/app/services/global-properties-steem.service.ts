@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GlobalPrezzi, HiveData, IMRiddData, MyPost } from '../interfaces/interfaces';
+import { GlobalPrezzi, HiveData, IMRiddData, MyPost, SteemData } from '../interfaces/interfaces';
 import { Client } from 'dsteem';
 import { Utils } from '../classes/my_utils';
 import { ApiService } from './api.service';
@@ -28,7 +28,7 @@ export class GlobalPropertiesSteemService {
     price_dollar: 0
   }
 
-  dataChart: HiveData[] = [];
+  dataChart: SteemData[] = [];
   allTimePayOut_DA_MOLTIPLICARE = 0;
   daysPayout_DA_MOLTIPLICARE = 0;
   listaPost: MyPost[] = [];
@@ -46,7 +46,7 @@ export class GlobalPropertiesSteemService {
     this.fetchHiveData();
     //this.fetchPostData('luciojolly', 9);
     //cicla 9 post di luciojolly
-
+    this.fetchSteemChart();
     this.setPrices();
     this.setTransazioniCur8();
   }
@@ -97,18 +97,9 @@ export class GlobalPropertiesSteemService {
     this.daysPayout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
   }
 
-  private async fetchPostData(tag: string, limit: number): Promise<void> {
-    const query = { tag, limit };
-    const result = await this.client.database.getDiscussions('blog', query);
-    result.forEach((post) => {
-      console.log(post);
-      const metadata = JSON.parse(post.json_metadata);
-      this.listaPost.push({
-        title: post.title,
-        imageUrl: metadata.image[0],
-        url: post.url
-      });
-    });
+  private async fetchSteemChart(): Promise<void> {
+    const data = await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem_cur');
+    this.dataChart = data;
   }
 
   async fetchPostDataCiclo(autor: string): Promise<void> {
@@ -156,10 +147,16 @@ export class GlobalPropertiesSteemService {
       console.log('Transazioni set');
       //usa le prime 9 transazioni di cur8
   //cicla
-      for (let i = 0; i < 10; i++) {
+  console.log('Ciclo post',this.transazioniCUR8.length);
+      for (let i = this.transazioniCUR8.length -1; i > this.transazioniCUR8.length - 11; i--) {
+        console.log('Ciclo post',i);
+        console.log('Ciclo post',this.transazioniCUR8[i]);
+        console.log('Ciclo post',this.transazioniCUR8[i].author);
         this.fetchPostDataCiclo(this.transazioniCUR8[i].author);
       } 
     });
   }
+
+  
 
 }

@@ -23,6 +23,7 @@ import { Vest2HPPipe } from '../../pipes/vest2-hp.pipe';
 import { GlobalPropertiesHiveService } from '../../services/global-properties-hive.service';
 import { UserMemoryService } from '../../services/user-memory.service';
 import { Utils } from '../../classes/my_utils';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 
@@ -64,7 +65,8 @@ import { Utils } from '../../classes/my_utils';
     DateFormatPipe,
     TruncatePipe,
     Vest2HPPipe,
-    ReversePadZeroPipe
+    ReversePadZeroPipe,
+    MatTooltipModule
   ]
 })
 
