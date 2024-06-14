@@ -130,6 +130,7 @@ export class HiveComponent {
   sommaExpire = 0;
   defaultImage = '/assets/default_user.jpg';
   usernameView: any;
+  columnNumber = window.innerWidth < 768 ? 1 : 6;
 
   constructor(private userMemoryService: UserMemoryService, public gs: GlobalPropertiesHiveService) {
     this.isMobile = window.innerWidth < 768;
