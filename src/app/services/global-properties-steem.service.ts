@@ -121,8 +121,6 @@ export class GlobalPropertiesSteemService {
     await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices').then((result) => {
       this.globalPrezzi.price = result['STEEM'];
       this.globalPrezzi.price_dollar = result['SBD'];
-    }).finally(() => {
-      console.log('Steem prices set');
     });
   }
 
@@ -144,14 +142,9 @@ export class GlobalPropertiesSteemService {
         });
       });
     }).finally(() => {
-      console.log('Transazioni set');
-      //usa le prime 9 transazioni di cur8
-  //cicla
-  console.log('Ciclo post',this.transazioniCUR8.length);
+      
       for (let i = this.transazioniCUR8.length -1; i > this.transazioniCUR8.length - 11; i--) {
-        console.log('Ciclo post',i);
-        console.log('Ciclo post',this.transazioniCUR8[i]);
-        console.log('Ciclo post',this.transazioniCUR8[i].author);
+        
         this.fetchPostDataCiclo(this.transazioniCUR8[i].author);
       } 
     });

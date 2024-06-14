@@ -20,6 +20,15 @@ export class HeaderComponent {
 
   constructor(private sidebarservice: SidebarService, public switchService: SwitchService, private router: Router) {
     this.isMobile = window.innerWidth <= 768;
+    //guarda cosa ci arriva dal router e prepara lo switch delle route
+    this.router.events.subscribe((val) => {
+      if (this.router.url === '/steem' || this.router.url === '/home-steem' ) {
+        document.documentElement.setAttribute('theme', 'light');
+      }
+      if (this.router.url === '/hive' || this.router.url === '/home-hive' ) {
+        document.documentElement.setAttribute('theme', '');
+      }
+    });
   }
   get lightTheme(): boolean {
     return document.documentElement.getAttribute('theme') === 'light';
