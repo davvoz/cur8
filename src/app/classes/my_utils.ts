@@ -11,7 +11,7 @@ export class Utils {
         const year = date.getFullYear();
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
-        
+
         return `${day}/${month}/${year} ${hours}:${minutes}`;
     }
     static scrollToElement(targetElement: HTMLElement | null, behavior: ScrollBehavior = 'smooth') {
@@ -43,8 +43,27 @@ export class Utils {
         return randomNumber;
     }
 
+    public static getSecureRandomNumberRange(min: number, max: number): number {
+        return min + this.getSecureRandomNumber() % (max - min);
+    }
+
     public static toStringParseFloat(value: any): number {
         return parseFloat(value.toString());
     }
+
+    public static convertToUserTimeZone(date: Date): Date {
+        const timezoneOffset = this.getTimezoneOffset();
+        const utcDate = new Date(date.getTime() - timezoneOffset * 60000);
+        return new Date(utcDate);
+    }
+
+    public static getTimezoneOffset(): number {
+        const targetDate = new Date(); // Crea un oggetto data per ottenere l'offset del fuso orario specifico
+        return targetDate.getTimezoneOffset(); // Ottiene l'offset dell'ora locale rispetto all'UTC
+
+    }
+
+    
+   
 }
 

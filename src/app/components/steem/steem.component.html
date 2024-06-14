@@ -5,24 +5,33 @@
         <!--USER CUR8 (LOGIN)-->
         <mat-grid-tile [colspan]="2" [rowspan]="2" class="tile">
             <mat-card class="card" style="overflow: hidden;">
-                <mat-card-header class="card_header">
-                    <mat-card-title class="card_tittle">Your cur8 stats</mat-card-title>
+                <mat-card-header>
+                    <div class="card_tittle">
+                        <div>Your cur8 stats</div>
+                        <!--icona ?-->
+                        <div> <mat-icon
+                                matTooltip="View your statistics related to the delegation made to Cur8, including the amount delegated, the last payment received, and your share percentage">help</mat-icon>
+                        </div>
+
+                    </div>
                 </mat-card-header>
                 <mat-card-content class="card_content">
                     <!--inserisci nome come input--><br>
                     <div class="form_container">
                         <div class="form_content">
                             <mat-label>User</mat-label>
-                            <input matInput placeholder="Username" type="text" [(ngModel)]="user.username">
+                            <input matInput placeholder="username" type="text" [(ngModel)]="user.username" (keyup.enter)="refresh()">
                         </div>
                     </div><br>
-                    <div>Delegated {{ user.rapportoConCUR8.delega | reversePadZero}} SP </div>
-                    <div>
-                        Last payment {{ user.rapportoConCUR8.ultimoPagamento.importo}}<br>
-                        <p mat-line>{{user.rapportoConCUR8.ultimoPagamento.data | dateFormat}}</p>
-                    </div>
+                    <div>Delegated {{ user.rapportoConCUR8.delega | reversePadZero}} SP</div>
+
+                    <br>
                     <div>
                         Your share {{user.rapportoConCUR8.share | reversePadZero}}%
+                    </div><br>
+                    <div>
+                        Last payout {{ user.rapportoConCUR8.ultimoPagamento.importo}}&nbsp;&nbsp;&nbsp;
+                        {{user.rapportoConCUR8.ultimoPagamento.data | dateFormat}} 
                     </div>
                 </mat-card-content>
                 <mat-card-actions class="c_actions">
@@ -39,28 +48,32 @@
 
             <mat-card class="card" *ngIf="!isLoading">
                 <mat-card-header class="card_header">
-                    <mat-card-title class="card_tittle">Delegated to cur8</mat-card-title>
+                    <div class="card_tittle">
+                        <div>Delegate to cur8</div>
+                        <!--icona ?-->
+                        <div> <mat-icon
+                                matTooltip="Delegate Steem Power to Cur8 to participate in the project and earn rewards. Enter the amount of Steem Power you wish to delegate and view the estimated daily profit. First payment will be after 7 days">help</mat-icon>
+                        </div>
+                    </div>
                 </mat-card-header>
                 <mat-card-content class="card_content">
-                    <br>
                     <div class="form_container">
                         <div class="form_content">
                             <mat-label>Amount</mat-label>
-                            <input matInput placeholder="Amount" type="number" [(ngModel)]="valoreDelega"
+                            <input matInput placeholder="0" type="number" [(ngModel)]="valoreDelega"
                                 (ngModelChange)="changeDailyProfit()">
                         </div>
-                        <div *ngIf="!isLoading">
-                            Estimated daily profit
-                            {{estimatedDailyProfit | reversePadZero}}
-                            STEEM
-                        </div>
-                        <div *ngIf="!isLoading">
-                            Power disponibile
-                            {{ !user.rapportoConCUR8.powerDisponibili ? '0' : user.rapportoConCUR8.powerDisponibili - user.totalExpiringDelegations | reversePadZero}}
-
-                            SP
-                        </div>
-                        <br>
+                    </div><br>
+                    <div *ngIf="!isLoading">
+                        Est. daily profit
+                        {{estimatedDailyProfit | reversePadZero}}
+                        STEEM
+                    </div><br>
+                    <div *ngIf="!isLoading">
+                        Available
+                        {{ !user.rapportoConCUR8.powerDisponibili ? '0' : user.rapportoConCUR8.powerDisponibili -
+                        user.totalExpiringDelegations | reversePadZero}}
+                        SP
                     </div>
                 </mat-card-content>
                 <mat-card-actions class="c_actions" *ngIf="!isLoading">
@@ -72,19 +85,21 @@
         <!--SOCIAL-->
         <mat-grid-tile [colspan]="2" [rowspan]="4" class="tile">
             <mat-spinner *ngIf="isLoading"></mat-spinner>
-            <mat-card class="card special" *ngIf="!isLoading">
+            <mat-card class="card_special" *ngIf="!isLoading">
                 <mat-card-header class="card_header_special">
-                    <mat-card-title class="card_tittle" *ngIf="loaded">{{user.username}}</mat-card-title>
-                    <mat-card-subtitle class="card_subtitle" *ngIf="loaded">Level
-                        {{user.social.level}}</mat-card-subtitle>
-                    <img mat-card-avatar [src]="user.image" alt="User" *ngIf="loaded">
+                    <div class="card_tittle" *ngIf="loaded">{{usernameView}}</div>
+                    <div class="card_subtitle" *ngIf="loaded">Level
+                        {{user.social.level}}</div>
                 </mat-card-header>
                 <mat-card-content class="card_content">
                     <br>
+                    <div class="profile_image" *ngIf="!loaded">
+                        <img [src]="defaultImage" alt="User">
+                    </div>
                     <div class="profile_image" *ngIf="loaded">
                         <img [src]="user.image" alt="User">
                     </div>
-                    <br>
+                    <br><br>
                     <div class="social">
                         {{!user.social.followers?'0':user.social.followers}} followers
                         {{!user.social.following?'0':user.social.following}} following
@@ -93,12 +108,12 @@
 
                     <table class="tb">
                         <tr>
-                            <td> STEEM</td>
-                            <td>{{user.valutes.STEEM  | reversePadZero}}</td>
+                            <td>STEEM</td>
+                            <td>{{user.valutes.STEEM| reversePadZero}}</td>
                         </tr>
                         <tr>
                             <td>SBD</td>
-                            <td> {{user.valutes.SBD  | reversePadZero}}</td>
+                            <td> {{user.valutes.SBD | reversePadZero}}</td>
                         </tr>
                         <tr>
                             <td>SP</td>
@@ -108,8 +123,9 @@
 
                     <br>
                     <div class="valore_account">
-                        Valore Account
-                        {{(user.valutes.STEEM + user.valutes.SP) * gs.globalPrezzi.price + user.valutes.SBD * gs.globalPrezzi.price_dollar |  reversePadZero}}$
+                        Account value
+                        {{(user.valutes.STEEM+ user.valutes.SP) * gs.globalPrezzi.price + user.valutes.SBD *
+                        gs.globalPrezzi.price_dollar | reversePadZero}}$
 
                     </div>
 
@@ -122,9 +138,13 @@
         <mat-grid-tile [colspan]="2" [rowspan]="2" class="tile">
             <mat-card class="card">
                 <mat-card-header class="card_header">
-                    <mat-card-title class="card_tittle">Power Up/Down
+                    <div class="card_tittle">
+                        <div>Power Up/Down</div>
+                        <div> <mat-icon
+                                matTooltip="Perform Power Up operations to convert liquid Steem into Steem Power or Power Down operations to convert Steem Power back into liquid Steem. Power Up is immediate, while Power Down takes 4 weeks to complete">help</mat-icon>
+                        </div>
 
-                    </mat-card-title>
+                    </div>
                 </mat-card-header>
                 <mat-card-content class="card_content">
 
@@ -132,7 +152,7 @@
                     <div class="form_container">
                         <div class="form_content">
                             <mat-label>Amount</mat-label>
-                            <input matInput placeholder="Amount" type="number" [(ngModel)]="powerUpSPValue">
+                            <input matInput placeholder="0" type="number" [(ngModel)]="powerUpSPValue">
                         </div>
                         <br>
                     </div>
@@ -159,26 +179,33 @@
         <mat-grid-tile [colspan]="2" [rowspan]="2" class="tile">
             <mat-card class="card">
                 <mat-card-header class="card_header">
-                    <mat-card-title class="card_tittle">Send STEEM/SBD</mat-card-title>
+                    <div class="card_tittle">
+                        <div>Send STEEM/SBD</div>
+                        <div> <mat-icon
+                                matTooltip="Send STEEM or SBD to another wallet by entering the recipient account name and the desired amount">help</mat-icon>
+                        </div>
+
+                    </div>
+
+
                 </mat-card-header>
                 <mat-card-content class="card_content">
                     <br>
                     <div class="form_container">
                         <div class="form_content">
                             <mat-label>To</mat-label>
-                            <input matInput placeholder="To" type="text" [(ngModel)]="sendTo">
+                            <input matInput placeholder="username" type="text" [(ngModel)]="sendTo">
                         </div>
                         <div class="form_content">
                             <mat-label>Amount</mat-label>
-                            <input matInput placeholder="Recipient" type="text" [(ngModel)]="sendAmount">
+                            <input matInput placeholder="0" type="text" [(ngModel)]="sendAmount">
                         </div>
                         <br>
                     </div>
                 </mat-card-content>
                 <mat-card-actions class="c_actions">
                     <div class="buttons_container">
-                        <button mat-raised-button class="action" color="primary" (click)="sendSteem()">Send
-                            STEEM</button>
+                        <button mat-raised-button class="action" color="primary" (click)="sendSteem()">Send STEEM</button>
                         <button mat-raised-button class="action" color="primary" (click)="sendSbd()">Send SBD</button>
                     </div>
                 </mat-card-actions>
@@ -191,7 +218,7 @@
         <mat-grid-tile [colspan]="3" [rowspan]="4" class="tile">
             <mat-card class="card tabloCard">
                 <mat-card-header class="card_header">
-                    <mat-card-title class="card_tittle">Expiring Delegation</mat-card-title>
+                    <div class="card_tittle">Expiring Delegation</div>
                 </mat-card-header>
                 <mat-card-content class="card_content tablo">
                     <!--mat table , account , ammount ,exp date--><br>
@@ -201,8 +228,8 @@
                             <th>Exp Date</th>
                         </tr>
                         <tr *ngFor="let item of user.expiringDelegations">
-                            <td>{{item.vesting_shares| reversePadZero}} SP </td>
-                            <td>{{item.expiration | dateFormat}}</td>
+                            <td>{{item.vesting_shares| reversePadZero}} HP</td>
+                            <td>{{item.expiration | dateFormat}} </td>
                         </tr>
                     </table>
                 </mat-card-content>
@@ -214,8 +241,8 @@
                     <mat-spinner *ngIf="isLoading"></mat-spinner>
                     <mat-card class="card" *ngIf="!isLoading">
                         <mat-card-header class="c_lista_header">
-                            <mat-card-title class="card_tittle"><span>Transactions</span>
-                            </mat-card-title>
+                            <div class="card_tittle"><span>Transactions</span>
+                            </div>
                             <div>
         
                                 <button mat-icon-button (click)="refresh()" class="refresh" color="accent">
@@ -230,19 +257,24 @@
                                 <div class="we_title">
                                     <h1>
                                         from {{item.from}}
-                                        <span appColoreRank [colorByValue]="item.amount" [maxValue]="20"> {{item.amount}}</span>
+                                        @if(item.to==user.username){
+                                        <span appColoreRank [style.color]="'lime'"> {{item.amount}}</span>
+                                        }@else{
+                                        <span appColoreRank [style.color]="'red'"> {{item.amount}}</span>
+                                        }
                                         to {{item.to}}
                                     </h1>
                                     <mat-icon *ngIf="item.from==user.username" class="freccia_rossa">arrow_upward</mat-icon>
                                     <mat-icon *ngIf="item.to==user.username" class="freccia_verde">arrow_downward</mat-icon>
                                 </div>
                                 <div class="we_content">
-                                    <div mat-line>{{item.timestamp | dateFormat}}</div>
+                                    <div mat-line>{{item.timestamp | dateFormat}} </div>
                                 </div>
                             </div>
                             <div mat-line>{{item.memo}}</div>
-        
+                            <br>
                             <mat-divider> </mat-divider>
+        
                             }
                         </mat-card-content>
                     </mat-card>
@@ -469,7 +501,6 @@
     </mat-card>
 
 </div>
-
 <style>
     .we_title {
         display: flex;
@@ -485,7 +516,7 @@
     }
 
     .freccia_verde {
-        color: green;
+        color: lime;
     }
 
     .buttons_container {

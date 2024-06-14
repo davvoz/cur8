@@ -23,7 +23,7 @@ import { Vest2HPPipe } from '../../pipes/vest2-hp.pipe';
 import { GlobalPropertiesHiveService } from '../../services/global-properties-hive.service';
 import { UserMemoryService } from '../../services/user-memory.service';
 import { Utils } from '../../classes/my_utils';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 
@@ -96,7 +96,7 @@ export class HiveComponent {
       totalVestingFundHive: 0,
       totalVestingShares: 0,
     },
-      totalExpiringDelegations: 0,
+    totalExpiringDelegations: 0,
     username: '',
     platform: 'HIVE',
     rapportoConCUR8: {
@@ -128,6 +128,8 @@ export class HiveComponent {
   ];
   isMobile = false;
   sommaExpire = 0;
+  defaultImage = '/assets/default_user.jpg';
+  usernameView: any;
 
   constructor(private userMemoryService: UserMemoryService, public gs: GlobalPropertiesHiveService) {
     this.isMobile = window.innerWidth < 768;
@@ -135,14 +137,15 @@ export class HiveComponent {
     this.user.global_properties = this.gs.globalProperties;
 
     this.sommaExpire = Utils.vestingShares2HP(
-       this.user.expiringDelegations.reduce((acc, val) => acc + val.vesting_shares, 0),
-       this.user.global_properties.totalVestingFundHive, 
-       this.user.global_properties.totalVestingShares);
+      this.user.expiringDelegations.reduce((acc, val) => acc + val.vesting_shares, 0),
+      this.user.global_properties.totalVestingFundHive,
+      this.user.global_properties.totalVestingShares);
 
     this.imridData = this.gs.imridData;
 
     if (this.userMemoryService.user) {
       this.user = this.userMemoryService.user;
+      this.usernameView = this.user.username;
       this.loaded = true;
     }
     this.isLoading = false;
@@ -214,7 +217,8 @@ export class HiveComponent {
       this.user = user;
       this.isLoading = false;
       this.loaded = true;
-      this.userMemoryService.setUser(this.user)
+      this.userMemoryService.setUser(this.user);
+      this.usernameView = this.user.username;
     });
   }
 

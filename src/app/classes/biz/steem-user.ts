@@ -136,18 +136,10 @@ class UserManager {
                 const vesting_shares = Utils.vestingShares2HP(number,
                     this.dynamicGlobalProperties.totalVestingFundSteem,
                     this.dynamicGlobalProperties.totalVestingShares);
-                const expiration = new Date(res[i]['expiration']);
-                this.expringDelegations.push({ vesting_shares, expiration });
+                    const expiration = Utils.convertToUserTimeZone(new Date(res[i]['expiration']));
+                    this.expringDelegations.push({ vesting_shares, expiration });
             }
         });
-    }
-
-    private async fetchDynamicGlobalProperties(): Promise<void> {
-        const properties = await this.client.database.getDynamicGlobalProperties();
-        this.dynamicGlobalProperties = {
-            totalVestingFundSteem: Utils.toStringParseFloat(properties.total_vesting_fund_steem),
-            totalVestingShares: Utils.toStringParseFloat(properties.total_vesting_shares)
-        };
     }
 
     private async fetchAccount(username: string): Promise<void> {
@@ -178,12 +170,13 @@ class UserManager {
             const op = transazione[1].op;
             if (op[0] === 'transfer') {
                 const data = new Date(transazione[1].timestamp);
-                const timestamp = data + '';
+                const timestampT = Utils.convertToUserTimeZone(data);
                 const amount = op[1]['amount'];
                 const from = op[1]['from'];
                 const to = op[1]['to'];
                 const memo = op[1]['memo'];
                 const id = transazione[0];
+                const timestamp = timestampT.toString();
                 transactions.push({ timestamp, amount, from, to, memo, id });
             }
         }
@@ -244,8 +237,10 @@ class UserManager {
         });
 
         if (transferTransaction) {
-            const { op, timestamp } = transferTransaction[1];
-            const data = new Date(timestamp);
+            const { op, timestamp } = transferTransaction[1]; 
+            const dat = new Date(timestamp);
+            const dataInUserTimezone = Utils.convertToUserTimeZone(dat);
+            const data = new Date(dataInUserTimezone);
             const importo = op[1]['amount'];
             return { data, importo };
         }

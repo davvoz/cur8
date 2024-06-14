@@ -23,6 +23,7 @@ import { User, UserFactory } from '../../classes/biz/steem-user';
 import { GlobalPropertiesSteemService } from '../../services/global-properties-steem.service';
 import { UserMemorySteemService } from '../../services/user-memory-steem.service';
 import { Utils } from '../../classes/my_utils';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @Component({
@@ -31,6 +32,7 @@ import { Utils } from '../../classes/my_utils';
   templateUrl: './steem.component.html',
   styleUrl: './steem.component.scss',
   imports: [
+    MatTooltipModule,
     MatProgressSpinnerModule,
     FormsModule,
     MatTableModule,
@@ -84,7 +86,7 @@ export class SteemComponent {
 
   valoreDelega = 0;
   user: User = {
-    totalExpiringDelegations:  0,
+    totalExpiringDelegations: 0,
     expiringDelegations: [],
     image: '',
     transactions: [],
@@ -129,6 +131,9 @@ export class SteemComponent {
   loaded = false;
   imridAccoount: any;
   isMobile = false;
+  usernameView: any;
+  defaultImage = '/assets/default_user.jpg';
+
   constructor(public gs: GlobalPropertiesSteemService, private userMemoryService: UserMemorySteemService) {
     this.isMobile = window.innerWidth < 768;
     this.global_properties = this.gs.globalProperties;
@@ -137,6 +142,7 @@ export class SteemComponent {
 
     if (this.userMemoryService.user) {
       this.user = this.userMemoryService.user;
+      this.usernameView = this.user.username;
       this.loaded = true;
     }
     this.isLoading = false;
@@ -161,6 +167,10 @@ export class SteemComponent {
   sendSteem() {
     if ((window as any).steem_keychain) {
       const keychain = (window as any).steem_keychain;
+      if (typeof this.sendAmount == 'string') {
+        this.sendAmount = parseFloat(this.sendAmount);
+      }
+      this.sendAmount = this.sendAmount.toFixed(3);
       keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'STEEM', (response: any) => {
         console.log(response);
       });
@@ -207,6 +217,8 @@ export class SteemComponent {
       this.isLoading = false;
       this.loaded = true;
       this.userMemoryService.setUser(this.user)
+      this.usernameView = this.user.username;
+
     });
   }
 

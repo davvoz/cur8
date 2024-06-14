@@ -141,7 +141,7 @@ class UserManager {
                 const vesting_shares = Utils.vestingShares2HP(number,
                     this.dynamicGlobalProperties.totalVestingFundHive,
                     this.dynamicGlobalProperties.totalVestingShares);
-                const expiration = new Date(res[i]['expiration']);
+                const expiration = Utils.convertToUserTimeZone(new Date(res[i]['expiration']));
                 this.expringDelegations.push({ vesting_shares, expiration });
             }
         });
@@ -170,12 +170,13 @@ class UserManager {
             const transazione = listaDiTransazioni[i];
             const op = transazione[1].op;
             const data = new Date(transazione[1].timestamp);
-            const timestamp = data + '';
+            const timestampT = Utils.convertToUserTimeZone(data);
             const amount = op[1]['amount'];
             const from = op[1]['from'];
             const to = op[1]['to'];
             const memo = op[1]['memo'];
             const id = transazione[0];
+            const timestamp = timestampT.toString();
             transactions.push({ timestamp, amount, from, to, memo, id });
         }
         this.transactions = transactions;
@@ -183,8 +184,6 @@ class UserManager {
 
     private async calculateShare() {
         const res = await this.client.database.getAccounts(['cur8']);
-        console.log("************************************************", res);
-
         const totCur8 = Utils.toStringParseFloat(res[0].vesting_shares);
         const recivedVestingShares = Utils.toStringParseFloat(res[0].received_vesting_shares);
         const sommatoria = Utils.vestingShares2HP(totCur8 + recivedVestingShares, this.dynamicGlobalProperties.totalVestingFundHive, this.dynamicGlobalProperties.totalVestingShares);
@@ -222,7 +221,7 @@ class UserManager {
                 const out = Utils.vestingShares2HP(converted, this.dynamicGlobalProperties.totalVestingFundHive, this.dynamicGlobalProperties.totalVestingShares) * 100 / totCur8;
                 this.user.rapportoConCUR8.share = out;
                 return out;
-            } 
+            }
         }
         return 0;
     }
@@ -237,8 +236,11 @@ class UserManager {
 
         if (transferTransaction) {
             const { op, timestamp } = transferTransaction[1];
-            const data = new Date(timestamp);
+
             const importo = op[1]['amount'];
+            const dat = new Date(timestamp);
+            const dataInUserTimezone = Utils.convertToUserTimeZone(dat);
+            const data = new Date(dataInUserTimezone);
             return { data, importo };
         }
 

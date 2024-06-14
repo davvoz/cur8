@@ -1,0 +1,19 @@
+<div class="modal" id="modal">
+    <div class="modal__content">
+        <div class="modal__content__header">
+            <h2>{{title}}</h2>
+            <div class="spacer_logo_container">
+                <img *ngIf="defaultVisible" src="{{defaultPath}}" alt="logo">
+                <span class="arrow"></span>
+                <img src="{{path}}" alt="logo">
+            </div>
+        </div>
+        <div class="modal__content__body">
+            <p>{{message}}</p>
+            </div>
+            <div class="modal__content__footer">
+            <button class="btn-primary" (click)="action()" *ngIf="defaultVisible">{{conferma}}</button>
+            <button class="btn-primary" (click)="closeModal()">Chiudi</button>
+        </div>
+    </div>
+</div>

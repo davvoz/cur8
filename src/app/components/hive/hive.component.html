@@ -21,7 +21,7 @@
                     <div class="form_container">
                         <div class="form_content">
                             <mat-label>User</mat-label>
-                            <input matInput placeholder="Username" type="text" [(ngModel)]="user.username">
+                            <input matInput placeholder="username" type="text" [(ngModel)]="user.username" (keyup.enter)="refresh()">
                         </div>
                     </div><br>
                     <div>Delegated {{ user.rapportoConCUR8.delega | reversePadZero}} HP</div>
@@ -31,8 +31,8 @@
                         Your share {{user.rapportoConCUR8.share | reversePadZero}}%
                     </div><br>
                     <div>
-                        Last payment {{ user.rapportoConCUR8.ultimoPagamento.importo}}&nbsp;&nbsp;&nbsp;
-                        {{user.rapportoConCUR8.ultimoPagamento.data | dateFormat}}
+                        Last payout {{ user.rapportoConCUR8.ultimoPagamento.importo}}&nbsp;&nbsp;&nbsp;
+                        {{ user.rapportoConCUR8.ultimoPagamento.data | dateFormat}} 
                     </div>
                 </mat-card-content>
                 <mat-card-actions class="c_actions">
@@ -49,22 +49,19 @@
 
             <mat-card class="card" *ngIf="!isLoading">
                 <mat-card-header class="card_header">
-
-
                     <div class="card_tittle">
                         <div>Delegate to cur8</div>
                         <!--icona ?-->
                         <div> <mat-icon
                                 matTooltip="Delegate Hive Power to Cur8 to participate in the project and earn rewards. Enter the amount of Hive Power you wish to delegate and view the estimated daily profit. First payment will be after 7 days">help</mat-icon>
                         </div>
-
                     </div>
                 </mat-card-header>
                 <mat-card-content class="card_content">
                     <div class="form_container">
                         <div class="form_content">
                             <mat-label>Amount</mat-label>
-                            <input matInput placeholder="Amount" type="number" [(ngModel)]="valoreDelega"
+                            <input matInput placeholder="0" type="number" [(ngModel)]="valoreDelega"
                                 (ngModelChange)="changeDailyProfit()">
                         </div>
                     </div><br>
@@ -91,12 +88,15 @@
             <mat-spinner *ngIf="isLoading"></mat-spinner>
             <mat-card class="card_special" *ngIf="!isLoading">
                 <mat-card-header class="card_header_special">
-                    <div class="card_tittle" *ngIf="loaded">{{user.username}}</div>
+                    <div class="card_tittle" *ngIf="loaded">{{usernameView}}</div>
                     <div class="card_subtitle" *ngIf="loaded">Level
                         {{user.social.level}}</div>
                 </mat-card-header>
                 <mat-card-content class="card_content">
                     <br>
+                    <div class="profile_image" *ngIf="!loaded">
+                        <img [src]="defaultImage" alt="User">
+                    </div>
                     <div class="profile_image" *ngIf="loaded">
                         <img [src]="user.image" alt="User">
                     </div>
@@ -152,7 +152,7 @@
                     <div class="form_container">
                         <div class="form_content">
                             <mat-label>Amount</mat-label>
-                            <input matInput placeholder="Amount" type="number" [(ngModel)]="powerUpHPValue">
+                            <input matInput placeholder="0" type="number" [(ngModel)]="powerUpHPValue">
                         </div>
                         <br>
                     </div>
@@ -193,11 +193,11 @@
                     <div class="form_container">
                         <div class="form_content">
                             <mat-label>To</mat-label>
-                            <input matInput placeholder="To" type="text" [(ngModel)]="sendTo">
+                            <input matInput placeholder="username" type="text" [(ngModel)]="sendTo">
                         </div>
                         <div class="form_content">
                             <mat-label>Amount</mat-label>
-                            <input matInput placeholder="Recipient" type="text" [(ngModel)]="sendAmount">
+                            <input matInput placeholder="0" type="text" [(ngModel)]="sendAmount">
                         </div>
                         <br>
                     </div>
@@ -228,7 +228,7 @@
                         </tr>
                         <tr *ngFor="let item of user.expiringDelegations">
                             <td>{{item.vesting_shares| reversePadZero}} HP</td>
-                            <td>{{item.expiration | dateFormat}}</td>
+                            <td>{{item.expiration | dateFormat}} </td>
                         </tr>
                     </table>
                 </mat-card-content>
@@ -267,7 +267,7 @@
                             <mat-icon *ngIf="item.to==user.username" class="freccia_verde">arrow_downward</mat-icon>
                         </div>
                         <div class="we_content">
-                            <div mat-line>{{item.timestamp | dateFormat}}</div>
+                            <div mat-line>{{item.timestamp | dateFormat}} </div>
                         </div>
                     </div>
                     <div mat-line>{{item.memo}}</div>
@@ -344,7 +344,7 @@
             <div>Delegated {{ user.rapportoConCUR8.delega | reversePadZero}} HP</div>
 
             <div>
-                Last payment {{ user.rapportoConCUR8.ultimoPagamento.importo}}<br>
+                Last payout {{ user.rapportoConCUR8.ultimoPagamento.importo}}<br>
                 <p mat-line>{{user.rapportoConCUR8.ultimoPagamento.data | dateFormat}}</p>
             </div>
             <div>
