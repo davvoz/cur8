@@ -305,3 +305,35 @@ li {
     text-align: center;
     font-size: 1.4em
 }
+
+.we_title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 100%;
+}
+
+.freccia_rossa {
+    color: red;
+}
+
+.freccia_verde {
+    color: lime;
+}
+
+.buttons_container {
+    display: flex;
+    justify-content: space-around;
+}
+
+button {
+    cursor: pointer;
+}
+
+.tb {
+    width: 100%;
+    padding-left: 30%;
+    padding-right: 30%;
+}

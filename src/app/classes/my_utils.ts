@@ -14,6 +14,7 @@ export class Utils {
 
         return `${day}/${month}/${year} ${hours}:${minutes}`;
     }
+
     static scrollToElement(targetElement: HTMLElement | null, behavior: ScrollBehavior = 'smooth') {
         if (!targetElement) return;
 
@@ -23,6 +24,7 @@ export class Utils {
             inline: 'nearest'
         });
     }
+    
     private static progressiveIds: { [key: string]: number } = {};
 
     public static getProgressiveId(prefix: string): number {

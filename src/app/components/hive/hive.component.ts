@@ -22,7 +22,6 @@ import { TruncatePipe } from '../../pipes/truncate.pipe';
 import { Vest2HPPipe } from '../../pipes/vest2-hp.pipe';
 import { GlobalPropertiesHiveService } from '../../services/global-properties-hive.service';
 import { UserMemoryService } from '../../services/user-memory.service';
-import { Utils } from '../../classes/my_utils';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 
@@ -72,22 +71,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 export class HiveComponent {
 
-
-  powerUpHPValue: any;
-  sendTo: any;
-  sendAmount: any;
-  estimatedDailyProfit: number = 0;
-  search: any;
-  isLoading = true;
-  loaded = false;
-  imridAccoount: any;
-  valoreDelega = 0;
-  displayedColumns = ['account', 'ammount', 'exp date'];
   imridData: IMRiddData = {
     delegaCur8: 0,
     ultimoPagamento: 0
   }
+
   global_properties: { totalVestingFundHive: number; totalVestingShares: number; };
+  
   user: User = {
     expiringDelegations: [],
     image: '',
@@ -122,26 +112,31 @@ export class HiveComponent {
     },
     account_value: 0,
   };
+
+  displayedColumns = ['account', 'ammount', 'exp date'];
+
   delegations = [
     { ammount: 100, expDate: '2021-01-01' },
     { ammount: 200, expDate: '2021-01-01' }
   ];
+
+  powerUpHPValue: any;
+  sendTo: any;
+  sendAmount: any;
+  estimatedDailyProfit: number = 0;
+  search: any;
+  isLoading = true;
+  loaded = false;
+  imridAccoount: any;
+  valoreDelega = 0;
   isMobile = false;
-  sommaExpire = 0;
   defaultImage = '/assets/default_user.jpg';
   usernameView: any;
-  columnNumber = window.innerWidth < 768 ? 1 : 6;
 
   constructor(private userMemoryService: UserMemoryService, public gs: GlobalPropertiesHiveService) {
     this.isMobile = window.innerWidth < 768;
     this.global_properties = this.gs.globalProperties;
     this.user.global_properties = this.gs.globalProperties;
-
-    this.sommaExpire = Utils.vestingShares2HP(
-      this.user.expiringDelegations.reduce((acc, val) => acc + val.vesting_shares, 0),
-      this.user.global_properties.totalVestingFundHive,
-      this.user.global_properties.totalVestingShares);
-
     this.imridData = this.gs.imridData;
 
     if (this.userMemoryService.user) {
@@ -183,6 +178,20 @@ export class HiveComponent {
     this.estimatedDailyProfit = this.valoreDelega * apr / 365 / 100;
   }
 
+  powerDownHP() {
+    if ((window as any).hive_keychain) {
+      const keychain = (window as any).hive_keychain;
+      if (typeof this.powerUpHPValue == 'string') {
+        this.powerUpHPValue = parseFloat(this.powerUpHPValue);
+      }
+      this.powerUpHPValue = this.powerUpHPValue.toFixed(3);
+      keychain.requestPowerDown(this.user.username, this.powerUpHPValue, (response: any) => {
+        console.log(response);
+
+      });
+    }
+  }
+
   powerUpHP() {
     if ((window as any).hive_keychain) {
       const keychain = (window as any).hive_keychain;
@@ -192,22 +201,6 @@ export class HiveComponent {
       this.powerUpHPValue = this.powerUpHPValue.toFixed(3);
       keychain.requestPowerUp(this.user.username, this.user.username, this.powerUpHPValue, (response: any) => {
         console.log(response);
-      });
-    }
-  }
-
-
-  powerDownHP() {
-    if ((window as any).hive_keychain) {
-      const keychain = (window as any).hive_keychain;
-      if (typeof this.powerUpHPValue == 'string') {
-        this.powerUpHPValue = parseFloat(this.powerUpHPValue);
-      }
-
-      this.powerUpHPValue = this.powerUpHPValue.toFixed(3);
-      keychain.requestPowerDown(this.user.username, this.powerUpHPValue, (response: any) => {
-        console.log(response);
-
       });
     }
   }
@@ -224,14 +217,11 @@ export class HiveComponent {
   }
 
   delega() {
-    StaticDelegator.delegateWithHive(this.user.username, 'cur8', this.valoreDelega.toString(), () => { console.log('fatto') }).then((result) => {
+    StaticDelegator.delegateWithHive(this.user.username, 'cur8', this.valoreDelega.toString(), () => { console.log('delega eseguita') }).then((result) => {
       console.log('delega effettuata');
     }).catch((error) => {
-      console.log('errore nella delega');
+      console.log('errore nella delega', error);
     });
 
   }
-
-
-
 }

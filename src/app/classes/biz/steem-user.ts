@@ -185,7 +185,6 @@ class UserManager {
 
     private async calculateShare() {
         const res = await this.client.database.getAccounts(['cur8']);
-
         const totCur8 = Utils.toStringParseFloat(res[0].vesting_shares);
         const recivedVestingShares = Utils.toStringParseFloat(res[0].received_vesting_shares);
         const sommatoria = Utils.vestingShares2HP(totCur8 + recivedVestingShares, this.dynamicGlobalProperties.totalVestingFundSteem, this.dynamicGlobalProperties.totalVestingShares);
@@ -250,8 +249,6 @@ class UserManager {
 
     private async setDelega(delegations: VestingDelegation[]): Promise<number> {
         if (delegations.length > 0) {
-            //const vs: VestingDelegation = delegations[0];
-            //prendiamo la delega riferita a cur8
             const vs = delegations.find((delegation) => delegation.delegatee === 'cur8') as VestingDelegation;
             const { vesting_shares } = vs === undefined || vs === null ? { vesting_shares: 0 } : vs;
             if (!vesting_shares || !this.dynamicGlobalProperties) {

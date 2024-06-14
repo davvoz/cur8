@@ -30,7 +30,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   selector: 'app-steem',
   standalone: true,
   templateUrl: './steem.component.html',
-  styleUrl: './steem.component.scss',
+  styleUrl: '../hive/hive.component.scss',
   imports: [
     MatTooltipModule,
     MatProgressSpinnerModule,
@@ -70,21 +70,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class SteemComponent {
 
-  sendTo: any;
-  sendAmount: any;
-  estimatedDailyProfit: number = 0;
-
   imridData: IMRiddData = {
     delegaCur8: 0,
     ultimoPagamento: 0
   }
 
   global_properties: { totalVestingFundSteem: number; totalVestingShares: number; };
-  powerUpSPValue: any;
 
-
-
-  valoreDelega = 0;
   user: User = {
     totalExpiringDelegations: 0,
     expiringDelegations: [],
@@ -126,13 +118,20 @@ export class SteemComponent {
     { ammount: 100, expDate: '2021-01-01' },
     { ammount: 200, expDate: '2021-01-01' }
   ];
+ 
+  powerUpSPValue: any;
+  sendTo: any;
+  sendAmount: any;
+  estimatedDailyProfit: number = 0;
   search: any;
   isLoading = true;
   loaded = false;
   imridAccoount: any;
+  valoreDelega = 0;
   isMobile = false;
-  usernameView: any;
   defaultImage = '/assets/default_user.jpg';
+  usernameView: any;
+
 
   constructor(public gs: GlobalPropertiesSteemService, private userMemoryService: UserMemorySteemService) {
     this.isMobile = window.innerWidth < 768;
@@ -148,20 +147,18 @@ export class SteemComponent {
     this.isLoading = false;
   }
 
-  changeDailyProfit() {
-    const apr = this.imridData.ultimoPagamento * 365 * 100 / this.imridData.delegaCur8;
-    this.estimatedDailyProfit = this.valoreDelega * apr / 365 / 100;
-  }
+
 
   sendSbd() {
     if ((window as any).steem_keychain) {
       const keychain = (window as any).steem_keychain;
+      if (typeof this.sendAmount == 'string') {
+        this.sendAmount = parseFloat(this.sendAmount);
+      }
       keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'SBD', (response: any) => {
         console.log(response);
       });
-    } else {
-      alert('You do not have steem keychain installed');
-    }
+    } 
   }
 
   sendSteem() {
@@ -174,10 +171,12 @@ export class SteemComponent {
       keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'STEEM', (response: any) => {
         console.log(response);
       });
-    } else {
-      alert('You do not have steem keychain installed');
-
     }
+  }
+
+  changeDailyProfit() {
+    const apr = this.imridData.ultimoPagamento * 365 * 100 / this.imridData.delegaCur8;
+    this.estimatedDailyProfit = this.valoreDelega * apr / 365 / 100;
   }
 
   powerDownSP() {
@@ -191,10 +190,7 @@ export class SteemComponent {
       keychain.requestPowerDown(this.user.username, this.powerUpSPValue, (response: any) => {
         console.log(response);
       });
-    } else {
-      alert('You do not have steem keychain installed');
-    }
-
+    } 
   }
 
   powerUpSP() {
@@ -205,9 +201,7 @@ export class SteemComponent {
       keychain.requestPowerUp(this.user.username, this.user.username, this.powerUpSPValue, (response: any) => {
         console.log(response);
       });
-    } else {
-      alert('You do not have steem keychain installed');
-    }
+    } 
   }
 
   refresh() {
@@ -218,24 +212,14 @@ export class SteemComponent {
       this.loaded = true;
       this.userMemoryService.setUser(this.user)
       this.usernameView = this.user.username;
-
     });
   }
 
   delega() {
-    StaticDelegator.delegateWithSteem(this.user.username, 'cur8', this.valoreDelega.toString(), () => { console.log('fatto') }).then((result) => {
+    StaticDelegator.delegateWithSteem(this.user.username, 'cur8', this.valoreDelega.toString(), () => { console.log('delega eseguita') }).then((result) => {
       console.log('delega effettuata');
     }).catch((error) => {
-      console.log('errore nella delega');
+      console.log('errore nella delega', error);
     });
-
-  }
-
-  searchTrans() {
-    throw new Error('Method not implemented.');
-  }
-
-  searchTransaction() {
-    throw new Error('Method not implemented.');
   }
 }
