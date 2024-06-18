@@ -20,48 +20,48 @@ import { TransazioniCur8Component } from '../transazioni-cur8/transazioni-cur8.c
 import { ApiService } from '../../services/api.service';
 import { InterpretaHTMLDirective } from '../../directives/interpreta-html.directive';
 import { TransazioniCur8SteemComponent } from "../transazioni-cur8-steem/transazioni-cur8-steem.component";
-//ranzaAllintero
 import { RanzaAllinteroPipe } from '../../pipes/ranza-allintero.pipe';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
-    selector: 'app-home',
-    standalone: true,
-    templateUrl: './home.component2.html',
-    styleUrl: './home.component.scss',
-    imports: [
-        NgIf,
-        MatToolbar,
-        MatToolbarRow,
-        MatCard,
-        MatCardContent,
-        MatCardHeader,
-        MatGridTile,
-        MatGridList,
-        MatGridAvatarCssMatStyler,
-        MatGridTileFooterCssMatStyler,
-        MatDivider,
-        MatCard,
-        MatCardContent,
-        MatCardTitle,
-        MatCardSubtitle,
-        MatCardActions,
-        MatButton,
-        MatIcon,
-        MatCardImage,
-        NgFor,
-        ReversePadZeroPipe,
-        BarChartComponent,
-        TransazioniCur8Component,
-        InterpretaHTMLDirective,
-        TransazioniCur8SteemComponent,
-        RanzaAllinteroPipe
-    ]
+  selector: 'app-home',
+  standalone: true,
+  templateUrl: './home.component2.html',
+  styleUrl: './home.component.scss',
+  imports: [
+    MatProgressSpinnerModule,
+    NgIf,
+    MatToolbar,
+    MatToolbarRow,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatGridTile,
+    MatGridList,
+    MatGridAvatarCssMatStyler,
+    MatGridTileFooterCssMatStyler,
+    MatDivider,
+    MatCard,
+    MatCardContent,
+    MatCardTitle,
+    MatCardSubtitle,
+    MatCardActions,
+    MatButton,
+    MatIcon,
+    MatCardImage,
+    NgFor,
+    ReversePadZeroPipe,
+    BarChartComponent,
+    TransazioniCur8Component,
+    InterpretaHTMLDirective,
+    TransazioniCur8SteemComponent,
+    RanzaAllinteroPipe
+  ]
 })
 
 export class HomeComponent implements AfterViewInit {
   gridCols: number = 6;
   rowHeight: string = '120px';
-  
+
   factor: number = 2;
   colspanWelcome: number = 6;
   rowspanWelcome: number = 1 * this.factor;
@@ -109,6 +109,7 @@ export class HomeComponent implements AfterViewInit {
   allTimePayOut: any;
   days_payout: any;
   content: any;
+  isLoading = true;
 
 
   constructor(private gs: GlobalPropertiesHiveService, private apiService: ApiService) {
@@ -125,19 +126,6 @@ export class HomeComponent implements AfterViewInit {
       this.colspanRecentOperations = 1;
       this.colspanCur8News = 1;
       this.colspanSocial = 1;
-    }
-
-    if (gs.allTimePayOut_DA_MOLTIPLICARE === 0 || gs.daysPayout_DA_MOLTIPLICARE === 0) {
-      this.apiService.get('https://imridd.eu.pythonanywhere.com/api/hive').then((data) => {
-        //follow_count
-        this.allTimePayOut = data[0]['total_rewards'] * this.gs.globalPrezzi.price;
-        this.days_payout = data[0]['curation_rewards_7d'] * this.gs.globalPrezzi.price;
-        this.gs.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'];
-        this.gs.daysPayout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
-      });
-    } else {
-      this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
-      this.days_payout = this.gs.daysPayout_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
     }
 
     if (!this.gs.accountCUR8) {
@@ -168,15 +156,44 @@ export class HomeComponent implements AfterViewInit {
     this.content = this.gs.listaPost;
 
     this.totalDelegators = this.gs.delegatori;
+
     this.totalHivePower = Utils.vestingShares2HP(
       Utils.toStringParseFloat(this.account.vesting_shares),
       this.gs.globalProperties.totalVestingFundHive,
       this.gs.globalProperties.totalVestingShares);
+
     this.totalHiveRecieved = Utils.vestingShares2HP(
       Utils.toStringParseFloat(this.account.received_vesting_shares),
       this.gs.globalProperties.totalVestingFundHive,
       this.gs.globalProperties.totalVestingShares);
-    this.totalHive = this.totalHivePower + this.totalHiveRecieved;
+   
+      this.totalHive = this.totalHivePower + this.totalHiveRecieved;
+
+    if (this.gs.allTimePayOut_DA_MOLTIPLICARE === 0 || this.gs.daysPayout_DA_MOLTIPLICARE === 0) {
+      this.apiService.get('https://imridd.eu.pythonanywhere.com/api/hive').then((data) => {
+        this.allTimePayOut = data[0]['total_rewards'] * this.gs.globalPrezzi.price;
+        this.days_payout = data[0]['curation_rewards_7d'] * this.gs.globalPrezzi.price;
+        this.gs.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'];
+        this.gs.daysPayout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
+      });
+    } else {
+      this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
+      this.days_payout = this.gs.daysPayout_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
+    }
+
+
+    if (!this.gs.delegatori) {
+      this.apiService.get('https://ecency.com/private-api/received-vesting/cur8').then((data) => {
+        this.gs.delegatori = data['list'].length;
+        this.totalDelegators = this.gs.delegatori;
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    } else {
+      
+      this.isLoading = false;
+      this.totalDelegators = this.gs.delegatori;
+    }
   }
 
   private calculateManaPercentage(accountData: any, timestampLastVote: string) {
@@ -204,17 +221,17 @@ export class HomeComponent implements AfterViewInit {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-    ctx.lineWidth = 20;
+    ctx.lineWidth = 10;
     ctx.strokeStyle = this.regoleRiempimentoColore(manaPercentage);
     ctx.stroke();
-    ctx.font = `${canvas.width / 3}px Impact`;
-    ctx.fillStyle = 'white';
+    //usa un testo grande affusolato
+    ctx.font = 'lighter 40px Arial';
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(`${manaPercentage}%`, centerX, centerY);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'black';
-    ctx.strokeText(`${manaPercentage}%`, centerX, centerY);
+    ctx.fillStyle = 'white';
+
+    ctx.fillText(manaPercentage + '%', centerX, centerY + 10);
+
+
   }
 
   regoleRiempimentoColore = (percentuale: number): string => {

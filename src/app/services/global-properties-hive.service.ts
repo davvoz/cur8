@@ -92,7 +92,7 @@ export class GlobalPropertiesHiveService {
     this.dataChart = data;
   }
 
-  async fetchPostDataCiclo(autor: string): Promise<void> {
+  private async fetchPostDataCiclo(autor: string): Promise<void> {
 
     const query = { tag: autor, limit: 1, };
     const result = await this.client.database.getDiscussions('blog', query);
@@ -106,29 +106,28 @@ export class GlobalPropertiesHiveService {
 
     }
   }
+
   async setPrices(): Promise<void> {
     if (this.globalPrezzi.price === 0) {
       const result = await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices');
       this.globalPrezzi.price = result['HIVE'];
       this.globalPrezzi.price_dollar = result['HBD'];
-      console.log('Hive prices set');
     }
   }
 
   private async setTransazioniCur8(): Promise<void> {
-    const result = await this.client.database.getAccountHistory('cur8', -1, 1000, [1, 40]);
-    this.transazioniCUR8 = result.map(transazione => ({
-      voter: transazione[1].op[1]['voter'],
-      author: transazione[1].op[1]['author'],
-      weight: transazione[1].op[1]['weight'],
-      timestamp: transazione[1].timestamp
-    }));
-    console.log('Transazioni set');
-    console.log('Ciclo post',this.transazioniCUR8.length);
-
-    for (let i = this.transazioniCUR8.length -1; i > this.transazioniCUR8.length - 14; i--) {
-      this.fetchPostDataCiclo(this.transazioniCUR8[i].author);
-    }
+    this.client.database.getAccountHistory('cur8', -1, 1000, [1, 40]).then(result => {
+      this.transazioniCUR8 = result.map(transazione => ({
+        voter: transazione[1].op[1]['voter'],
+        author: transazione[1].op[1]['author'],
+        weight: transazione[1].op[1]['weight'],
+        timestamp: transazione[1].timestamp
+      })) as VoteTransaction[];
+    }).finally(() => {
+      for (let i = this.transazioniCUR8.length - 1; i > this.transazioniCUR8.length - 14; i--) {
+        this.fetchPostDataCiclo(this.transazioniCUR8[i].author);
+      }
+    });
   }
 
 }

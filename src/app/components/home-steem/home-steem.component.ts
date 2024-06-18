@@ -25,7 +25,7 @@ import { RanzaAllinteroPipe } from "../../pipes/ranza-allintero.pipe";
     selector: 'app-home',
     standalone: true,
     templateUrl: './home-steem.component2.html',
-    styleUrl: './home-steem.component.scss',
+    styleUrl: '../home/home.component.scss',
     imports: [
         NgIf,
         MatToolbar,
@@ -120,18 +120,7 @@ export class HomeSteemComponent implements AfterViewInit{
             this.colspanSocial = 1;
         }
         
-        if(gs.allTimePayOut_DA_MOLTIPLICARE === 0 || gs.daysPayout_DA_MOLTIPLICARE === 0){
-            this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem').then((data) => {
-                //follow_count
-                this.allTimePayOut = data[0]['total_rewards'] * this.gs.globalPrezzi.price;
-                this.days_payout = data[0]['curation_rewards_7d'] * this.gs.globalPrezzi.price;
-                this.gs.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'] ;
-                this.gs.daysPayout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
-            });
-        }else{
-            this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
-            this.days_payout = this.gs.daysPayout_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
-        }
+
        
         //account
         if (!this.gs.accountCUR8) {
@@ -163,16 +152,32 @@ export class HomeSteemComponent implements AfterViewInit{
         this.content = this.gs.listaPost;
 
         this.totalDelegators = this.gs.delegatori;
+        
         this.totalSteemPower = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.vesting_shares),
             this.gs.globalProperties.totalVestingFundSteem,
             this.gs.globalProperties.totalVestingShares);
-        this.totalSteemRecieved = Utils.vestingShares2HP(
+       
+            this.totalSteemRecieved = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.received_vesting_shares),
             this.gs.globalProperties.totalVestingFundSteem,
             this.gs.globalProperties.totalVestingShares);
-        this.totalSteem = this.totalSteemPower + this.totalSteemRecieved;
-    }
+       
+            this.totalSteem = this.totalSteemPower + this.totalSteemRecieved;
+   
+            if(this.gs.allTimePayOut_DA_MOLTIPLICARE === 0 || this.gs.daysPayout_DA_MOLTIPLICARE === 0){
+                this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem').then((data) => {
+                    //follow_count
+                    this.allTimePayOut = data[0]['total_rewards'] * this.gs.globalPrezzi.price;
+                    this.days_payout = data[0]['curation_rewards_7d'] * this.gs.globalPrezzi.price;
+                    this.gs.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'] ;
+                    this.gs.daysPayout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
+                });
+            }else{
+                this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
+                this.days_payout = this.gs.daysPayout_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
+            }
+        }
 
     private calculateManaPercentage(account: any, timestampLastVote: string) {
         const lastVoteTime = new Date(timestampLastVote);
@@ -200,19 +205,15 @@ export class HomeSteemComponent implements AfterViewInit{
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-        ctx.lineWidth = 20;
+        ctx.lineWidth = 10;
         ctx.strokeStyle = this.regoleRiempimentoColore(manaPercentage);
         ctx.stroke();
-        //dimesione del testo dinamico
-        ctx.font = `${canvas.width / 3}px Impact`;
-        ctx.fillStyle = 'white';
+        //usa un testo grande affusolato
+        ctx.font = 'lighter 40px Arial';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(`${manaPercentage}%`, centerX, centerY);
-        //stroke text
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = 'black';
-        ctx.strokeText(`${manaPercentage}%`, centerX, centerY);
+        ctx.fillStyle = 'white';
+        
+        ctx.fillText(manaPercentage + '%', centerX, centerY + 10);
     }
 
     regoleRiempimentoColore = (percentuale: number) => {

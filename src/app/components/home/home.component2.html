@@ -1,37 +1,35 @@
 <div class="desktop">
   <mat-grid-list [cols]="gridCols" class="grid_list" [rowHeight]="rowHeight">
     <mat-grid-tile [colspan]="colspanWelcome" [rowspan]="rowspanWelcome">
-      <mat-card class="card">
-        <mat-card-header class="card_header_special">
-          <mat-card-title class="card_title_special">
-            <img src="assets/logo_tra.png" alt="cur8 logo" style="
-            width: 100px; 
-            height: 100px; 
-            margin-right: 10px;
-            border-radius: 50%;
-            background-color: white;
-            padding: 5px;
-            border: 1px solid rgba(0, 0, 0, 0.12);">
-            <img src="assets/hive_.png" alt="hive logo" style="
-            width: 100px; height: 
-            100px; margin-right: 
-            10px;border-radius: 50%;
-            background-color: white;
-            padding: 5px;
-            border: 1px solid rgba(0, 0, 0, 0.12);">
-            <span>
-              Welcome to cur8.earn! To start earning daily income, delegate some Hive Power in the profile section.
-            </span>
-          </mat-card-title>
-        </mat-card-header>
+      <mat-card class="cardola">
+        <div class="header-container-hive-sup">
+          <div class="header-container-hive">
+            <div class="logo-container">
+              <img src="assets/logo_tra.png" alt="cur8 logo" >
+            </div>
+            <div></div>
+            <div class="title-container">
+             Welcome to cur8.earn!
+            </div>
+          
+            <div></div>
+          <div class="logo-container">
+            <img src="assets/hive_.png" alt="hive logo" >
+          </div>
+              
+        </div>
+          <div class="bottom">
+            To start earning daily income, delegate some Hive Power in the profile section.
+          </div>
+        </div>
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="colspanTotalHivePower" [rowspan]="rowspanTotalHivePower">
       <mat-card class="card">
         <mat-card-header class="card_header">
           <mat-card-title class="card_title">Total cur8 HIVE power</mat-card-title>
-        </mat-card-header><br>
-        <mat-card-content class="card_content">
+        </mat-card-header>
+        <mat-card-content class="card_content"><br><br><br>
           <span> {{totalHive | ranzaAllintero}} HP</span>
         </mat-card-content>
       </mat-card>
@@ -40,9 +38,10 @@
       <mat-card class="card">
         <mat-card-header class="card_header">
           <mat-card-title class="card_title">Total delegators</mat-card-title>
-        </mat-card-header><br>
+        </mat-card-header><br><br><br>
         <mat-card-content class="card_content">
-          <span> {{totalDelegators}}</span>
+          <mat-spinner *ngIf="isLoading"></mat-spinner>
+          <span *ngIf="!isLoading"> {{totalDelegators}}</span>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -51,7 +50,7 @@
         <mat-card-header class="card_header">
           <mat-card-title class="card_title">All time payout</mat-card-title>
         </mat-card-header>
-        <br>
+        <br><br><br>
         <mat-card-content class="card_content">
           <span> {{allTimePayOut | ranzaAllintero}} $</span>
         </mat-card-content>
@@ -67,7 +66,14 @@
       align-items: center;
       flex-direction: row;
       justify-content: space-around;">
-          <canvas #gaugeCanvasHive width="120" height="120"></canvas>
+          <div class="gauge-container">
+            <div class="canvas-container">
+              <canvas #gaugeCanvasHive width="180" height="180"></canvas>
+            </div>
+            <div class="mana-value-container">
+              <!-- <div>{{manaPercentageHive}}%</div> -->
+            </div>
+          </div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -76,7 +82,7 @@
         <mat-card-header class="card_header">
           <mat-card-title class="card_title">Last 7 days payout</mat-card-title>
         </mat-card-header>
-        <br>
+        <br><br><br>
         <mat-card-content class="card_content">
           <span> {{days_payout | ranzaAllintero}} $</span>
         </mat-card-content>
@@ -96,7 +102,7 @@
       <mat-card class="card">
         <mat-card-header class="card_header">
           <mat-card-title class="card_title">Stay updated on cur8 project , follow our social</mat-card-title>
-        </mat-card-header><br>
+        </mat-card-header><br><br><br>
         <mat-card-content class="card_content">
           <!--telegram discord you tube-->
           <button mat-raised-button>Telegram</button>
@@ -116,10 +122,10 @@
           <div class="post">
             <div class="postContainer">
               <div class="post_image">
-                <a href="{{item.url}}" target="_blank">  
-                    <img src="{{item.imageUrl}}" alt="cur8 news" style="width: 100px; height: 100px;">
+                <a href="{{item.url}}" target="_blank">
+                  <img src="{{item.imageUrl}}" alt="cur8 news" style="width: 100px; height: 100px;">
                 </a>
-                </div>
+              </div>
               <div class="post_header">
                 <span>{{item.title}}</span>
               </div>
@@ -142,3 +148,4 @@
     </mat-grid-tile>
   </mat-grid-list>
 </div>
+

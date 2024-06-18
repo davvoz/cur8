@@ -4,6 +4,65 @@ body {
   font-family: Arial, sans-serif;
 }
 
+.header-container-hive-sup {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+}
+
+.header-container-hive {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 3.5em;
+  font-weight: 100;
+
+}
+
+.cardola {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, #8a1f1f, #d32f2f);
+}
+
+.cardola-steem {
+  background: linear-gradient(to right, #192046, #3f51b5);
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.logo-container img {
+  width: 100px;
+  height: 100px;
+  margin-right: 10px;
+  background-color: white;
+  border-radius: 100%;
+  padding: 5px;
+  margin: auto;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  font-weight: 100;
+  padding: 20px;
+
+}
+
 .card_title_special {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -11,9 +70,12 @@ body {
   font-size: 1.5em;
 }
 
-.desktop, .mobile {
-  background: #333; /* Sfondo scuro */
-  color: #fff; /* Testo bianco per contrasto */
+.desktop,
+.mobile {
+  background: #333;
+  /* Sfondo scuro */
+  color: #fff;
+  /* Testo bianco per contrasto */
   min-height: 100vh;
   padding: 20px;
 }
@@ -30,40 +92,56 @@ body {
 
 /* Stile delle card */
 .card {
-  background: #444; /* Sfondo card scuro */
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 10px;
+  display: flex;
+  width: 97%;
+  height: 98%;
+  overflow: auto;
+  margin-top: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   padding: 10px;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  width: 100%;
-  height: 100%;
+  flex-direction: column;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  font-size: large;
+  border-radius: 3%;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
 }
 
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
 
 /* Header delle card */
-.card_header, .card_header_special {
+.card_header_special {
   padding: 10px;
   display: flex;
   align-items: center;
 }
 
 .card_header {
-  background-color: #555; /* Sfondo header card */
-  color: #fff; /* Testo bianco */
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  align-items: flex-start;
+  text-align: center;
+  display: contents;
 }
 
 .card_header_special {
-  background: linear-gradient(to right, #8a1f1f, #d32f2f); /* Gradient arancione-giallo */
+  background: linear-gradient(to right, #8a1f1f, #d32f2f);
+  /* Gradient arancione-giallo */
   padding: 15px;
 }
 
-.card_title, .card_title_special {
-  font-size: 1.2em;
+.card_title,
+.card_title_special {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  /*USA UN FONT GIGANTE ,PANTAGRUELICO , ENORME ,NON X-LARGE*/
+  font-size: x-large;
 }
 
 .card_title_special {
@@ -72,22 +150,24 @@ body {
 }
 
 /* Contenuto delle card */
-.card_content, .card_content_special {
+.card_content,
+.card_content_special {
   padding: 15px;
-  background-color: #666; /* Sfondo contenuto card */
-  color: #fff; /* Testo bianco */
 }
 
 .card_content span {
   display: block;
   text-align: center;
-  font-size: 1.5em;
+  font-size: 3.5em;
+  font-weight: 100;
 }
 
 /* Pulsanti */
 button.mat-raised-button {
-  background-color: #ff9800; /* Pulsante arancione */
-  color: #333; /* Testo scuro */
+  background-color: #ff9800;
+  /* Pulsante arancione */
+  color: #333;
+  /* Testo scuro */
   margin: 5px;
   border: none;
   padding: 10px 20px;
@@ -98,12 +178,14 @@ button.mat-raised-button {
 }
 
 button.mat-raised-button:hover {
-  background-color: #ffc107; /* Pulsante giallo al passaggio del mouse */
+  background-color: #ffc107;
+  /* Pulsante giallo al passaggio del mouse */
 }
 
 /* Post e contenuti delle news */
 .post {
-  background-color: #555; /* Sfondo post */
+  background-color: #555;
+  /* Sfondo post */
   margin: 10px;
   border-radius: 5px;
   overflow: hidden;
@@ -127,11 +209,13 @@ button.mat-raised-button:hover {
 .post_header {
   text-align: center;
   font-size: 1em;
-  color: #fff; /* Testo bianco */
+  color: #fff;
+  /* Testo bianco */
 }
 
 /* Layout flex e grid */
-.card_contento, .card-container {
+.card_contento,
+.card-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -151,20 +235,25 @@ button.mat-raised-button:hover {
   flex-direction: column;
   align-items: flex-end;
 }
+
 .card_contento {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
-  overflow : auto;
+  overflow: auto;
 }
-.card_content_trans{
+
+.card_content_trans {
   align-items: center;
   justify-content: space-evenly;
   overflow: auto;
 }
+
 /* Layout per dispositivi mobili */
 @media screen and (max-width: 600px) {
-  .card_content, .card_content_special {
+
+  .card_content,
+  .card_content_special {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -178,12 +267,9 @@ button.mat-raised-button:hover {
     font-size: small;
   }
 
-  .card_title {
-    font-size: small;
-  }
 
-  .desktop span {
-    font-size: large;
+  .desktop {
+    padding: 0%;
   }
 
   .mobile {
@@ -194,4 +280,41 @@ button.mat-raised-button:hover {
     margin-top: 10px;
     font-size: medium;
   }
+}
+
+.mana-value-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  font-size: 2em;
+  font-weight: 100;
+}
+
+.gauge-container {
+  position: relative;
+  width: 165px;
+  height: 165px;
+  margin: 12px;
+}
+
+.canvas-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.canvas-container canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.card_header_special-steem {
+  background: linear-gradient(to right, #192046, #3f51b5);
+  /* Gradient blu */
+  /* Gradient arancione-giallo */
+  padding: 15px;
 }
