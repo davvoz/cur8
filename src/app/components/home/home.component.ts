@@ -94,8 +94,6 @@ export class HomeComponent implements AfterViewInit {
   rowspanSocial: number = 2;
 
   client = new Client('https://api.hive.blog');
-
-
   @ViewChild('gaugeCanvasHive')
   gaugeCanvasHive!: ElementRef;
 

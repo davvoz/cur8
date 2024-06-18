@@ -54,30 +54,30 @@ import { RanzaAllinteroPipe } from "../../pipes/ranza-allintero.pipe";
         RanzaAllinteroPipe
     ]
 })
-export class HomeSteemComponent implements AfterViewInit{
+export class HomeSteemComponent implements AfterViewInit {
     gridCols: number = 6;
     rowHeight: string = '120px';
-  
+
     factor: number = 2;
     colspanWelcome: number = 6;
     rowspanWelcome: number = 1 * this.factor;
-  
+
     colspanTotalSteemPower: number = 3;
     rowspanTotalSteemPower: number = 1 * this.factor;
-  
+
     colspanTotalDelegators: number = 3;
     rowspanTotalDelegators: number = 1 * this.factor;
-  
+
     colspanAllTimePayOut: number = 2;
     rowspanAllTimePayOut: number = 1 * this.factor;
-  
+
     colspanVotingPower: number = 2;
     rowspanVotingPower: number = 1 * this.factor;
 
     colspanLast7DaysPayout: number = 2;
     rowspanLast7DaysPayout: number = 1 * this.factor;
 
-    colspanCurationRewards: number = 3; 
+    colspanCurationRewards: number = 3;
     rowspanCurationRewards: number = 2;
 
     colspanRecentOperations: number = 3;
@@ -88,10 +88,8 @@ export class HomeSteemComponent implements AfterViewInit{
 
     colspanSocial: number = 3;
     rowspanSocial: number = 2;
-  
+
     client = new Client('https://api.moecki.online');
-    manaPercentageSteem: number = 0;
-    isMobile = window.innerWidth < 768;
     @ViewChild('gaugeCanvasSteem')
     gaugeCanvasSteem!: ElementRef;
 
@@ -99,16 +97,18 @@ export class HomeSteemComponent implements AfterViewInit{
     totalSteemPower: any;
     totalSteemRecieved = 0;
     totalSteem: number = 0
+    isMobile: boolean = false;
     account: any;
+    manaPercentageSteem: number = 0;
     allTimePayOut: any;
     days_payout: any;
     content: any;
 
     constructor(private gs: GlobalPropertiesSteemService, private apiService: ApiService) {
+        this.isMobile = window.innerWidth < 768;
         if (this.isMobile) {
             this.gridCols = 1;
             this.colspanWelcome = 1;
-            this.rowspanWelcome = 1;
             this.colspanTotalSteemPower = 1;
             this.colspanTotalDelegators = 1;
             this.colspanAllTimePayOut = 1;
@@ -119,9 +119,9 @@ export class HomeSteemComponent implements AfterViewInit{
             this.colspanCur8News = 1;
             this.colspanSocial = 1;
         }
-        
 
-       
+
+
         //account
         if (!this.gs.accountCUR8) {
             this.client.database.getAccounts(['cur8']).then((data) => {
@@ -139,12 +139,12 @@ export class HomeSteemComponent implements AfterViewInit{
         if (!this.gs.accountCUR8) {
             this.client.database.getAccounts(['cur8']).then((data) => {
                 const timestampLastVote = data[0].last_vote_time;
-                this.calculateManaPercentage(data[0], timestampLastVote);   
+                this.calculateManaPercentage(data[0], timestampLastVote);
             });
         } else {
             const timestampLastVote = this.account.last_vote_time;
             this.calculateManaPercentage(this.account, timestampLastVote);
-            
+
         }
     }
 
@@ -152,32 +152,32 @@ export class HomeSteemComponent implements AfterViewInit{
         this.content = this.gs.listaPost;
 
         this.totalDelegators = this.gs.delegatori;
-        
+
         this.totalSteemPower = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.vesting_shares),
             this.gs.globalProperties.totalVestingFundSteem,
             this.gs.globalProperties.totalVestingShares);
-       
-            this.totalSteemRecieved = Utils.vestingShares2HP(
+
+        this.totalSteemRecieved = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.received_vesting_shares),
             this.gs.globalProperties.totalVestingFundSteem,
             this.gs.globalProperties.totalVestingShares);
-       
-            this.totalSteem = this.totalSteemPower + this.totalSteemRecieved;
-   
-            if(this.gs.allTimePayOut_DA_MOLTIPLICARE === 0 || this.gs.daysPayout_DA_MOLTIPLICARE === 0){
-                this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem').then((data) => {
-                    //follow_count
-                    this.allTimePayOut = data[0]['total_rewards'] * this.gs.globalPrezzi.price;
-                    this.days_payout = data[0]['curation_rewards_7d'] * this.gs.globalPrezzi.price;
-                    this.gs.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'] ;
-                    this.gs.daysPayout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
-                });
-            }else{
-                this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
-                this.days_payout = this.gs.daysPayout_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
-            }
+
+        this.totalSteem = this.totalSteemPower + this.totalSteemRecieved;
+
+        if (this.gs.allTimePayOut_DA_MOLTIPLICARE === 0 || this.gs.daysPayout_DA_MOLTIPLICARE === 0) {
+            this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem').then((data) => {
+                //follow_count
+                this.allTimePayOut = data[0]['total_rewards'] * this.gs.globalPrezzi.price;
+                this.days_payout = data[0]['curation_rewards_7d'] * this.gs.globalPrezzi.price;
+                this.gs.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'];
+                this.gs.daysPayout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
+            });
+        } else {
+            this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
+            this.days_payout = this.gs.daysPayout_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
         }
+    }
 
     private calculateManaPercentage(account: any, timestampLastVote: string) {
         const lastVoteTime = new Date(timestampLastVote);
@@ -212,7 +212,7 @@ export class HomeSteemComponent implements AfterViewInit{
         ctx.font = 'lighter 40px Arial';
         ctx.textAlign = 'center';
         ctx.fillStyle = 'white';
-        
+
         ctx.fillText(manaPercentage + '%', centerX, centerY + 10);
     }
 

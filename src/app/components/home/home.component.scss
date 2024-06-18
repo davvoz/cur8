@@ -32,7 +32,23 @@ body {
 }
 
 .cardola-steem {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
   background: linear-gradient(to right, #192046, #3f51b5);
+}
+/*riduci la dimensione del logo e del font per mobile*/
+@media screen and (max-width: 600px) {
+  .header-container-hive {
+    font-size: 2em;
+  }
+
+  .header-container-hive img {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 .logo-container {
