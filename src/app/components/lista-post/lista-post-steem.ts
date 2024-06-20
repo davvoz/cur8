@@ -11,7 +11,6 @@ import { GlobalPropertiesSteemService } from '../../services/global-properties-s
 export class ListaPostComponent {
   content: any;
   constructor(private gb: GlobalPropertiesSteemService) {
-    this.content = this.gb.listaPost;
-    console.log("sddsdfsdfsdsfsfdsfdfs",this.content);
+    this.content = this.gb.getListaPost();
   }
 }

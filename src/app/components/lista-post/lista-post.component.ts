@@ -11,6 +11,6 @@ import { GlobalPropertiesHiveService } from '../../services/global-properties-hi
 export class ListaPostComponent {
   content: any;
   constructor(private gb: GlobalPropertiesHiveService) {
-    this.content = this.gb.listaPost;
+    this.content = this.gb.getListaPost();
   }
 }

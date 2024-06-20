@@ -25,15 +25,15 @@ export class BarChartSteemComponent {
   }
 
   fetchDataAndDrawChart(): void {
-    if (this.globalProperties.dataChart.length === 0) { 
+    if (this.globalProperties.getDataChart().length === 0) { 
       console.log('fetching data');
       const apiUrl = 'https://imridd.eu.pythonanywhere.com/api/steem_cur';
       this.apiService.get(apiUrl).then((data: SteemData[]) => {
         this.drawChart(data);
-        this.globalProperties.dataChart = data;
+        this.globalProperties.setDataChart(data);
       });
     } else {
-      this.drawChart(this.globalProperties.dataChart);
+      this.drawChart(this.globalProperties.getDataChart());
     }
 
   }

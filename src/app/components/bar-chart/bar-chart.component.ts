@@ -24,15 +24,15 @@ export class BarChartComponent implements AfterViewInit {
   }
 
   fetchDataAndDrawChart(): void {
-    if (this.globalProperties.dataChart.length === 0) {
+    if (this.globalProperties.getDataChart().length === 0) {
       const apiUrl = 'https://imridd.eu.pythonanywhere.com/api/hive_cur';
 
       this.apiService.get(apiUrl).then((data: HiveData[]) => {
         this.drawChart(data);
-        this.globalProperties.dataChart = data;
+        this.globalProperties.setDataChart( data);
       });
     } else {
-      this.drawChart(this.globalProperties.dataChart);
+      this.drawChart(this.globalProperties.getDataChart());
     }
 
   }

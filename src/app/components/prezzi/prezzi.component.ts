@@ -18,24 +18,24 @@ export class PrezziComponent {
   @Input() platform: string = 'HIVE';
   constructor(public gsHIVE: GlobalPropertiesHiveService, public gsSTEEM: GlobalPropertiesSteemService) {
 
-    if(this.gsHIVE.globalPrezzi.price == 0) {
+    if(this.gsHIVE.getGlobalPrezzi().price == 0) {
       this.gsHIVE.setPrices().then(() => {
-        this.hivePrice = this.gsHIVE.globalPrezzi.price;
-        this.hivePriceDollaro = this.gsHIVE.globalPrezzi.price_dollar;
+        this.hivePrice = this.gsHIVE.getGlobalPrezzi().price;
+        this.hivePriceDollaro = this.gsHIVE.getGlobalPrezzi().price_dollar;
       });
     } else {
-      this.hivePrice = this.gsHIVE.globalPrezzi.price;
-      this.hivePriceDollaro = this.gsHIVE.globalPrezzi.price_dollar;
+      this.hivePrice = this.gsHIVE.getGlobalPrezzi().price;
+      this.hivePriceDollaro = this.gsHIVE.getGlobalPrezzi().price_dollar;
     }
     
-    if(this.gsSTEEM.globalPrezzi.price === 0) {
+    if(this.gsSTEEM.getGlobalPrezzi().price === 0) {
       this.gsSTEEM.setPrices().then(() => {
-        this.steemPrice = this.gsSTEEM.globalPrezzi.price;
-        this.steemPriceDollaro = this.gsSTEEM.globalPrezzi.price_dollar;
+        this.steemPrice = this.gsSTEEM.getGlobalPrezzi().price;
+        this.steemPriceDollaro = this.gsSTEEM.getGlobalPrezzi().price_dollar;
       });
     } else {
-      this.steemPrice = this.gsSTEEM.globalPrezzi.price;
-      this.steemPriceDollaro = this.gsSTEEM.globalPrezzi.price_dollar;
+      this.steemPrice = this.gsSTEEM.getGlobalPrezzi().price;
+      this.steemPriceDollaro = this.gsSTEEM.getGlobalPrezzi().price_dollar;
     }
 
   }

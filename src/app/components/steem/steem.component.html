@@ -125,8 +125,8 @@
                     <br>
                     <div class="valore_account">
                         Account value
-                        {{(user.valutes.STEEM+ user.valutes.SP) * gs.globalPrezzi.price + user.valutes.SBD *
-                        gs.globalPrezzi.price_dollar | reversePadZero}}$
+                        {{(user.valutes.STEEM+ user.valutes.SP) * gs.getGlobalProperties().price + user.valutes.SBD *
+                        gs.getGlobalProperties().price_dollar | reversePadZero}}$
 
                     </div>
 

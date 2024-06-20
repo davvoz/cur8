@@ -126,20 +126,19 @@ export class HomeComponent implements AfterViewInit {
       this.colspanSocial = 1;
     }
 
-    if (!this.gs.accountCUR8) {
+    if (!this.gs.getAccountCUR8()) {
       this.client.database.getAccounts(['cur8']).then((data) => {
         this.account = data[0];
         this.init();
-        this.gs.accountCUR8 = this.account;
       });
     } else {
-      this.account = this.gs.accountCUR8;
+      this.account = this.gs.getAccountCUR8();
       this.init();
     }
   }
 
   ngAfterViewInit(): void {
-    if (!this.gs.accountCUR8) {
+    if (!this.gs.getAccountCUR8()) {
       this.client.database.getAccounts(['cur8']).then((data) => {
         const timestampLastVote = data[0].last_vote_time;
         this.calculateManaPercentage(data[0], timestampLastVote);
@@ -151,46 +150,46 @@ export class HomeComponent implements AfterViewInit {
   }
 
   private init() {
-    this.content = this.gs.listaPost;
+    this.content = this.gs.getListaPost();
 
-    this.totalDelegators = this.gs.delegatori;
+    this.totalDelegators = this.gs.getDelegatori();
 
     this.totalHivePower = Utils.vestingShares2HP(
       Utils.toStringParseFloat(this.account.vesting_shares),
-      this.gs.globalProperties.totalVestingFundHive,
-      this.gs.globalProperties.totalVestingShares);
+      this.gs.getGlobalProperties().totalVestingFundHive,
+      this.gs.getGlobalProperties().totalVestingShares);
 
     this.totalHiveRecieved = Utils.vestingShares2HP(
       Utils.toStringParseFloat(this.account.received_vesting_shares),
-      this.gs.globalProperties.totalVestingFundHive,
-      this.gs.globalProperties.totalVestingShares);
+      this.gs.getGlobalProperties().totalVestingFundHive,
+      this.gs.getGlobalProperties().totalVestingShares);
    
       this.totalHive = this.totalHivePower + this.totalHiveRecieved;
 
-    if (this.gs.allTimePayOut_DA_MOLTIPLICARE === 0 || this.gs.daysPayout_DA_MOLTIPLICARE === 0) {
+    if (this.gs.getAllTimePayOut_DA_MOLTIPLICARE() === 0 || this.gs.getDaysPayout_DA_MOLTIPLICARE() === 0) {
       this.apiService.get('https://imridd.eu.pythonanywhere.com/api/hive').then((data) => {
-        this.allTimePayOut = data[0]['total_rewards'] * this.gs.globalPrezzi.price;
-        this.days_payout = data[0]['curation_rewards_7d'] * this.gs.globalPrezzi.price;
-        this.gs.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'];
-        this.gs.daysPayout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
+        this.allTimePayOut = data[0]['total_rewards'] * this.gs.getGlobalPrezzi().price;
+        this.days_payout = data[0]['curation_rewards_7d'] * this.gs.getGlobalPrezzi().price;
+        this.gs.setAllTimePayOut_DA_MOLTIPLICARE( data[0]['total_rewards']);
+        this.gs.setDaysPayout_DA_MOLTIPLICARE(data[0]['curation_rewards_7d']);
       });
     } else {
-      this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
-      this.days_payout = this.gs.daysPayout_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
+      this.allTimePayOut = this.gs.getAllTimePayOut_DA_MOLTIPLICARE() * this.gs.getGlobalPrezzi().price;
+      this.days_payout = this.gs.getDaysPayout_DA_MOLTIPLICARE() * this.gs.getGlobalPrezzi().price;
     }
 
 
-    if (!this.gs.delegatori) {
+    if (!this.gs.getDelegatori()) {
       this.apiService.get('https://ecency.com/private-api/received-vesting/cur8').then((data) => {
-        this.gs.delegatori = data['list'].length;
-        this.totalDelegators = this.gs.delegatori;
+        this.gs.setDelegatori( data['list'].length);
+        this.totalDelegators = this.gs.getDelegatori();
       }).finally(() => {
         this.isLoading = false;
       });
     } else {
       
       this.isLoading = false;
-      this.totalDelegators = this.gs.delegatori;
+      this.totalDelegators = this.gs.getDelegatori();
     }
   }
 

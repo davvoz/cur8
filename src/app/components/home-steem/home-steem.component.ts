@@ -121,22 +121,25 @@ export class HomeSteemComponent implements AfterViewInit {
         }
 
 
-
         //account
-        if (!this.gs.accountCUR8) {
+        if (!this.gs.getAccountCUR8()) {
             this.client.database.getAccounts(['cur8']).then((data) => {
                 this.account = data[0];
+                //
+            }).catch((err) => {
+                console.log(err);
+            }).finally(() => {
+                this.gs.setAccountCUR8(this.account);
                 this.init();
-                this.gs.accountCUR8 = this.account;
             });
         } else {
-            this.account = this.gs.accountCUR8;
+            this.account = this.gs.getAccountCUR8();
             this.init();
         }
     }
 
     ngAfterViewInit(): void {
-        if (!this.gs.accountCUR8) {
+        if (!this.gs.getAccountCUR8()) {
             this.client.database.getAccounts(['cur8']).then((data) => {
                 const timestampLastVote = data[0].last_vote_time;
                 this.calculateManaPercentage(data[0], timestampLastVote);
@@ -144,39 +147,72 @@ export class HomeSteemComponent implements AfterViewInit {
         } else {
             const timestampLastVote = this.account.last_vote_time;
             this.calculateManaPercentage(this.account, timestampLastVote);
-
         }
     }
 
     private init() {
-        this.content = this.gs.listaPost;
+        this.content = this.gs.getListaPost();
 
-        this.totalDelegators = this.gs.delegatori;
+        this.totalDelegators = this.gs.getDelegatori();
 
         this.totalSteemPower = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.vesting_shares),
-            this.gs.globalProperties.totalVestingFundSteem,
-            this.gs.globalProperties.totalVestingShares);
+            this.gs.getGlobalProperties().totalVestingFundSteem,
+            this.gs.getGlobalProperties().totalVestingShares);
 
         this.totalSteemRecieved = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.received_vesting_shares),
-            this.gs.globalProperties.totalVestingFundSteem,
-            this.gs.globalProperties.totalVestingShares);
+            this.gs.getGlobalProperties().totalVestingFundSteem,
+            this.gs.getGlobalProperties().totalVestingShares);
+
 
         this.totalSteem = this.totalSteemPower + this.totalSteemRecieved;
 
-        if (this.gs.allTimePayOut_DA_MOLTIPLICARE === 0 || this.gs.daysPayout_DA_MOLTIPLICARE === 0) {
+        console.log('totalSteem', this.totalSteem);
+
+        if (this.gs.getAllTimePayOut_DA_MOLTIPLICARE() === 0
+            || this.gs.getDaysPayout_DA_MOLTIPLICARE() === 0
+            || this.gs.getGlobalPrezzi().price === 0
+            || this.gs.getGlobalPrezzi().price_dollar === 0
+            || typeof this.gs.getGlobalPrezzi().price === 'undefined'
+            || typeof this.gs.getGlobalPrezzi().price_dollar === 'undefined'
+            || typeof this.gs.getAllTimePayOut_DA_MOLTIPLICARE() === 'undefined'
+            || typeof this.gs.getDaysPayout_DA_MOLTIPLICARE() === 'undefined'
+        ) {
+            console.log('fetching steem data', this.gs.getAllTimePayOut_DA_MOLTIPLICARE(), this.gs.getDaysPayout_DA_MOLTIPLICARE());
             this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem').then((data) => {
                 //follow_count
-                this.allTimePayOut = data[0]['total_rewards'] * this.gs.globalPrezzi.price;
-                this.days_payout = data[0]['curation_rewards_7d'] * this.gs.globalPrezzi.price;
-                this.gs.allTimePayOut_DA_MOLTIPLICARE = data[0]['total_rewards'];
-                this.gs.daysPayout_DA_MOLTIPLICARE = data[0]['curation_rewards_7d'];
+                this.allTimePayOut = data[0]['total_rewards'] * this.gs.getGlobalPrezzi().price;
+                this.days_payout = data[0]['curation_rewards_7d'] * this.gs.getGlobalPrezzi().price;
+                this.gs.setAllTimePayOut_DA_MOLTIPLICARE(data[0]['total_rewards']);
+                this.gs.setDaysPayout_DA_MOLTIPLICARE(data[0]['curation_rewards_7d']);
+                console.log('allTimePayOut', this.allTimePayOut);
+                console.log('days_payout', this.days_payout);
+                console.log('total_rewards', data[0]['total_rewards']);
+                console.log('curation_rewards_7d', data[0]['curation_rewards_7d']);
+                console.log('price', this.gs.getGlobalPrezzi().price);
+                console.log('price_dollar', this.gs.getGlobalPrezzi().price_dollar);
+                console.log('all data', data);
+                if (this.gs.getGlobalPrezzi().price === 0 || this.gs.getGlobalPrezzi().price_dollar === 0) {
+                    console.log('fetching steem chart data', this.gs.getAllTimePayOut_DA_MOLTIPLICARE(), this.gs.getDaysPayout_DA_MOLTIPLICARE());
+                    this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices').then((data) => {
+                        this.gs.setGlobalPrezzi({
+                            price: data['STEEM'],
+                            price_dollar: data['SBD']
+                        });
+                        console.log('price', this.gs.getGlobalPrezzi().price);
+                        console.log('price_dollar', this.gs.getGlobalPrezzi().price_dollar);
+                    });
+                }
             });
         } else {
-            this.allTimePayOut = this.gs.allTimePayOut_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
-            this.days_payout = this.gs.daysPayout_DA_MOLTIPLICARE * this.gs.globalPrezzi.price;
+            console.log('using steem data from global properties', this.gs.getAllTimePayOut_DA_MOLTIPLICARE(), this.gs.getDaysPayout_DA_MOLTIPLICARE());
+            this.allTimePayOut = this.gs.getAllTimePayOut_DA_MOLTIPLICARE() * this.gs.getGlobalPrezzi().price;
+            this.days_payout = this.gs.getDaysPayout_DA_MOLTIPLICARE() * this.gs.getGlobalPrezzi().price;
+
         }
+
+        console.log('allTimePayOut', this.allTimePayOut);
     }
 
     private calculateManaPercentage(account: any, timestampLastVote: string) {

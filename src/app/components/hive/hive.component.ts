@@ -135,9 +135,9 @@ export class HiveComponent {
 
   constructor(private userMemoryService: UserMemoryService, public gs: GlobalPropertiesHiveService) {
     this.isMobile = window.innerWidth < 768;
-    this.global_properties = this.gs.globalProperties;
-    this.user.global_properties = this.gs.globalProperties;
-    this.imridData = this.gs.imridData;
+    this.global_properties = this.gs.getGlobalProperties();
+    this.user.global_properties = this.gs.getGlobalProperties();
+    this.imridData = this.gs.getImridData();
 
     if (this.userMemoryService.user) {
       this.user = this.userMemoryService.user;
@@ -207,7 +207,7 @@ export class HiveComponent {
 
   refresh() {
     this.isLoading = true;
-    UserFactory.getUser(this.user.username, this.gs.globalProperties).then((user: User) => {
+    UserFactory.getUser(this.user.username, this.gs.getGlobalProperties()).then((user: User) => {
       this.user = user;
       this.isLoading = false;
       this.loaded = true;

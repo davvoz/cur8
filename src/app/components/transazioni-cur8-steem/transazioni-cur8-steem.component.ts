@@ -38,7 +38,7 @@ export class TransazioniCur8SteemComponent {
   constructor(public gb: GlobalPropertiesSteemService) { }
 
   ngOnInit(): void {
-    this.listaTransazioni =  this.gb.transazioniCUR8;
+    this.listaTransazioni =  this.gb.getTransazioniCUR8();
   }
 
   // goSearch() {
@@ -61,10 +61,10 @@ export class TransazioniCur8SteemComponent {
 
       if (this.search === '') {
         Logger.debug('Search string is empty, using default transaction list.');
-        this.listaTransazioni = this.gb.transazioniCUR8;
+        this.listaTransazioni = this.gb.getTransazioniCUR8();
       } else {
         Logger.debug('Filtering transactions based on search string.');
-        this.listaTransazioni = this.gb.transazioniCUR8.filter((transazione: VoteTransaction) => {
+        this.listaTransazioni = this.gb.getTransazioniCUR8().filter((transazione: VoteTransaction) => {
           return (
             transazione.author.toLowerCase().includes(this.search) ||
             transazione.voter.toLowerCase().includes(this.search)
@@ -81,7 +81,7 @@ export class TransazioniCur8SteemComponent {
   }
   resetSearch() {
     this.search = '';
-    this.listaTransazioni = this.gb.transazioniCUR8;
+    this.listaTransazioni = this.gb.getTransazioniCUR8();
   }
 
   orderByVote(arg0: string) {

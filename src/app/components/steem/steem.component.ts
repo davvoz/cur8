@@ -135,9 +135,9 @@ export class SteemComponent {
 
   constructor(public gs: GlobalPropertiesSteemService, private userMemoryService: UserMemorySteemService) {
     this.isMobile = window.innerWidth < 768;
-    this.global_properties = this.gs.globalProperties;
+    this.global_properties = this.gs.getGlobalProperties();
     this.user.global_properties = this.global_properties;
-    this.imridData = this.gs.imridData;
+    this.imridData = this.gs.getImridData();
 
     if (this.userMemoryService.user) {
       this.user = this.userMemoryService.user;
@@ -206,7 +206,7 @@ export class SteemComponent {
 
   refresh() {
     this.isLoading = true;
-    UserFactory.getUser(this.user.username, this.gs.globalProperties).then((user: User) => {
+    UserFactory.getUser(this.user.username, this.gs.getGlobalProperties()).then((user: User) => {
       this.user = user;
       this.isLoading = false;
       this.loaded = true;
