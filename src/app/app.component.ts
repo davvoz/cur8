@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,18 +19,23 @@ import { BarChartComponent } from "./components/bar-chart/bar-chart.component";
     imports: [RouterOutlet, MatSidenavModule, MatFormFieldModule, MatSelectModule, MatButtonModule,
        SidebarComponent, HeaderComponent, FooterComponent, TestComponent, BarChartComponent]
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'mat-skeleton';
+  isMobile = false;
   @ViewChild('drawer') drawer: any;
-  constructor(sidebarService: SidebarService) {
+  constructor(sidebarService: SidebarService,private router: Router) {
     this.drawer = sidebarService;
     this.drawer.isOpen = true;
+    this.isMobile = window.innerWidth < 768;
     sidebarService.emitter.subscribe(isOpen => {
-      if (this.drawer) {
+      if (this.drawer ) {
         this.drawer.toggle();
       }
     });
   }
-
+  ngOnInit() {
+    // Reindirizzamento alla route prestabilita
+    this.router.navigate(['/target-route']); // Modifica con la tua route prestabilita
+  }
 
 }

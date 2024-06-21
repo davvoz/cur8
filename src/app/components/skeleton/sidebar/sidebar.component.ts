@@ -23,7 +23,7 @@ export class SidebarComponent {
   welcome = { name: 'start', url: '/start', icon: 'home', label: 'Welcome' , image: ''};
   itemsHive = [
     this.welcome,
-    { name: 'Dashboard', url: '/home-hive', icon: '', label: 'HIVE Dashboard', image: '../assets/logoTra.png' },
+    { name: 'Dashboard', url: '/home-hive', icon: '', label: 'Dashboard HIVE', image: '../assets/logoTra.png' },
     { name: 'Profile', url: '/hive', icon: '', label: 'Profile', image: '../assets/hive_.png' },
     //transazioni
     //  { name: 'Transactions', url: '/transazioni-hive', icon: 'list', label: 'Transactions',image: '../assets/hive_.png' },
@@ -33,7 +33,7 @@ export class SidebarComponent {
 
   itemsSteem = [
     this.welcome,
-    { name: 'Dashboard', url: '/home-steem', icon: '', label: 'STEEM Dashboard', image: '../assets/logoTra.png' },
+    { name: 'Dashboard', url: '/home-steem', icon: '', label: 'Dashboard STEEM', image: '../assets/logoTra.png' },
     { name: 'Profile', url: '/steem', icon: '', label: 'Profile', image: '../assets/steem_traspa_piccola.png' },
     //transazioni
     //  { name: 'Transactions', url: '/transazioni-cur8-steem', icon: 'list', label: 'Transactions', image: '../assets/steem_traspa_piccola.png' }

@@ -20,6 +20,7 @@ import { InterpretaHTMLDirective } from '../../directives/interpreta-html.direct
 import { TransazioniCur8SteemComponent } from "../transazioni-cur8-steem/transazioni-cur8-steem.component";
 import { BarChartSteemComponent } from "../bar-chart-steem/bar-chart-steem.component";
 import { RanzaAllinteroPipe } from "../../pipes/ranza-allintero.pipe";
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-home',
@@ -104,7 +105,7 @@ export class HomeSteemComponent implements AfterViewInit {
     days_payout: any;
     content: any;
 
-    constructor(private gs: GlobalPropertiesSteemService, private apiService: ApiService) {
+    constructor(private gs: GlobalPropertiesSteemService, private apiService: ApiService, private router: Router) {
         this.isMobile = window.innerWidth < 768;
         if (this.isMobile) {
             this.gridCols = 1;
@@ -119,7 +120,6 @@ export class HomeSteemComponent implements AfterViewInit {
             this.colspanCur8News = 1;
             this.colspanSocial = 1;
         }
-
 
         //account
         if (!this.gs.getAccountCUR8()) {
@@ -137,7 +137,10 @@ export class HomeSteemComponent implements AfterViewInit {
             this.init();
         }
     }
-
+    ngOnInit() {
+        // Reindirizzamento alla route prestabilita
+        //        this.router.navigate(['/target-route']); // Modifica con la tua route prestabilita
+    }
     ngAfterViewInit(): void {
         if (!this.gs.getAccountCUR8()) {
             this.client.database.getAccounts(['cur8']).then((data) => {
@@ -151,64 +154,34 @@ export class HomeSteemComponent implements AfterViewInit {
     }
 
     private init() {
+
         this.content = this.gs.getListaPost();
-
         this.totalDelegators = this.gs.getDelegatori();
-
         this.totalSteemPower = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.vesting_shares),
             this.gs.getGlobalProperties().totalVestingFundSteem,
             this.gs.getGlobalProperties().totalVestingShares);
-
         this.totalSteemRecieved = Utils.vestingShares2HP(
             Utils.toStringParseFloat(this.account.received_vesting_shares),
             this.gs.getGlobalProperties().totalVestingFundSteem,
             this.gs.getGlobalProperties().totalVestingShares);
-
-
         this.totalSteem = this.totalSteemPower + this.totalSteemRecieved;
 
-        console.log('totalSteem', this.totalSteem);
+        let data :any;
+        this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem').then((data) => {
+            this.allTimePayOut = data[0]['total_rewards'] * this.gs.getGlobalPrezzi().price;
+            this.days_payout = data[0]['curation_rewards_7d'] * this.gs.getGlobalPrezzi().price;
+            this.gs.setAllTimePayOut_DA_MOLTIPLICARE(data[0]['total_rewards']);
+            this.gs.setDaysPayout_DA_MOLTIPLICARE(data[0]['curation_rewards_7d']);
+        });
+        //se il prezzo è = a 0 allora setta il prezzo da local storage
 
-        if (this.gs.getAllTimePayOut_DA_MOLTIPLICARE() === 0
-            || this.gs.getDaysPayout_DA_MOLTIPLICARE() === 0
-            || this.gs.getGlobalPrezzi().price === 0
-            || this.gs.getGlobalPrezzi().price_dollar === 0
-            || typeof this.gs.getGlobalPrezzi().price === 'undefined'
-            || typeof this.gs.getGlobalPrezzi().price_dollar === 'undefined'
-            || typeof this.gs.getAllTimePayOut_DA_MOLTIPLICARE() === 'undefined'
-            || typeof this.gs.getDaysPayout_DA_MOLTIPLICARE() === 'undefined'
-        ) {
-            console.log('fetching steem data', this.gs.getAllTimePayOut_DA_MOLTIPLICARE(), this.gs.getDaysPayout_DA_MOLTIPLICARE());
-            this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem').then((data) => {
-                //follow_count
-                this.allTimePayOut = data[0]['total_rewards'] * this.gs.getGlobalPrezzi().price;
-                this.days_payout = data[0]['curation_rewards_7d'] * this.gs.getGlobalPrezzi().price;
-                this.gs.setAllTimePayOut_DA_MOLTIPLICARE(data[0]['total_rewards']);
-                this.gs.setDaysPayout_DA_MOLTIPLICARE(data[0]['curation_rewards_7d']);
-                console.log('allTimePayOut', this.allTimePayOut);
-                console.log('days_payout', this.days_payout);
-                console.log('total_rewards', data[0]['total_rewards']);
-                console.log('curation_rewards_7d', data[0]['curation_rewards_7d']);
-                console.log('price', this.gs.getGlobalPrezzi().price);
-                console.log('price_dollar', this.gs.getGlobalPrezzi().price_dollar);
-                console.log('all data', data);
-                if (this.gs.getGlobalPrezzi().price === 0 || this.gs.getGlobalPrezzi().price_dollar === 0) {
-                    console.log('fetching steem chart data', this.gs.getAllTimePayOut_DA_MOLTIPLICARE(), this.gs.getDaysPayout_DA_MOLTIPLICARE());
-                    this.apiService.get('https://imridd.eu.pythonanywhere.com/api/prices').then((data) => {
-                        this.gs.setGlobalPrezzi({
-                            price: data['STEEM'],
-                            price_dollar: data['SBD']
-                        });
-                        console.log('price', this.gs.getGlobalPrezzi().price);
-                        console.log('price_dollar', this.gs.getGlobalPrezzi().price_dollar);
-                    });
-                }
-            });
-        } else {
-            console.log('using steem data from global properties', this.gs.getAllTimePayOut_DA_MOLTIPLICARE(), this.gs.getDaysPayout_DA_MOLTIPLICARE());
-            this.allTimePayOut = this.gs.getAllTimePayOut_DA_MOLTIPLICARE() * this.gs.getGlobalPrezzi().price;
-            this.days_payout = this.gs.getDaysPayout_DA_MOLTIPLICARE() * this.gs.getGlobalPrezzi().price;
+
+        if (this.gs.getGlobalPrezzi().price === 0) {
+            //prendi da local storage steem_price
+            this.gs.getGlobalPrezzi().price = parseFloat(localStorage.getItem('steem_price') || '0');
+            this.allTimePayOut = data[0]['total_rewards'] * this.gs.getGlobalPrezzi().price;
+            this.days_payout = data[0]['curation_rewards_7d'] * this.gs.getGlobalPrezzi().price;
 
         }
 

@@ -34,10 +34,7 @@ export class GlobalPropertiesSteemService {
   private _transazioniCUR8 = new BehaviorSubject<VoteTransaction[]>([]);
   transazioniCUR8$ = this._transazioniCUR8.asObservable();
 
-  private _globalPrezzi = new BehaviorSubject<GlobalPrezzi>({
-    price: 0,
-    price_dollar: 0
-  });
+  private _globalPrezzi = new BehaviorSubject<GlobalPrezzi>({ price: 0, price_dollar: 0 });
   globalPrezzi$ = this._globalPrezzi.asObservable();
 
   private _dataChart = new BehaviorSubject<SteemData[]>([]);
@@ -53,13 +50,13 @@ export class GlobalPropertiesSteemService {
   listaPost$ = this._listaPost.asObservable();
 
   constructor(private apiService: ApiService) {
+    this.fetchHiveData();
     this.setPrices();
     this.initGlobalProperties();
     this.fetchAccountData('cur8');
     this.fetchVestingDelegations('jacopo.eth', 'cur8');
     this.fetchAccountHistory('jacopo.eth');
     this.fetchDelegatori();
-    this.fetchHiveData();
     this.fetchSteemChart();
     this.setTransazioniCur8();
   }
@@ -120,7 +117,7 @@ export class GlobalPropertiesSteemService {
     this._dataChart.next(data);
   }
 
-  async fetchPostDataCiclo(autor: string): Promise<void> {
+  private async fetchPostDataCiclo(autor: string): Promise<void> {
     const query = { tag: autor, limit: 1 };
     const result = await this.client.database.getDiscussions('blog', query);
     const metadata = JSON.parse(result[0].json_metadata);
