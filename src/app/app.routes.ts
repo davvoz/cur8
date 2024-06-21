@@ -19,7 +19,6 @@ export const routes: Routes = [
     { path: 'transazioni-cur8-steem', component: TransazioniCur8SteemComponent },
     //lista post
     { path: 'lista-post', component: ListaPostComponent },
-    { path: '', redirectTo: '/start', pathMatch: 'full' },
-    { path: 'target-route', component: StartComponent }
+    { path: '', redirectTo: '/start', pathMatch: 'full' }
 ];
 

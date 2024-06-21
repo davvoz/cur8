@@ -35,7 +35,7 @@ export class AppComponent implements OnInit{
   }
   ngOnInit() {
     // Reindirizzamento alla route prestabilita
-    this.router.navigate(['/target-route']); // Modifica con la tua route prestabilita
+    this.router.navigate(['/start']); // Modifica con la tua route prestabilita
   }
 
 }
