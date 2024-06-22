@@ -35,7 +35,6 @@ export class TransazioniCur8Component  {
    ngOnInit() {
     this.gb.transazioniCUR8$.subscribe(transazioni => {
       this.listaTransazioni = transazioni;
-      console.log(this.listaTransazioni, 'ngOnInit');
     });
 
   }

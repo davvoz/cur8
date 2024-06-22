@@ -68,18 +68,19 @@ export class BarChartComponent implements AfterViewInit {
 
   
     data.forEach((item, index) => {
-      const barHeight = this.calculateHeight(item.curation_rewards_hp);
+      const barHeight = this.calculateHeight(item.curation_rewards_hp*1.25);
       const y = height - barHeight;
   
       ctx.fillStyle = '#f44336';
       const spacing = 10;
       const widthBar = barWidth - spacing;
-      ctx.fillRect(index * barWidth + spacing / 2, y, widthBar, barHeight);
+      ctx.fillRect(index * barWidth + spacing / 3, y, widthBar, barHeight);
   
       // Write the day of the week
       ctx.fillStyle = 'white';
       ctx.font = '10px Arial';
-      ctx.fillText(item.date.substring(0, 8), index * barWidth + spacing / 2 + spacing, height - 5);
+      let deltaMobile = window.innerWidth <  768 ? -5 : 10;
+      ctx.fillText(item.date.substring(0, 3), index * barWidth + spacing / 2 + spacing +deltaMobile, height - 5);
     });
   
     // Draw X and Y axes

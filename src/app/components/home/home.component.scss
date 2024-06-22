@@ -39,6 +39,7 @@ body {
   align-items: center;
   background: linear-gradient(to right, #192046, #3f51b5);
 }
+
 /*riduci la dimensione del logo e del font per mobile*/
 @media screen and (max-width: 600px) {
   .header-container-hive {
@@ -276,6 +277,7 @@ button.mat-raised-button:hover {
     justify-content: space-evenly;
 
   }
+
   .card_content {
     font-size: 0.8em;
   }
@@ -299,16 +301,32 @@ button.mat-raised-button:hover {
     margin-top: 10px;
     font-size: medium;
   }
+
   //nascondi il logo
   .logo-container img {
     display: none;
   }
+
   //ingrandisci il margine dell header
   .header-container-hive {
     margin-top: 20px;
   }
+
   .title-container {
     font-weight: 500;
+  }
+
+  .bottom {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: stretch;
+    font-size: 1.5em;
+    font-weight: 100;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
   }
 }
 
@@ -347,4 +365,9 @@ button.mat-raised-button:hover {
   /* Gradient blu */
   /* Gradient arancione-giallo */
   padding: 15px;
+}
+
+.card_content_chart {
+  width: 90%;
+  margin-top: 15px;
 }
