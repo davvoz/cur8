@@ -122,7 +122,9 @@
                     <br>
                     <div class="valore_account">
                         Account value
-                        {{(user.valutes.HIVE + user.valutes.HP) * gs.getGlobalPrezzi().price + user.valutes.HBD *
+                        {{(user.valutes.HIVE + user.valutes.HP) *
+                         gs.getGlobalPrezzi().price +
+                         user.valutes.HBD *
                         gs.getGlobalPrezzi().price_dollar | reversePadZero}}$
 
                     </div>

@@ -75,8 +75,7 @@ export class SteemComponent {
     ultimoPagamento: 0
   }
 
-  global_properties: { totalVestingFundSteem: number; totalVestingShares: number; };
-
+  global_properties: any;
   user: User = {
     totalExpiringDelegations: 0,
     expiringDelegations: [],

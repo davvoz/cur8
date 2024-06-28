@@ -10,8 +10,13 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class GlobalPropertiesHiveService {
-  
-  private _globalProperties = new BehaviorSubject<{ totalVestingFundHive: number, totalVestingShares: number }>({ totalVestingFundHive: 0, totalVestingShares: 0 });
+
+  private _globalProperties = new BehaviorSubject<{
+    totalVestingFundHive: number, totalVestingShares: number
+  }>({
+    totalVestingFundHive: 0,
+    totalVestingShares: 0
+  });
   globalProperties$ = this._globalProperties.asObservable();
 
   private _accountCUR8 = new BehaviorSubject<any>(null);
@@ -150,7 +155,7 @@ export class GlobalPropertiesHiveService {
     });
   }
 
-  public getGlobalProperties(): { totalVestingFundHive: number, totalVestingShares: number } {
+  public getGlobalProperties(): any {
     return this._globalProperties.getValue();
   }
 
@@ -199,7 +204,7 @@ export class GlobalPropertiesHiveService {
   public setDaysPayout_DA_MOLTIPLICARE(arg0: any) {
     this._daysPayout_DA_MOLTIPLICARE.next(arg0);
   }
-  public  setAllTimePayOut_DA_MOLTIPLICARE(arg0: any) {
+  public setAllTimePayOut_DA_MOLTIPLICARE(arg0: any) {
     this._allTimePayOut_DA_MOLTIPLICARE.next(arg0);
   }
 }

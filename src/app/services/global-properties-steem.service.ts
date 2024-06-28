@@ -13,7 +13,10 @@ export class GlobalPropertiesSteemService {
 
   private client = new Client('https://api.moecki.online');
 
-  private _globalProperties = new BehaviorSubject<any>({
+  private _globalProperties = new BehaviorSubject<{
+    totalVestingFundSteem: number,
+    totalVestingShares: number
+  }>({
     totalVestingFundSteem: 0,
     totalVestingShares: 0
   });
@@ -50,9 +53,9 @@ export class GlobalPropertiesSteemService {
   listaPost$ = this._listaPost.asObservable();
 
   constructor(private apiService: ApiService) {
+    this.initGlobalProperties();
     this.fetchHiveData();
     this.setPrices();
-    this.initGlobalProperties();
     this.fetchAccountData('cur8');
     this.fetchVestingDelegations('jacopo.eth', 'cur8');
     this.fetchAccountHistory('jacopo.eth');
