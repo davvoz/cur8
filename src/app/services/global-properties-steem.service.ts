@@ -137,9 +137,9 @@ export class GlobalPropertiesSteemService {
       const metadata = JSON.parse(post.json_metadata);
       console.log('Parsed metadata:', metadata);
   
-      if (metadata.image.length > 0 ) {
-        const imageUrl =  metadata.image[0] ;
-        const output = {
+      if ((metadata.image && metadata.image.length > 0 )|| (metadata.images && metadata.images.length > 0)) {
+        const imageUrl = metadata.image ? metadata.image[0] : metadata.images[0];
+         const output = {
           trovato: true, 
           post: {
             author: post.author,
