@@ -174,18 +174,15 @@ export class HomeSteemComponent implements AfterViewInit {
             this.gs.setAllTimePayOut_DA_MOLTIPLICARE(data[0]['total_rewards']);
             this.gs.setDaysPayout_DA_MOLTIPLICARE(data[0]['curation_rewards_7d']);
         });
-        //se il prezzo è = a 0 allora setta il prezzo da local storage
 
 
         if (this.gs.getGlobalPrezzi().price === 0) {
-            //prendi da local storage steem_price
             this.gs.getGlobalPrezzi().price = parseFloat(localStorage.getItem('steem_price') || '0');
             this.allTimePayOut = data[0]['total_rewards'] * this.gs.getGlobalPrezzi().price;
             this.days_payout = data[0]['curation_rewards_7d'] * this.gs.getGlobalPrezzi().price;
 
         }
 
-        console.log('allTimePayOut', this.allTimePayOut);
     }
 
     private calculateManaPercentage(account: any, timestampLastVote: string) {

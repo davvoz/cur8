@@ -71,16 +71,29 @@ export class BarChartSteemComponent {
     data.forEach((item, index) => {
       const barHeight = this.calculateHeight(item.curation_rewards_sp*1.25);
       const y = height - barHeight;
-  
-      ctx.fillStyle = '#3f51b5';
-      const spacing = 10;
-      const widthBar = barWidth - spacing;
-      ctx.fillRect(index * barWidth + spacing / 3, y, widthBar, barHeight);
-  
-      // Write the day of the week
-      ctx.fillStyle = 'white';
-      let deltaMobile = window.innerWidth <  768 ? -5 : 10;
-      ctx.fillText(item.date.substring(0, 3), index * barWidth + spacing / 2 + spacing +deltaMobile, height - 5);
+
+      let spacing = 20;
+      let widthBar = barWidth - spacing;
+
+
+      if (window.innerWidth < 768) {
+        let deltaMobile = -5;
+        spacing = 10;
+        widthBar = barWidth - spacing;
+        ctx.fillStyle = '#3f51b5';
+        ctx.fillRect(index * barWidth + spacing / 3, y, widthBar, barHeight);
+        ctx.fillStyle = 'white';
+        ctx.font = '10px Arial';
+        ctx.fillText(item.date.substring(0, 3), index * barWidth + spacing / 2 + spacing + deltaMobile, height - 5);
+      } else {
+        ctx.fillStyle = '#3f51b5';
+
+        ctx.fillRect(index * barWidth + spacing / 3, y, widthBar, barHeight);
+
+        ctx.fillStyle = 'white';
+        ctx.font = '10px Arial';
+        ctx.fillText(item.date.substring(0, 3), index * barWidth   + spacing , height - 5);
+      }
     });
   
     // Draw X and Y axes
@@ -98,11 +111,6 @@ export class BarChartSteemComponent {
     ctx.lineTo(0, height);
     ctx.stroke();
   
-    // Handle window resize for responsiveness
-    window.addEventListener('resize', () => {
-      canvas.width = container.offsetWidth;
-      canvas.height = container.offsetHeight;
-      this.drawChart(data);
-    });
+ 
   }
 }

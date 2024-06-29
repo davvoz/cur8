@@ -29,7 +29,7 @@ export class BarChartComponent implements AfterViewInit {
 
       this.apiService.get(apiUrl).then((data: HiveData[]) => {
         this.drawChart(data);
-        this.globalProperties.setDataChart( data);
+        this.globalProperties.setDataChart(data);
       });
     } else {
       this.drawChart(this.globalProperties.getDataChart());
@@ -46,17 +46,17 @@ export class BarChartComponent implements AfterViewInit {
     const canvas = this.canvas.nativeElement;
     const ctx = canvas.getContext('2d');
     const container = canvas.parentElement;
-    
+
     // Adjust canvas size to container
     canvas.width = container.offsetWidth;
     canvas.height = container.offsetHeight;
-  
+
     const width = canvas.width;
     const height = canvas.height;
     const barWidth = width / data.length;
-  
+
     this.data = data;
-  
+
     // Clear the canvas
     ctx.clearRect(0, 0, width, height);
     //colora lo sfondo
@@ -66,44 +66,53 @@ export class BarChartComponent implements AfterViewInit {
       ctx.fillRect(0, i * height / 10, width, 1);
     }
 
-  
+
     data.forEach((item, index) => {
-      const barHeight = this.calculateHeight(item.curation_rewards_hp*1.25);
+      const barHeight = this.calculateHeight(item.curation_rewards_hp * 1.25);
       const y = height - barHeight;
-  
-      ctx.fillStyle = '#f44336';
-      const spacing = 10;
-      const widthBar = barWidth - spacing;
-      ctx.fillRect(index * barWidth + spacing / 3, y, widthBar, barHeight);
-  
-      // Write the day of the week
-      ctx.fillStyle = 'white';
-      ctx.font = '10px Arial';
-      let deltaMobile = window.innerWidth <  768 ? -5 : 10;
-      ctx.fillText(item.date.substring(0, 3), index * barWidth + spacing / 2 + spacing +deltaMobile, height - 5);
+
+      let spacing = 20;
+      let widthBar = barWidth - spacing;
+
+
+      if (window.innerWidth < 768) {
+        let deltaMobile = -5;
+        spacing = 10;
+        widthBar = barWidth - spacing;
+        ctx.fillStyle = '#f44336';
+        ctx.fillRect(index * barWidth + spacing / 3, y, widthBar, barHeight);
+        ctx.fillStyle = 'white';
+        ctx.font = '10px Arial';
+        ctx.fillText(item.date.substring(0, 3), index * barWidth + spacing / 2 + spacing + deltaMobile, height - 5);
+      } else {
+        ctx.fillStyle = '#f44336';
+
+        ctx.fillRect(index * barWidth + spacing / 3, y, widthBar, barHeight);
+
+        ctx.fillStyle = 'white';
+        ctx.font = '10px Arial';
+        ctx.fillText(item.date.substring(0, 3), index * barWidth   + spacing , height - 5);
+      }
+
+
     });
-  
+
     // Draw X and Y axes
-     //gtiglio chiaro; 
-     ctx.strokeStyle = '#888';
+    //gtiglio chiaro; 
+    ctx.strokeStyle = '#888';
     ctx.lineWidth = 2;
-    
+
     ctx.beginPath();
     ctx.moveTo(0, height);
     ctx.lineTo(width, height);
     ctx.stroke();
-  
+
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(0, height);
     ctx.stroke();
-  
-    // Handle window resize for responsiveness
-    window.addEventListener('resize', () => {
-      canvas.width = container.offsetWidth;
-      canvas.height = container.offsetHeight;
-      this.drawChart(data);
-    });
+
+
   }
 
 }

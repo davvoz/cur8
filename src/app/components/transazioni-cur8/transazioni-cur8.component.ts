@@ -28,7 +28,6 @@ export class TransazioniCur8Component  {
   search: any;
   constructor(public gb: GlobalPropertiesHiveService) { 
     this.listaTransazioni = this.gb.getTransazioniCUR8();
-    console.log(this.listaTransazioni);
 
   }
 

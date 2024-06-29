@@ -118,12 +118,15 @@
           @for( item of content; track $index){
             <div class="post">
               <div class="postContainer">
+                
                 <div class="post_image">
+                  <div class="post_header">
+                    {{item.author}}
+                      </div>
+                  <a href="{{item.url}}" target="_blank">
                   
-                  <a href="{{item.url}}" target="_blank"><img src="{{item.imageUrl}}" alt="cur8 news" style="width: 100px; height: 100px;"></a>
-                </div>
-                <div class="post_header">
-                  <span>{{item.title}}</span>
+                    <img src="{{item.imageUrl}}"  style="width: 120px; height: 120px;">
+                  </a>
                 </div>
               </div>
             </div>
@@ -137,7 +140,7 @@
           <mat-card-title class="card_title">Recent votes</mat-card-title>
         </mat-card-header>
         <mat-card-content class="card_content_special">
-          <app-transazioni-cur8-steem></app-transazioni-cur8-steem>
+          <app-transazioni-cur8-steem  class="transazioni"></app-transazioni-cur8-steem>
         </mat-card-content>
       </mat-card>
 

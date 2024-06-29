@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Client } from '@hiveio/dhive';
 import { Utils } from '../classes/my_utils';
-import { GlobalPrezzi, HiveData, IMRiddData, MyPost } from '../interfaces/interfaces';
+import { GlobalPrezzi, HiveData, IMRiddData, MyPost, OutputFetchPostDC } from '../interfaces/interfaces';
 import { ApiService } from './api.service';
 import { VoteTransaction } from '../classes/biz/hive-user';
 import { BehaviorSubject } from 'rxjs';
@@ -113,20 +113,46 @@ export class GlobalPropertiesHiveService {
     this._dataChart.next(data);
   }
 
-  private async fetchPostDataCiclo(autor: string): Promise<void> {
+  private async fetchPostDataCiclo(autor: string): Promise<OutputFetchPostDC> {
     const query = { tag: autor, limit: 1 };
-    const result = await this.client.database.getDiscussions('blog', query);
-    const metadata = JSON.parse(result[0].json_metadata);
-    if (metadata.image) {
-      const currentPosts = this._listaPost.getValue();
-      currentPosts.push({
-        title: result[0].title,
-        imageUrl: metadata.image[0],
-        url: 'https://peakd.com' + result[0].url
-      });
-      this._listaPost.next(currentPosts);
+    try {
+      console.log('Fetching discussions with query:', query);
+      const result = await this.client.database.getDiscussions('blog', query);
+      
+      if (result.length === 0) {
+        console.warn('No discussions found for author:', autor);
+        return { trovato: false, post: null };
+      }
+  
+      const post = result[0];
+      console.log('Fetched post:', post);
+  
+      const metadata = JSON.parse(post.json_metadata);
+      console.log('Parsed metadata:', metadata);
+  
+      if (metadata.image.length > 0 ) {
+        const imageUrl =  metadata.image[0] ;
+        const output = {
+          trovato: true, 
+          post: {
+            author: post.author,
+            title: post.title,
+            imageUrl: imageUrl,
+            url: 'https://peakd.com' + post.url
+          }
+        };
+        console.log('Post found with image:', output.post);
+        return output;
+      } else {
+        console.warn('No images found in metadata for post:', post);
+        return { trovato: false, post: null };
+      }
+    } catch (error) {
+      console.error('Errore durante il recupero dei dati del post per l\'autore:', autor, 'con query:', query, 'Errore:', error);
+      return { trovato: false, post: null };
     }
   }
+  
 
   public async setPrices(): Promise<void> {
     if (this._globalPrezzi.getValue().price === 0) {
@@ -139,21 +165,49 @@ export class GlobalPropertiesHiveService {
   }
 
   private async setTransazioniCur8(): Promise<void> {
-    this.client.database.getAccountHistory('cur8', -1, 1000, [1, 40]).then(result => {
-      const transazioniCUR8 = result.map(transazione => ({
-        voter: transazione[1].op[1]['voter'],
-        author: transazione[1].op[1]['author'],
-        weight: transazione[1].op[1]['weight'],
-        timestamp: transazione[1].timestamp
-      })) as VoteTransaction[];
-      this._transazioniCUR8.next(transazioniCUR8);
-    }).finally(() => {
-      const transazioniCUR8 = this._transazioniCUR8.getValue();
-      for (let i = transazioniCUR8.length - 1; i > transazioniCUR8.length - 14; i--) {
-        this.fetchPostDataCiclo(transazioniCUR8[i].author);
-      }
-    });
+    try {
+      const result = await this.getAccountHistory('cur8', -1, 1000, [1, 40]);
+      const transazioniCUR8 = this.transformAccountHistoryToTransactions(result);
+      this.updateTransazioniCUR8(transazioniCUR8);
+      await this.processTransactions(transazioniCUR8);
+    } catch (error) {
+      console.error('Errore durante il recupero della cronologia dell\'account o dei dati del post:', error);
+    }
   }
+
+  private async getAccountHistory(account: string, start: number, limit: number, types: [number, number]): Promise<any> {
+    return await this.client.database.getAccountHistory(account, start, limit, types);
+  }
+
+  private transformAccountHistoryToTransactions(result: any): VoteTransaction[] {
+    return result.map((transazione: any) => ({
+      voter: transazione[1].op[1]['voter'],
+      author: transazione[1].op[1]['author'],
+      weight: transazione[1].op[1]['weight'],
+      timestamp: transazione[1].timestamp
+    })) as VoteTransaction[];
+  }
+
+  private updateTransazioniCUR8(transazioniCUR8: VoteTransaction[]): void {
+    this._transazioniCUR8.next(transazioniCUR8);
+  }
+
+  private async processTransactions(transazioniCUR8: VoteTransaction[]): Promise<void> {
+    let i = transazioniCUR8.length - 1;
+    const currentPosts = this._listaPost.getValue();
+
+    while (i >= 0 && currentPosts.length < 9) {
+      const ofPdc = await this.fetchPostDataCiclo(transazioniCUR8[i].author);
+
+      if (ofPdc.trovato && ofPdc.post) {
+        currentPosts.push(ofPdc.post);
+        this._listaPost.next(currentPosts);
+      }
+      i--;
+    }
+  }
+
+
 
   public getGlobalProperties(): any {
     return this._globalProperties.getValue();

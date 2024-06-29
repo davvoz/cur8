@@ -203,7 +203,6 @@ button.mat-raised-button:hover {
 .post {
   background-color: #555;
   /* Sfondo post */
-  margin: 10px;
   border-radius: 5px;
   overflow: hidden;
   transition: transform 0.3s ease;
@@ -217,18 +216,34 @@ button.mat-raised-button:hover {
   padding: 10px;
 }
 
+
+.postContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .post_image {
-  width: 100px;
-  height: 100px;
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.post_header {
+  align-items: center;
+  position: relative;
+  background-color: rgba( 100, 100, 100, 0.8 );
+  bottom: -100px;
+  width: 100%;
+  font-size: large;
+}
+.post {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.post_header {
-  text-align: center;
-  font-size: 1em;
-  color: #fff;
-  /* Testo bianco */
-}
 
 /* Layout flex e grid */
 .card_contento,
@@ -258,6 +273,7 @@ button.mat-raised-button:hover {
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
   overflow: auto;
+  width: 100%;
 }
 
 .card_content_trans {
@@ -370,4 +386,18 @@ button.mat-raised-button:hover {
 .card_content_chart {
   width: 90%;
   margin-top: 15px;
+}
+
+.card_content_special {
+  width: 97%;
+  scrollbar-width: thin;
+  /* display: flex; */
+  flex-direction: column;
+  /* align-content: stretch; */
+  justify-content: space-evenly;
+  align-items: center;
+  overflow-y: scroll;
+}
+.transazioni{
+  width: 100%;
 }

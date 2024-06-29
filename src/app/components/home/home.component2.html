@@ -119,18 +119,20 @@
         <div class="card_contento">
           @for( item of content; track $index){
 
-          <div class="post">
-            <div class="postContainer">
-              <div class="post_image">
-                <a href="{{item.url}}" target="_blank">
-                  <img src="{{item.imageUrl}}" alt="cur8 news" style="width: 100px; height: 100px;">
-                </a>
-              </div>
-              <div class="post_header">
-                <span>{{item.title}}</span>
+            <div class="post">
+              <div class="postContainer">
+                
+                <div class="post_image">
+                  <div class="post_header">
+                    {{item.author}}
+                      </div>
+                  <a href="{{item.url}}" target="_blank">
+                  
+                    <img src="{{item.imageUrl}}"  style="width: 120px; height: 120px;">
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
           }
         </div>
       </mat-card>
@@ -141,7 +143,7 @@
           <mat-card-title class="card_title">Recent votes</mat-card-title>
         </mat-card-header>
         <mat-card-content class="card_content_special">
-          <app-transazioni-cur8></app-transazioni-cur8>
+          <app-transazioni-cur8 class="transazioni"></app-transazioni-cur8>
 
         </mat-card-content>
       </mat-card>

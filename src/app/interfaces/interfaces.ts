@@ -29,9 +29,15 @@ export interface MyPost {
   title: string;
   imageUrl : string;
   url: string;
+  author: string;
 }
 
 export interface  GlobalPrezzi {
   price: number;
   price_dollar: number;
+}
+
+export interface OutputFetchPostDC{
+  trovato : boolean;
+  post : MyPost|null;
 }
