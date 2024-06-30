@@ -11,13 +11,12 @@ import { MatCard } from '@angular/material/card';
 import { MatCardContent } from '@angular/material/card';
 import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
 import { MatButton } from '@angular/material/button';
-import { Client } from '@hiveio/dhive';
 
 @Component({
   selector: 'app-transazioni-cur8',
   standalone: true,
   templateUrl: '../transazioni-cur8-steem/transazioni-cur8-steem.component.html',
-  styleUrl: './transazioni-cur8.component.scss',
+  styleUrl: '../transazioni-cur8-steem/transazioni-cur8-steem.component.scss',
   imports: [MatProgressSpinnerModule, DateFormatPipe, NgIf, NgFor, FormsModule, MatFormFieldModule, MatIcon, MatCard, MatCardContent, MatButtonToggleGroup, MatButtonToggle, MatButton]
 })
 export class TransazioniCur8Component  {

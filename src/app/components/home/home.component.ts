@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import {  AfterViewInit, Component,  ElementRef, ViewChild } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 import { MatCardContent } from '@angular/material/card';
 import { MatCardTitle } from '@angular/material/card';
@@ -58,7 +58,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   ]
 })
 
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent implements AfterViewInit{
   gridCols: number = 6;
   rowHeight: string = '120px';
 
@@ -138,7 +138,9 @@ export class HomeComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    console.log('We are in the home component in the ngAfterViewInit method,the postlist is:',this.content);
     if (!this.gs.getAccountCUR8()) {
+
       this.client.database.getAccounts(['cur8']).then((data) => {
         const timestampLastVote = data[0].last_vote_time;
         this.calculateManaPercentage(data[0], timestampLastVote);
