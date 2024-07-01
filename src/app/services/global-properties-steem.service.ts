@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Client } from 'dsteem';
+import { Client, Discussion, DisqussionQuery } from 'dsteem';
 import { ApiService } from './api.service';
 import { Utils } from '../classes/my_utils';
 import { VoteTransaction } from '../classes/biz/hive-user';
@@ -119,43 +119,52 @@ export class GlobalPropertiesSteemService {
     const data = await this.apiService.get('https://imridd.eu.pythonanywhere.com/api/steem_cur');
     this._dataChart.next(data);
   }
-//https://.com'
-  private async fetchPostDataCiclo(autor: string): Promise<OutputFetchPostDC> {
-    const query = { tag: autor, limit: 1 };
+  //https://.com'
+  private async fetchPostDataCiclo(vote: VoteTransaction): Promise<OutputFetchPostDC> {
+    if (vote.weight < 3000) {
+      return { trovato: false, post: null };
+    }
+
+    const query: DisqussionQuery = {
+      tag: vote.author,
+      start_author: vote.author,
+      start_permlink: vote.id + '',
+      limit: 1
+    };
     try {
-      console.log('Fetching discussions with query:', query);
       const result = await this.client.database.getDiscussions('blog', query);
-      
+
       if (result.length === 0) {
-        console.warn('No discussions found for author:', autor);
         return { trovato: false, post: null };
       }
-  
+
+      if (result.length === 0) {
+        return { trovato: false, post: null };
+      }
+
       const post = result[0];
-      console.log('Fetched post:', post);
-  
+
       const metadata = JSON.parse(post.json_metadata);
-      console.log('Parsed metadata:', metadata);
-  
-      if ((metadata.image && metadata.image.length > 0 )|| (metadata.images && metadata.images.length > 0)) {
+
+      if ((metadata.image && metadata.image.length > 0) || (metadata.images && metadata.images.length > 0)) {
         const imageUrl = metadata.image ? metadata.image[0] : metadata.images[0];
-         const output = {
-          trovato: true, 
+        const output = {
+          trovato: true,
           post: {
             author: post.author,
             title: post.title,
             imageUrl: imageUrl,
-            url: 'https://steemit.com' + post.url
+            url: 'https://steemit.com' + post.url,
+            weight: vote.weight / 10000
           }
         };
-        console.log('Post found with image:', output.post);
         return output;
       } else {
         console.warn('No images found in metadata for post:', post);
         return { trovato: false, post: null };
       }
     } catch (error) {
-      console.error('Errore durante il recupero dei dati del post per l\'autore:', autor, 'con query:', query, 'Errore:', error);
+      console.error('Errore durante il recupero dei dati del post per l\'autore:', vote.author, 'con query:', query, 'Errore:', error);
       return { trovato: false, post: null };
     }
   }
@@ -190,7 +199,8 @@ export class GlobalPropertiesSteemService {
       voter: transazione[6][1].voter,
       author: transazione[6][1].author,
       weight: transazione[6][1].weight,
-      timestamp: transazione[1]
+      timestamp: transazione[1],
+      id: transazione[6][1].permlink
     })) as VoteTransaction[];
   }
 
@@ -203,10 +213,9 @@ export class GlobalPropertiesSteemService {
     const currentPosts = this._listaPost.getValue();
 
     while (i >= 0 && currentPosts.length < 9) {
-      const ofPdc = await this.fetchPostDataCiclo(transazioniCUR8[i].author);
+      const ofPdc = await this.fetchPostDataCiclo(transazioniCUR8[i]);
 
       if (ofPdc.trovato && ofPdc.post) {
-        console.log(ofPdc.post);
         currentPosts.push(ofPdc.post);
         this._listaPost.next(currentPosts);
       }

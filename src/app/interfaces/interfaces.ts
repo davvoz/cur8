@@ -30,6 +30,7 @@ export interface MyPost {
   imageUrl : string;
   url: string;
   author: string;
+  weight: number;
 }
 
 export interface  GlobalPrezzi {

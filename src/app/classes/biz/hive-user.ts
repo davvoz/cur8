@@ -64,6 +64,7 @@ export interface ExpiringDelegation {
 }
 
 export interface VoteTransaction {
+    id: number;
     voter: string;
     author: string;
     weight: number;

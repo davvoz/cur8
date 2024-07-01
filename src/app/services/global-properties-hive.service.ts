@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Client } from '@hiveio/dhive';
+import { Client, DisqussionQuery } from '@hiveio/dhive';
 import { Utils } from '../classes/my_utils';
 import { GlobalPrezzi, HiveData, IMRiddData, MyPost, OutputFetchPostDC } from '../interfaces/interfaces';
 import { ApiService } from './api.service';
@@ -113,46 +113,60 @@ export class GlobalPropertiesHiveService {
     this._dataChart.next(data);
   }
 
-  private async fetchPostDataCiclo(autor: string): Promise<OutputFetchPostDC> {
-    const query = { tag: autor, limit: 1 };
-    try {
-      console.log('Fetching discussions with query:', query);
-      const result = await this.client.database.getDiscussions('blog', query);
-      
-      if (result.length === 0) {
-        console.warn('No discussions found for author:', autor);
+  private async fetchPostDataCiclo(vote: VoteTransaction): Promise<OutputFetchPostDC> {
+    if (vote.voter !== 'cur8' || vote.weight < 3000) {
+      const asyncFunction = async () => {
+
         return { trovato: false, post: null };
       }
-  
+      return asyncFunction();
+    }
+
+    const query: DisqussionQuery = {
+      tag: vote.author,
+      start_author: vote.author,
+      start_permlink: vote.id + '',
+      limit: 1
+    };
+    try {
+      const result = await this.client.database.getDiscussions('blog', query);
+      if (result.length === 0) {
+        console.warn('No discussions found for author:', vote.author, 'with query:', query);
+        return { trovato: false, post: null };
+      }
+
+      if (result.length === 0) {
+        console.warn('No discussions found for author:', vote.author, 'with query:', query);
+        return { trovato: false, post: null };
+      }
+
       const post = result[0];
-      console.log('Fetched post:', post);
-  
+
       const metadata = JSON.parse(post.json_metadata);
-      console.log('Parsed metadata:', metadata);
-  
-      if ((metadata.image && metadata.image.length > 0 )|| (metadata.images && metadata.images.length > 0)) {
+
+
+      if ((metadata.image && metadata.image.length > 0) || (metadata.images && metadata.images.length > 0)) {
         const imageUrl = metadata.image ? metadata.image[0] : metadata.images[0];
         const output = {
-          trovato: true, 
+          trovato: true,
           post: {
             author: post.author,
             title: post.title,
             imageUrl: imageUrl,
-            url: 'https://peakd.com' + post.url
+            url: 'https://peakd.com' + post.url,
+            weight: vote.weight
           }
         };
-        console.log('Post found with image:', output.post);
         return output;
       } else {
-        console.warn('No images found in metadata for post:', post);
         return { trovato: false, post: null };
       }
     } catch (error) {
-      console.error('Errore durante il recupero dei dati del post per l\'autore:', autor, 'con query:', query, 'Errore:', error);
+      console.error('Errore durante il recupero dei dati del post per l\'autore:', vote.author, 'e il permlink:', vote.id, error);
       return { trovato: false, post: null };
     }
   }
-  
+
 
   public async setPrices(): Promise<void> {
     if (this._globalPrezzi.getValue().price === 0) {
@@ -184,7 +198,9 @@ export class GlobalPropertiesHiveService {
       voter: transazione[1].op[1]['voter'],
       author: transazione[1].op[1]['author'],
       weight: transazione[1].op[1]['weight'],
-      timestamp: transazione[1].timestamp
+      timestamp: transazione[1].timestamp,
+      id: transazione[1].op[1]['permlink']
+
     })) as VoteTransaction[];
   }
 
@@ -197,7 +213,7 @@ export class GlobalPropertiesHiveService {
     const currentPosts = this._listaPost.getValue();
 
     while (i >= 0 && currentPosts.length < 9) {
-      const ofPdc = await this.fetchPostDataCiclo(transazioniCUR8[i].author);
+      const ofPdc = await this.fetchPostDataCiclo(transazioniCUR8[i]);
 
       if (ofPdc.trovato && ofPdc.post) {
         currentPosts.push(ofPdc.post);
