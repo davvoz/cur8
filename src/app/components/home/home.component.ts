@@ -138,6 +138,7 @@ export class HomeComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
+
     console.log('We are in the home component in the ngAfterViewInit method,the postlist is:',this.content);
     if (!this.gs.getAccountCUR8()) {
 

@@ -114,9 +114,9 @@ export class GlobalPropertiesHiveService {
   }
 
   private async fetchPostDataCiclo(vote: VoteTransaction): Promise<OutputFetchPostDC> {
+   
     if (vote.voter !== 'cur8' || vote.weight < 3000) {
       const asyncFunction = async () => {
-
         return { trovato: false, post: null };
       }
       return asyncFunction();
@@ -134,9 +134,9 @@ export class GlobalPropertiesHiveService {
         console.warn('No discussions found for author:', vote.author, 'with query:', query);
         return { trovato: false, post: null };
       }
-
-      if (result.length === 0) {
-        console.warn('No discussions found for author:', vote.author, 'with query:', query);
+      //controlliamo se il post è stato votato da cur8 con un peso maggiore di 3000
+      const voted = result[0].active_votes.find(voto => voto.voter === 'cur8');
+      if (voted === undefined || voted.percent < 3000) {
         return { trovato: false, post: null };
       }
 
