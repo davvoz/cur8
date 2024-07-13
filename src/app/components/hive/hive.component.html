@@ -249,7 +249,10 @@
                 <mat-card-content class="card_content c_lista">
                     <br>
                     @for (item of user.transactions; track $index) {
-                    <div class="we">
+                    <div class="we"> <br>
+                        <div class="we_content">
+                            <div >{{item.timestamp | dateFormat}} </div>
+                        </div>
                         <div class="we_title">
                             <h1>
                                 from {{item.from}}
@@ -263,11 +266,9 @@
                             <mat-icon *ngIf="item.from==user.username" class="freccia_rossa">arrow_upward</mat-icon>
                             <mat-icon *ngIf="item.to==user.username" class="freccia_verde">arrow_downward</mat-icon>
                         </div>
-                        <div class="we_content">
-                            <div mat-line>{{item.timestamp | dateFormat}} </div>
-                        </div>
+                        <div >{{item.memo}}</div>
+
                     </div>
-                    <div mat-line>{{item.memo}}</div>
                     <br>
                     <mat-divider> </mat-divider>
 

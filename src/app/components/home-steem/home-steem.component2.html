@@ -97,17 +97,17 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile [colspan]="colspanSocial" [rowspan]="rowspanSocial">
+    <mat-grid-tile [colspan]="colspanRecentOperations" [rowspan]="rowspanRecentOperations+1">
       <mat-card class="card">
         <mat-card-header class="card_header">
-          <mat-card-title class="card_title">Stay updated on cur8 project , follow our social</mat-card-title>
-        </mat-card-header><br><br><br>
-        <mat-card-content class="card_content">
-          <button mat-raised-button>Telegram</button>
-          <button mat-raised-button>Discord</button>
-          <button mat-raised-button>You Tube</button>
+          <mat-card-title class="card_title">Recent votes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="card_content_special">
+          <app-transazioni-cur8-steem  class="transazioni"></app-transazioni-cur8-steem>
         </mat-card-content>
       </mat-card>
+
+ 
     </mat-grid-tile>
     <mat-grid-tile [colspan]="colspanCur8News" [rowspan]="rowspanCur8News">
       <mat-card class="card">
@@ -125,7 +125,7 @@
                       </div>
                   <a href="{{item.url}}" target="_blank">
                   
-                    <img src="{{item.imageUrl}}"  style="width: 120px; height: 120px;">
+                    <img src="{{item.imageUrl}}"  style="width: 150px; height: 150px;">
                   </a>
                 </div>
               </div>
@@ -134,17 +134,36 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile [colspan]="colspanRecentOperations" [rowspan]="rowspanRecentOperations+1">
+
+
+
+
+    <mat-grid-tile [colspan]="colspanSocial" [rowspan]="rowspanSocial">
       <mat-card class="card">
-        <mat-card-header class="card_header">
-          <mat-card-title class="card_title">Recent votes</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="card_content_special">
-          <app-transazioni-cur8-steem  class="transazioni"></app-transazioni-cur8-steem>
+        
+        <mat-card-content class="card_content_social">
+          <!--telegram discord you tube-->
+          <!-- <button mat-raised-button>Telegram</button>
+          <button mat-raised-button>Discord</button>
+          <button mat-raised-button>You Tube</button> -->
+          <!--dividi il contenuto in 3 parti uguali-->
+          <div class="social">
+            <a href="https://t.me/cur8earn" target="_blank">
+              <img src="assets/telegram_Q.jpg" alt="telegram logo" >
+            </a>
+          </div>
+          <div class="social">
+            <a href="https://discord.gg/7vYX2z" target="_blank">
+              <img src="assets/discord_Q.jpg" alt="discord logo" >
+            </a>
+          </div>
+          <div class="social">
+            <a href="https://www.youtube.com/channel/UC9Z6JQ1Zv6J9Z0J9Z9Z0J9Z0" target="_blank">
+              <img src="assets/youtube_Q.jpg" alt="youtube logo" >
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
-
- 
     </mat-grid-tile>
   </mat-grid-list>
 </div>

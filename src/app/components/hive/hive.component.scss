@@ -270,7 +270,7 @@ input {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: unset;
     border-radius: 4px;
 }
 
@@ -305,3 +305,22 @@ li {
     text-align: center;
     font-size: 1.4em
 }
+.we_title {
+    font-size: 1.5em;
+    font-weight: 70;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+
+}
+.freccia_rossa {
+    color: red;
+    border-radius:   50%;
+}
+
+.freccia_verde {
+    color: rgb(0, 255, 0)   ;
+    border-radius:   50%;
+}
+
