@@ -18,11 +18,16 @@
                 <mat-card-content class="card_content">
                     <!--inserisci nome come input--><br>
                     <div class="form_container">
-                        <div class="form_content">
-                            <mat-label>User</mat-label>
-                            <input matInput placeholder="username" type="text" [(ngModel)]="user.username"
-                                (keyup.enter)="refresh()">
-                        </div>
+                        <form [formGroup]="loginForm" (ngSubmit)="login()">
+                            <div class="form_content">
+                              <mat-label *ngIf="!logged && !user.logged">User</mat-label>
+                              <input matInput 
+                                     placeholder="username" 
+                                     type="text" 
+                                     formControlName="username"
+                                     *ngIf="!logged && !user.logged">
+                            </div>
+                          </form>
                     </div><br>
                     <div>Delegated {{ user.rapportoConCUR8.delega | reversePadZero}} SP</div>
 
@@ -36,8 +41,12 @@
                     </div>
                 </mat-card-content>
                 <mat-card-actions class="c_actions">
-                    <button mat-raised-button class="action" color="primary" (click)="refresh()">
-                        Search
+                    <button mat-raised-button class="action" color="primary" (click)="login()" *ngIf="!logged && !user.logged">
+                        Login
+                    </button>
+                    <!--logout-->
+                    <button mat-raised-button class="action" color="warn" (click)="logout()" *ngIf="logged || user.logged">
+                        Logout
                     </button>
                 </mat-card-actions>
             </mat-card>
@@ -219,7 +228,7 @@
 
 
         <!--Expairing Delegation-->
-        <mat-grid-tile [colspan]="isMobile?1:3" [rowspan]="4" class="tile">
+        <mat-grid-tile [colspan]="isMobile?1:3" [rowspan]="3" class="tile">
             <mat-card class="card tabloCard">
                 <mat-card-header class="card_header">
                     <div class="card_tittle">Expiring Delegation</div>
@@ -241,7 +250,7 @@
         </mat-grid-tile>
 
         <!--LISTA TRANSAZIONI-->
-        <mat-grid-tile [colspan]="isMobile?1:3" [rowspan]="4" class="tile">
+        <mat-grid-tile [colspan]="isMobile?1:3" [rowspan]="3" class="tile">
             <mat-spinner *ngIf="isLoading"></mat-spinner>
             <mat-card class="card" *ngIf="!isLoading">
                 <mat-card-header class="c_lista_header">

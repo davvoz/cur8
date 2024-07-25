@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { MatLabel } from '@angular/material/form-field';
 import { MatButton } from '@angular/material/button';
@@ -24,7 +24,10 @@ import { GlobalPropertiesSteemService } from '../../services/global-properties-s
 import { UserMemorySteemService } from '../../services/user-memory-steem.service';
 import { Utils } from '../../classes/my_utils';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-steem',
@@ -32,6 +35,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   templateUrl: './steem.component.html',
   styleUrl: '../hive/hive.component.scss',
   imports: [
+    CommonModule, ReactiveFormsModule, MatInputModule, MatButtonModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
     FormsModule,
@@ -69,7 +73,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   ]
 })
 export class SteemComponent {
-
+  loginForm: FormGroup;
   imridData: IMRiddData = {
     delegaCur8: 0,
     ultimoPagamento: 0
@@ -109,6 +113,7 @@ export class SteemComponent {
       level: 0
     },
     account_value: 0,
+    logged: false
   };
 
   displayedColumns = ['account', 'ammount', 'exp date'];
@@ -117,7 +122,7 @@ export class SteemComponent {
     { ammount: 100, expDate: '2021-01-01' },
     { ammount: 200, expDate: '2021-01-01' }
   ];
- 
+
   powerUpSPValue: any;
   sendTo: any;
   sendAmount: any;
@@ -130,15 +135,24 @@ export class SteemComponent {
   isMobile = false;
   defaultImage = '/assets/default_user.jpg';
   usernameView: any;
+  logged: boolean = false;
 
 
-  constructor(public gs: GlobalPropertiesSteemService, private userMemoryService: UserMemorySteemService) {
+  constructor(public gs: GlobalPropertiesSteemService,
+    private userMemoryService: UserMemorySteemService,
+    private fb: FormBuilder,
+    private ngZone: NgZone // Aggiungi NgZone per gestire gli aggiornamenti fuori dalla zona Angular
+  ) {
+    this.loginForm = this.fb.group({
+      username: ['', Validators.required]
+    });
+
     this.isMobile = window.innerWidth < 768;
     this.global_properties = this.gs.getGlobalProperties();
     this.user.global_properties = this.global_properties;
     this.imridData = this.gs.getImridData();
 
-    if (this.userMemoryService.user) {
+    if (this.userMemoryService.user && this.userMemoryService.user.logged) {
       this.user = this.userMemoryService.user;
       this.usernameView = this.user.username;
       this.loaded = true;
@@ -147,6 +161,109 @@ export class SteemComponent {
   }
 
 
+
+  login() {
+    if ((window as any).steem_keychain) {
+      this.isLoading = true;
+      const keychain = (window as any).steem_keychain;
+      const username = this.loginForm.get('username')?.value;
+      keychain.requestHandshake(() => {
+        keychain.requestSignBuffer(username, 'Welcome to CUR8', 'Active', (response: any) => {
+          this.ngZone.run(() => {
+            if (response.success) {
+              this.user.username = username;
+              this.user.logged = true;
+              this.userMemoryService.setUser(this.user);
+              this.usernameView = this.user.username;
+              this.logged = true;
+              this.refresh();
+            } else {
+              console.error('Login fallito:', response);
+              this.isLoading = false;
+            }
+          });
+        });
+      });
+    }
+  }
+
+  logout() {
+    this.init();
+  }
+
+  init(): void {
+    this.imridData = {
+      delegaCur8: 0,
+      ultimoPagamento: 0
+    };
+
+    this.global_properties = {
+      totalVestingFundSteem: 0,
+      totalVestingShares: 0,
+    };
+
+    this.user = {
+      totalExpiringDelegations: 0,
+      expiringDelegations: [],
+      image: '',
+      transactions: [],
+      global_properties: {
+        totalVestingFundSteem: 0,
+        totalVestingShares: 0,
+      },
+      username: '',
+      platform: 'STEEM',
+      rapportoConCUR8: {
+        delega: 0,
+        share: 0,
+        ultimoPagamento: {
+          data: new Date(),
+          importo: 0
+        },
+        estimatedDailyProfit: 0,
+        powerDisponibili: 0
+      },
+      valutes: {
+        STEEM: 0,
+        SBD: 0,
+        SP: 0
+      },
+      social: {
+        followers: 0,
+        following: 0,
+        postsNumber: 0,
+        level: 0
+      },
+      account_value: 0,
+      logged: false
+    };
+
+    this.displayedColumns = ['account', 'ammount', 'exp date'];
+
+    this.delegations = [
+      { ammount: 100, expDate: '2021-01-01' },
+      { ammount: 200, expDate: '2021-01-01' }
+    ];
+
+    this.powerUpSPValue = null;
+    this.sendTo = null;
+    this.sendAmount = null;
+    this.search = null;
+    this.imridAccoount = null;
+    this.usernameView = null;
+
+    this.isLoading = false;
+    this.loaded = false;
+    this.logged = false;
+
+    this.valoreDelega = 0;
+    this.estimatedDailyProfit = 0;
+
+    this.isMobile = window.innerWidth < 768;
+    this.defaultImage = '/assets/default_user.jpg';
+
+    this.userMemoryService.setUser(this.user);
+  }
 
   sendSbd() {
     if ((window as any).steem_keychain) {
@@ -157,7 +274,7 @@ export class SteemComponent {
       keychain.requestTransfer(this.user.username, this.sendTo, this.sendAmount, '', 'SBD', (response: any) => {
         console.log(response);
       });
-    } 
+    }
   }
 
   sendSteem() {
@@ -189,7 +306,7 @@ export class SteemComponent {
       keychain.requestPowerDown(this.user.username, this.powerUpSPValue, (response: any) => {
         console.log(response);
       });
-    } 
+    }
   }
 
   powerUpSP() {
@@ -200,17 +317,19 @@ export class SteemComponent {
       keychain.requestPowerUp(this.user.username, this.user.username, this.powerUpSPValue, (response: any) => {
         console.log(response);
       });
-    } 
+    }
   }
 
   refresh() {
-    this.isLoading = true;
+    //this.isLoading = true;
     UserFactory.getUser(this.user.username, this.gs.getGlobalProperties()).then((user: User) => {
       this.user = user;
       this.isLoading = false;
       this.loaded = true;
       this.userMemoryService.setUser(this.user)
       this.usernameView = this.user.username;
+      this.logged = true;
+      
     });
   }
 

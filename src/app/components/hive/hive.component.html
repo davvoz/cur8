@@ -16,10 +16,16 @@
                 <mat-card-content class="card_content">
                     <!--inserisci nome come input--><br>
                     <div class="form_container">
-                        <div class="form_content">
-                            <mat-label>User</mat-label>
-                            <input matInput placeholder="username" type="text" [(ngModel)]="user.username" (keyup.enter)="refresh()">
-                        </div>
+                        <form [formGroup]="loginForm" (ngSubmit)="login()">
+                            <div class="form_content">
+                              <mat-label *ngIf="!logged && !user.logged">User</mat-label>
+                              <input matInput 
+                                     placeholder="username" 
+                                     type="text" 
+                                     formControlName="username"
+                                     *ngIf="!logged && !user.logged">
+                            </div>
+                          </form>
                     </div><br>
                     <div>Delegated {{ user.rapportoConCUR8.delega | reversePadZero}} HP</div>
 
@@ -33,8 +39,12 @@
                     </div>
                 </mat-card-content>
                 <mat-card-actions class="c_actions">
-                    <button mat-raised-button class="action" color="primary" (click)="refresh()">
-                        Search
+                    <button mat-raised-button class="action" color="primary" (click)="login()" *ngIf="!logged && !user.logged">
+                        Login
+                    </button>
+                    <!--logout-->
+                    <button mat-raised-button class="action" color="warn" (click)="logout()" *ngIf="logged || user.logged">
+                        Logout
                     </button>
                 </mat-card-actions>
             </mat-card>
@@ -81,7 +91,7 @@
         </mat-grid-tile>
 
         <!--SOCIAL-->
-        <mat-grid-tile [colspan]="isMobile?1:2" [rowspan]="4" class="tile">
+        <mat-grid-tile [colspan]="isMobile ? 1 : 2" [rowspan]="4" class="tile">
             <mat-spinner *ngIf="isLoading"></mat-spinner>
             <mat-card class="card_special" *ngIf="!isLoading">
                 <mat-card-header class="card_header_special">
@@ -211,7 +221,7 @@
         </mat-grid-tile>
 
         <!--Expairing Delegation-->
-        <mat-grid-tile [colspan]="isMobile?1:3" [rowspan]="4" class="tile">
+        <mat-grid-tile [colspan]="isMobile?1:3" [rowspan]="3" class="tile">
             <mat-card class="card tabloCard">
                 <mat-card-header class="card_header">
                     <div class="card_tittle">Expiring Delegation</div>
@@ -232,50 +242,53 @@
             </mat-card>
         </mat-grid-tile>
 
-        <!--LISTA TRANSAZIONI-->
-        <mat-grid-tile [colspan]="isMobile?1:3" [rowspan]="4" class="tile">
-            <mat-spinner *ngIf="isLoading"></mat-spinner>
-            <mat-card class="card" *ngIf="!isLoading">
-                <mat-card-header class="c_lista_header">
-                    <div class="card_tittle"><span>Transactions</span>
-                    </div>
-                    <div>
+ <!--LISTA TRANSAZIONI-->
+ <mat-grid-tile [colspan]="isMobile?1:3" [rowspan]="3" class="tile">
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+    <mat-card class="card" *ngIf="!isLoading">
+        <mat-card-header class="c_lista_header">
+            <div class="card_tittle"><span>Transactions</span>
+            </div>
+            <div>
 
-                        <button mat-icon-button (click)="refresh()" class="refresh" color="accent">
-                            <mat-icon>refresh</mat-icon>
-                        </button>
-                    </div>
-                </mat-card-header>
-                <mat-card-content class="card_content c_lista">
-                    <br>
-                    @for (item of user.transactions; track $index) {
-                    <div class="we"> <br>
-                        <div class="we_content">
-                            <div >{{item.timestamp | dateFormat}} </div>
-                        </div>
-                        <div class="we_title">
-                            <h1>
-                                from {{item.from}}
-                                @if(item.to==user.username){
-                                <span appColoreRank [style.color]="'lime'"> {{item.amount}}</span>
-                                }@else{
-                                <span appColoreRank [style.color]="'red'"> {{item.amount}}</span>
-                                }
-                                to {{item.to}}
-                            </h1>
-                            <mat-icon *ngIf="item.from==user.username" class="freccia_rossa">arrow_upward</mat-icon>
-                            <mat-icon *ngIf="item.to==user.username" class="freccia_verde">arrow_downward</mat-icon>
-                        </div>
-                        <div >{{item.memo}}</div>
+                <button mat-icon-button (click)="refresh()" class="refresh" color="accent">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+            </div>
+        </mat-card-header>
+        <mat-card-content class="card_content c_lista">
+            <br>
+            @for (item of user.transactions; track $index) {
+            <div class="we"> <br>
+                <div class="we_content">
+                    <div >{{item.timestamp | dateFormat}} </div>
+                </div>
+                <div class="we_title">
+                    <h1>
+                        from {{item.from}}
+                        @if(item.to==user.username){
+                        <span appColoreRank [style.color]="'lime'"> {{item.amount}}</span>
+                        }@else{
+                        <span appColoreRank [style.color]="'red'"> {{item.amount}}</span>
+                        }
+                        to {{item.to}}
+                    </h1>
+                    <mat-icon *ngIf="item.from==user.username" class="freccia_rossa">arrow_upward</mat-icon>
+                    <mat-icon *ngIf="item.to==user.username" class="freccia_verde">arrow_downward</mat-icon>
+                </div>
+                <div >{{item.memo}}</div>
 
-                    </div>
-                    <br>
-                    <mat-divider> </mat-divider>
+            </div>
+            <br>
+            <mat-divider> </mat-divider>
 
-                    }
-                </mat-card-content>
-            </mat-card>
-        </mat-grid-tile>
+            }
+        </mat-card-content>
+    </mat-card>
+</mat-grid-tile>
+        
+
+       
     </mat-grid-list>
 </div>
 <br><br><br>

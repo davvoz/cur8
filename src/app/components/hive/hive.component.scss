@@ -1,13 +1,14 @@
-input{
+input {
     width: 35%;
 }
-mat-label{
+
+mat-label {
     font-size: 1.5em;
     font-weight: 70;
 
 }
 
-.card_special{
+.card_special {
     display: flex;
     width: 97%;
     height: 98%;
@@ -22,6 +23,7 @@ mat-label{
     border-radius: 3%;
 
 }
+
 .card {
     display: flex;
     width: 97%;
@@ -35,13 +37,13 @@ mat-label{
     scrollbar-width: thin;
     font-size: large;
     border-radius: 3%;
-    justify-content: space-between  ;
+    justify-content: space-between;
 }
 
 
 .profile_image {
     width: 50vw;
-    max-width: 290px;   
+    max-width: 290px;
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -50,8 +52,7 @@ mat-label{
 }
 
 .profile_image img {
-    width: 100%;
-    height: 100%;
+    height: 280px;
     object-fit: cover;
 }
 
@@ -289,7 +290,8 @@ li {
     text-align: center;
     font-size: 1em;
 }
-.tb{
+
+.tb {
     font-size: x-large;
     text-align: center;
     margin: auto;
@@ -305,6 +307,7 @@ li {
     text-align: center;
     font-size: 1.4em
 }
+
 .we_title {
     font-size: 1.5em;
     font-weight: 70;
@@ -314,13 +317,13 @@ li {
     align-items: stretch;
 
 }
+
 .freccia_rossa {
     color: red;
-    border-radius:   50%;
+    border-radius: 50%;
 }
 
 .freccia_verde {
-    color: rgb(0, 255, 0)   ;
-    border-radius:   50%;
+    color: rgb(0, 255, 0);
+    border-radius: 50%;
 }
-

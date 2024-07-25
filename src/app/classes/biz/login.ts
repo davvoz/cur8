@@ -20,7 +20,8 @@ class BaseLoginStrategy implements LoginStrategy {
             throw new Error('Keychain not found');
         }
 
-        await keychain.requestHandshake();
+        //await keychain.requestHandshake();
+
         keychain.requestSignBuffer(username, 'Login with Keychain', 'Active', function (response: { success: any; }) {
             if (response.success) {
                 console.log('Login success' + response);
@@ -75,3 +76,5 @@ export class StaticLogin {
         return login.login(username, callback);
     }
 }
+
+//usage example  : StaticLogin.loginWithHiveKeychain('nome', (response) => { console.log(response) });

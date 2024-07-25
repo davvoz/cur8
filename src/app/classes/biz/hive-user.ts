@@ -56,6 +56,7 @@ export interface User {
     transactions: TransferTransaction[];
     expiringDelegations: ExpiringDelegation[];
     totalExpiringDelegations: number;
+    logged: boolean;
 }
 
 export interface ExpiringDelegation {
@@ -321,7 +322,8 @@ class UserManager {
             rapportoConCUR8,
             transactions: this.transactions,
             expiringDelegations: this.expringDelegations,
-            totalExpiringDelegations: this.expringDelegations.reduce((acc, val) => acc + val.vesting_shares, 0)
+            totalExpiringDelegations: this.expringDelegations.reduce((acc, val) => acc + val.vesting_shares, 0),
+            logged: true
         };
     }
 
@@ -392,7 +394,8 @@ class UserManager {
                 totalVestingShares: 0,
             },
             transactions: [],
-            totalExpiringDelegations: 0
+            totalExpiringDelegations: 0,
+            logged: false
         };
     }
 }
