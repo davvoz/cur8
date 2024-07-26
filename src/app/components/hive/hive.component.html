@@ -14,19 +14,6 @@
                     </div>
                 </mat-card-header>
                 <mat-card-content class="card_content">
-                    <!--inserisci nome come input--><br>
-                    <div class="form_container">
-                        <form [formGroup]="loginForm" (ngSubmit)="login()">
-                            <div class="form_content">
-                              <mat-label *ngIf="!logged && !user.logged">User</mat-label>
-                              <input matInput 
-                                     placeholder="username" 
-                                     type="text" 
-                                     formControlName="username"
-                                     *ngIf="!logged && !user.logged">
-                            </div>
-                          </form>
-                    </div><br>
                     <div>Delegated {{ user.rapportoConCUR8.delega | reversePadZero}} HP</div>
 
                     <br>
@@ -39,6 +26,18 @@
                     </div>
                 </mat-card-content>
                 <mat-card-actions class="c_actions">
+                    <div class="form_container_o">
+                        <form [formGroup]="loginForm" (ngSubmit)="login()">
+                            <div class="form_content">
+                              <input matInput 
+                                     placeholder="username" 
+                                     type="text" 
+                                     formControlName="username"
+                                     *ngIf="!logged && !user.logged">
+                            </div>
+                          </form>
+                    </div>
+
                     <button mat-raised-button class="action" color="primary" (click)="login()" *ngIf="!logged && !user.logged">
                         Login
                     </button>
