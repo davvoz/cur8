@@ -338,3 +338,9 @@ li {
 .form_container_o .spacer {
     width: 100%;
 }
+/*profile_image su mobile è quadrata*/
+@media (max-width: 600px) {
+    .profile_image {
+        width: 100%;
+    }
+}
