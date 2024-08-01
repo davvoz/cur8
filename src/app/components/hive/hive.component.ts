@@ -23,7 +23,6 @@ import { Vest2HPPipe } from '../../pipes/vest2-hp.pipe';
 import { GlobalPropertiesHiveService } from '../../services/global-properties-hive.service';
 import { UserMemoryService } from '../../services/user-memory.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { StaticLogin } from '../../classes/biz/login';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -244,7 +243,7 @@ export class HiveComponent {
       const keychain = (window as any).hive_keychain;
       const username = this.loginForm.get('username')?.value;
       keychain.requestHandshake(() => {
-        keychain.requestSignBuffer(username, 'Welcome to CUR8', 'Active', (response: any) => {
+        keychain.requestSignBuffer(username, 'Welcome to CUR8', 'Posting', (response: any) => {
           this.ngZone.run(() => {
             if (response.success) {
               this.user.username = username;

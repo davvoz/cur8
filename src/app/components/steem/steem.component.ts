@@ -168,7 +168,7 @@ export class SteemComponent {
       const keychain = (window as any).steem_keychain;
       const username = this.loginForm.get('username')?.value;
       keychain.requestHandshake(() => {
-        keychain.requestSignBuffer(username, 'Welcome to CUR8', 'Active', (response: any) => {
+        keychain.requestSignBuffer(username, 'Welcome to CUR8', 'Posting', (response: any) => {
           this.ngZone.run(() => {
             if (response.success) {
               this.user.username = username;
