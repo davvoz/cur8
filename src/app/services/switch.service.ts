@@ -4,11 +4,11 @@ import { EventEmitter, Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SwitchService {
-  platform = 'HIVE';
+  platform = 'STEEM';
   switchEmitter = new EventEmitter<string>();
   constructor() { }
   switchPlatform() {
-    this.platform = this.platform === 'HIVE' ? 'STEEM' : 'HIVE';
+    this.platform = 'STEEM';
     this.switchEmitter.emit(this.platform);
   }
   switch(platform: string) {

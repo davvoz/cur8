@@ -19,15 +19,16 @@ export class HeaderComponent {
   isMobile: any;
 
   constructor(private sidebarservice: SidebarService, public switchService: SwitchService, private router: Router) {
+    document.documentElement.setAttribute('theme', '');
     this.isMobile = window.innerWidth <= 768;
-    this.router.events.subscribe((val) => {
-      if (this.router.url === '/steem' || this.router.url === '/home-steem' ) {
-        document.documentElement.setAttribute('theme', 'light');
-      }
-      if (this.router.url === '/hive' || this.router.url === '/home-hive' ) {
-        document.documentElement.setAttribute('theme', '');
-      }
-    });
+    // this.router.events.subscribe((val) => {
+    //   if (this.router.url === '/steem' || this.router.url === '/home-steem' ) {
+    //     document.documentElement.setAttribute('theme', 'light');
+    //   }
+    //   if (this.router.url === '/hive' || this.router.url === '/home-hive' ) {
+    //     document.documentElement.setAttribute('theme', '');
+    //   }
+    // });
   }
   get lightTheme(): boolean {
     return document.documentElement.getAttribute('theme') === 'light';
