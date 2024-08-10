@@ -16,9 +16,9 @@ export class StartComponent {
 
   constructor(private switchService: SwitchService) {
     this.isMobile = window.innerWidth <= 768;
-    document.documentElement.setAttribute('theme', 'light');
-    this.switchService.switchPlatform();
-    this.lightTheme = true;
+    document.documentElement.setAttribute('theme', '');
+      this.switchService.switchPlatform();
+      this.lightTheme = false;
   }
 
   toggle() {

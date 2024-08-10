@@ -19,7 +19,7 @@ export class HeaderComponent {
   isMobile: any;
 
   constructor(private sidebarservice: SidebarService, public switchService: SwitchService, private router: Router) {
-    document.documentElement.setAttribute('theme', '');
+    //document.documentElement.setAttribute('theme', 'light');
     this.isMobile = window.innerWidth <= 768;
     // this.router.events.subscribe((val) => {
     //   if (this.router.url === '/steem' || this.router.url === '/home-steem' ) {
