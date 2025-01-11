@@ -10,13 +10,14 @@ import { NgIf } from '@angular/common';
 import { SwitchService } from '../../../services/switch.service';
 import { PrezziComponent } from "../../prezzi/prezzi.component";
 import { SidebarService } from '../../../services/sidebar.service';
+import { call } from 'web3/lib/commonjs/eth.exports';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
-  imports: [MatSidenav, MatNavList, MatListItem, MatIcon, NgFor, MatDivider, NgIf, PrezziComponent]
+  imports: [ MatNavList,  MatIcon, NgFor, NgIf, PrezziComponent]
 })
 export class SidebarComponent {
 
@@ -25,18 +26,14 @@ export class SidebarComponent {
     this.welcome,
     { name: 'Dashboard', url: '/home-hive', icon: '', label: 'Dashboard HIVE', image: '../assets/logoTra.png' },
     { name: 'Profile', url: '/hive', icon: '', label: 'Profile', image: '../assets/hive_.png' },
-    //transazioni
-    //  { name: 'Transactions', url: '/transazioni-hive', icon: 'list', label: 'Transactions',image: '../assets/hive_.png' },
-    //lista post
-    // { name: 'Posts', url: '/lista-post', icon: 'list', label: 'Posts' }
+    { name: 'Telegram', url: 'https://t.me/cur8_hiveBot', icon: '', label: 'Telegram', image: '../assets/telegram.png', isExternal: true }
   ];
 
   itemsSteem = [
     this.welcome,
     { name: 'Dashboard', url: '/home-steem', icon: '', label: 'Dashboard STEEM', image: '../assets/logoTra.png' },
     { name: 'Profile', url: '/steem', icon: '', label: 'Profile', image: '../assets/steem_traspa_piccola.png' },
-    //transazioni
-    //  { name: 'Transactions', url: '/transazioni-cur8-steem', icon: 'list', label: 'Transactions', image: '../assets/steem_traspa_piccola.png' }
+    { name: 'Telegram', url: 'https://t.me/cur8_steemBot', icon: '', label: 'Telegram', image: '../assets/telegram.png', isExternal: true }
   ];
 
   items = this.itemsHive;
@@ -52,12 +49,15 @@ export class SidebarComponent {
   }
 
   navigateTo(url: string) {
-    //se sei su mobile chiudi la sidebar
-    if (window.innerWidth <= 768) {
-      this.sidebarService.toggle();
+    if (url.startsWith('https://')) {
+      window.open(url, '_blank');
+    } else {
+      //se sei su mobile chiudi la sidebar
+      if (window.innerWidth <= 768) {
+        this.sidebarService.toggle();
+      }
+      this.router.navigate([url]);
     }
-    this.router.navigate([url]);
   }
-
 
 }

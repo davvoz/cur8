@@ -35,7 +35,17 @@ $light-theme: mat.define-dark-theme(
   @include mat.all-component-themes($light-theme);
 }
 
-
+.custom-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0;
+    border-radius: 12px;
+  }
+  
+  .mat-mdc-dialog-surface {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}
 
 html,
 body {
